@@ -4,4 +4,12 @@
   .active 
     display: block      
   ul 
-    padding-left: 1em  
+    padding-left: 1em
+  li 
+    &:before
+      font-family: "FontAwesome"
+      content: "\f196"
+      margin-left: 0.3em
+    &.opened:before           
+      content: "\f147"
+       

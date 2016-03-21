@@ -18,8 +18,8 @@ var Navigation = React.createClass({
   openChild: function (e) {
     e.preventDefault();
     var target = e.target;
-    $(target).parent(".dropdown").children(".hasChildren").first().addClass("opened").slideToggle("fast");
-    console.log($(target).parent(".dropdown").children(".hasChildren").first());
+    $(target).parent(".dropdown").addClass("opened");
+    $(target).parent(".dropdown").children(".hasChildren").first().slideToggle("fast");
   },
   eachItem: function (item, i) {
     if (item.Nodes.length != 0) {

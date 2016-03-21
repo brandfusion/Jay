@@ -665,6 +665,14 @@ main {
 .navigation ul {
   padding-left: 1em; }
 
+.navigation li:before {
+  font-family: "FontAwesome";
+  content: "\f196";
+  margin-left: 0.3em; }
+
+.navigation li.opened:before {
+  content: "\f147"; }
+
 .personal-details-edit {
   position: relative; }
   .personal-details-edit .user-edit {
