@@ -22,38 +22,11 @@ var Navigation = React.createClass({
     $(target).parent(".dropdown").children(".hasChildren").first().slideToggle("fast");
   },
   eachItem: function (item, i) {
-    if (item.Nodes.length != 0) {
-      return React.createElement(
-        "li",
-        { key: i,
-          index: i,
-          className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown'
-
-        },
-        React.createElement(
-          "a",
-          { href: item.Id, onClick: this.openChild, "data-bookmark": item.Bookmark },
-          item.Name
-        ),
-        React.createElement(RenderChildren, { data: item.Nodes })
-      );
-    } else {
-      return React.createElement(
-        "li",
-        { key: i,
-          index: i,
-          className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown'
-
-        },
-        React.createElement(
-          "a",
-          { href: item.Id, onClick: this.openChild, "data-bookmark": item.Bookmark },
-          item.Name
-        )
-      );
-    }
+    console.log(item);
+    React.createElement(NavigationTree, { key: i, data: item });
   },
   render: function () {
+
     return React.createElement(
       "ul",
       null,
@@ -61,8 +34,8 @@ var Navigation = React.createClass({
     );
   }
 });
-var RenderChildren = React.createClass({
-  displayName: "RenderChildren",
+var NavigationTree = React.createClass({
+  displayName: "NavigationTree",
 
   getInitialState: function () {
     return {
@@ -75,9 +48,8 @@ var RenderChildren = React.createClass({
   openChild: function (e) {
     e.preventDefault();
     var target = e.target;
-
+    $(target).parent(".dropdown").addClass("opened");
     $(target).parent(".dropdown").children(".hasChildren").first().addClass("opened").slideToggle("fast");
-    console.log($(target).parent(".dropdown").children(".hasChildren").first());
   },
   eachItem: function (item, i) {
     if (item.Nodes.length != 0) {
@@ -93,7 +65,7 @@ var RenderChildren = React.createClass({
           { href: item.Id, onClick: this.openChild, "data-bookmark": item.Bookmark },
           item.Name
         ),
-        React.createElement(RenderChildren, { data: item.Nodes })
+        React.createElement(NavigationTree, { key: i, data: item.Nodes })
       );
     } else {
       return React.createElement(

@@ -19,32 +19,12 @@ var Navigation = React.createClass({
     $(target).parent(".dropdown").addClass("opened"); 
     $(target).parent(".dropdown").children(".hasChildren").first().slideToggle("fast");
   },
-  eachItem: function(item, i) {       
-      if (item.Nodes.length != 0) {        
-        return (
-          <li key={i}
-                  index={i}
-                  className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}
-                 
-              ><a href={item.Id} onClick={this.openChild} data-bookmark={item.Bookmark} >{item.Name}</a>
-              <RenderChildren data={item.Nodes}/>
-          </li>
-        );
-      } else {
-         return (
-              <li key={i}
-                  index={i}
-                  className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}
-                 
-              ><a href={item.Id} onClick={this.openChild} data-bookmark={item.Bookmark} >{item.Name}</a>
-
-              </li>
-          );
-
-      }   	
-     
+  eachItem: function(item, i) {  
+    console.log(item);
+    <NavigationTree key={i} data={item} />
   },
-  render: function() {      
+  render: function() {       
+
       return (
       		<ul>
       			{this.state.data.map(this.eachItem)}
@@ -54,7 +34,7 @@ var Navigation = React.createClass({
 
   }
 });
-var RenderChildren =  React.createClass({
+var NavigationTree =  React.createClass({
   getInitialState: function(){
     return {
       data: []
@@ -65,10 +45,11 @@ var RenderChildren =  React.createClass({
   },
   openChild: function(e){
     e.preventDefault();    
-    var target= e.target;
-    
+    var target= e.target;    
+    $(target).parent(".dropdown").addClass("opened"); 
     $(target).parent(".dropdown").children(".hasChildren").first().addClass("opened").slideToggle("fast");
-    console.log($(target).parent(".dropdown").children(".hasChildren").first());
+
+   
 
   },
   eachItem: function(item, i) {    
@@ -79,7 +60,7 @@ var RenderChildren =  React.createClass({
                   index={i}
                   className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}                 
               ><a href={item.Id} onClick={this.openChild} data-bookmark={item.Bookmark} >{item.Name}</a>
-              <RenderChildren data={item.Nodes}/>
+              <NavigationTree key={i} data={item.Nodes}/>
           </li>
         );
       } else {
@@ -94,7 +75,7 @@ var RenderChildren =  React.createClass({
       }
    
   },
-  render: function() {
+  render: function() {      
       return (
           <ul className="hasChildren" >
             {this.state.data.map(this.eachItem)}
