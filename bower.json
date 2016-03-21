@@ -1,0 +1,26 @@
+{
+  "name": "Eva",
+  "version": "1.0.0",
+  "authors": [
+    "Daniel Voicu <daniel.voicu.home@gmail.com>"
+  ],
+  "description": "E-Commerce Solution",
+  "license": "EUPL-1.1",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3",
+    "modernizr": "~2.8.3",
+    "bootstrap-sass": "~3.3.3"
+  },
+  "devDependencies": {
+    "FlexSlider-Scss": "~1.0.0",
+    "bourbon": "~4.2.4"
+  }
+}

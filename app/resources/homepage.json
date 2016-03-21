@@ -1,0 +1,36 @@
+[	
+	[
+		{
+			"title": "One Third",
+			"src": "assets/img/banner-1third.jpg",
+			"url": "#"
+		},
+		{
+			"title": "One Third",
+			"src": "assets/img/banner-1third-4.jpg",
+			"url": "#"
+		},
+		{
+			"title": "One Third Small",
+			"src": "assets/img/banner-small.jpg",
+			"url": "#"
+		}
+	],
+	[
+		{
+			"title": "Half",
+			"src": "assets/img/eva-banner-wide-2.jpg",
+			"url": "#"
+		},
+		{
+			"title": "Half",
+			"src": "assets/img/eva-banner-wide-3.jpg",
+			"url": "#"
+		},
+		{
+			"title": "Half",
+			"src": "assets/img/eva-banner-wide-4.jpg",
+			"url": "#"
+		}		
+	]
+]

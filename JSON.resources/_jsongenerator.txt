@@ -1,0 +1,32 @@
+[
+  '{{repeat(10)}}',
+  {
+    Id: '{{objectId()}}',
+    Name: '{{lorem(1, "words")}}',
+    Bookmark: '',
+    Nodes: [
+    '{{repeat(10)}}', 
+      {
+          Id: '{{objectId()}}',
+          Name: '{{lorem(1, "words")}}',
+          Bookmark: '',
+          Nodes: [
+              '{{repeat(10)}}', 
+              {
+                Id: '{{objectId()}}',
+                Name: '{{lorem(1, "words")}}',
+                Bookmark: '',
+                Nodes: [
+                    '{{repeat(10)}}', 
+                    {
+                      Id: '{{objectId()}}',
+                      Name: '{{lorem(1, "words")}}',
+                      Bookmark: '{{bool()}}'
+                    }
+                ]
+              }
+          ]
+      }
+    ]
+  }
+]
