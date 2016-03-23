@@ -1,3 +1,5 @@
+$yellow: #be7004
+
 .header
   height: 20vh
   background-color: #aaa
@@ -15,36 +17,33 @@
     padding-left: 1em
   li 
     &:before
+      color: $yellow
       font-family: "FontAwesome"
       content: "\f196"
       margin-right: 0.3em
     &.opened:before           
       content: "\f147"
     &.noIcon
-      &:before 
-        content: ""  
+      &:before       
         display: none
       a 
-        display: inline  
-        // a[data-bookmark="false"]:after
-        //   font-family: "FontAwesome"
-        //   content: "\f097"  
-        //   float: right
-        // a[data-bookmark="true"]:after
-        //   font-family: "FontAwesome"
-        //   content: "\f02e"
-        //   float: right
+        display: inline         
         &[data-bookmark]
           float: right 
+          color: $yellow
         &[data-bookmark="true"]
           i:before
             content: "\f02e"
+    &[data-expanded="true"]
+      color: $yellow
+      &:before
+        content: "\f147"      
   .hasChildren[data-expanded="true"]    
     display: block      
     .true
-      color: red       
+      color: $yellow      
   .componentWrapper
     padding: 0px
 //fix
 body, p, div, span, td, th, li, a, a:link, input, textarea, .tile .listPrice, #cartRightContent li > div h3, table td .fa-heart
-  font-size: 14px !important
+  font-size: 0.8rem

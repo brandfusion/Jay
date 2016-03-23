@@ -64,17 +64,25 @@ $(function () {
     openChild: function (e) {
       e.preventDefault();
       var target = e.target;
-      if ($(target).hasClass("opened")) {
-        $(target).removeClass("opened");
-        $(target).children(".hasChildren").slideUp("fast");
+      console.log($(target).attr("data-expanded"));
+      if ($(target).attr("data-expanded") == "true") {
+        $(target).attr("data-expanded", "false");
+        $(target).children(".hasChildren").hide();
       } else {
-        $(target).addClass("opened");
-        $(target).children(".hasChildren").slideDown("fast");
+        $(target).attr("data-expanded", "true");
+        $(target).children(".hasChildren").show();
       }
     },
+    // update: function(){   
+    //   var newState = "state";
+    //   this.props.callbackParent(newState);
+    // },
     registerBookmark: function (e) {
       e.preventDefault();
       console.log("Bookmarked");
+    },
+    onChildChanged: function (newState) {
+      console.log(newState);
     },
     eachItem: function (item, i) {
       if (item.Nodes.length != 0) {
@@ -88,13 +96,13 @@ $(function () {
           },
           React.createElement(
             "a",
-            { href: item.Id, onCLick: "", className: item.Selected },
+            { href: item.Id, className: item.Selected },
             item.Name
           ),
           React.createElement(
             "ul",
             { className: "hasChildren", "data-expanded": item.Expanded },
-            React.createElement(NavigationTree, { data: item.Nodes })
+            React.createElement(NavigationTree, { data: item.Nodes, callbackParent: this.onChildChanged })
           )
         );
       } else {
@@ -132,8 +140,14 @@ $(function () {
 
     getInitialState: function () {
       return {
-        data: []
+        data: [],
+        itemId: ""
       };
+    },
+    update: function (e) {
+      e.preventDefault();
+      var newState = "state";
+      this.setState({ itemId: newState });
     },
     componentDidMount: function () {
       this.setState({ data: this.props.data });
@@ -171,7 +185,7 @@ $(function () {
           },
           React.createElement(
             "a",
-            { href: item.Id, className: item.Selected },
+            { href: item.Id, onClick: this.update, className: item.Selected },
             item.Name
           ),
           React.createElement(
@@ -190,26 +204,79 @@ $(function () {
       );
     }
   });
-  // var RenderTreeLink = React.createClass({
-  //   getInitialState: function(){
-  //     return {
-  //       i: 0,
-  //       bookmark: false,
-  //       name: ""
-  //     }
-  //   },
-  //   render: function() {     
-  //       return (
-  //         <li key={i}
-  //                   index={i}
-  //                   className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}                
-  //               ><a href={item.Id} onClick={this.openChild} data-bookmark={item.Bookmarked} >{item.Name}</a>
-  //               <NavigationTree key={i} data={item.Nodes}/>
-  //          </li>
+  var RenderPage = React.createClass({
+    displayName: "RenderPage",
 
-  //       );
-  //   }
-  // });
+    getInitialState: function () {
+      return {
+        pageId: ""
+      };
+    },
+    update: function () {
+      this.setState({ pageID: "test" });
+    },
+    //  onChildChanged: function(newState) {
+    //       this.setState({ checked: newState });
+    // },
+    render: function () {
+      return React.createElement(
+        "div",
+        { className: "wrapper" },
+        React.createElement(
+          "div",
+          { className: "col-sm-3" },
+          React.createElement(
+            "div",
+            { id: "catalogNavContainer" },
+            React.createElement(
+              "section",
+              { className: "catalogNavSection topSection" },
+              React.createElement(
+                "h1",
+                null,
+                "JAYCO"
+              ),
+              React.createElement(
+                "a",
+                { className: "btn btn-sm btn-warning pull-right" },
+                "Select Catalog"
+              )
+            ),
+            React.createElement(
+              "section",
+              { className: "catalogNavSection searchSection" },
+              React.createElement(
+                "form",
+                { action: "/Default.aspx", id: "searchForm" },
+                React.createElement("input", { type: "hidden", name: "ID", value: "@resultsPage" }),
+                React.createElement("input", { placeholder: "Serial #", id: "searchSubmit", "data-error": "Search for something", type: "text", name: "q", value: "" }),
+                React.createElement(
+                  "button",
+                  { className: "btn btn-sm btn-warning", type: "submit" },
+                  React.createElement("i", { className: "fa fa-search" })
+                )
+              )
+            ),
+            React.createElement(
+              "section",
+              { className: "catalogNavSection navSection navigation" },
+              React.createElement(Navigation, { source: "/Files/WebServices/Navigation.ashx", onChange: this.update })
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "col-sm-9" },
+          React.createElement(
+            "p",
+            null,
+            "Loading..."
+          )
+        )
+      );
+    }
+  });
 
-  ReactDOM.render(React.createElement(Navigation, { source: "/Files/WebServices/Navigation.ashx" }), document.getElementById('react-navigation'));
+  ReactDOM.render(React.createElement(RenderPage, null), document.getElementById('react-renderPage'));
+  // ReactDOM.render(<Navigation source="http://localhost:3000/resources/navigation.json"  />, document.getElementById('react-navigation'));
 });
