@@ -1,15 +1,50 @@
+.header
+  height: 20vh
+  background-color: #aaa
+
 .navigation  
+  height: 80vh
+  overflow: auto
   .hasChildren
     display: none
   .active 
-    display: block      
+    display: block
+  a 
+    font-size: 1em       
   ul 
     padding-left: 1em
   li 
     &:before
       font-family: "FontAwesome"
       content: "\f196"
-      margin-left: 0.3em
+      margin-right: 0.3em
     &.opened:before           
       content: "\f147"
-       
+    &.noIcon
+      &:before 
+        content: ""  
+        display: none
+      a 
+        display: inline  
+        // a[data-bookmark="false"]:after
+        //   font-family: "FontAwesome"
+        //   content: "\f097"  
+        //   float: right
+        // a[data-bookmark="true"]:after
+        //   font-family: "FontAwesome"
+        //   content: "\f02e"
+        //   float: right
+        &[data-bookmark]
+          float: right 
+        &[data-bookmark="true"]
+          i:before
+            content: "\f02e"
+  .hasChildren[data-expanded="true"]    
+    display: block      
+    .true
+      color: red       
+  .componentWrapper
+    padding: 0px
+//fix
+body, p, div, span, td, th, li, a, a:link, input, textarea, .tile .listPrice, #cartRightContent li > div h3, table td .fa-heart
+  font-size: 14px !important

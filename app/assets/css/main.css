@@ -656,22 +656,45 @@ input, button, textarea, select {
 main {
   font-size: 0.8rem; }
 
-.navigation .hasChildren {
-  display: none; }
+.header {
+  height: 20vh;
+  background-color: #aaa; }
 
-.navigation .active {
-  display: block; }
+.navigation {
+  height: 80vh;
+  overflow: auto; }
+  .navigation .hasChildren {
+    display: none; }
+  .navigation .active {
+    display: block; }
+  .navigation a {
+    font-size: 1em; }
+  .navigation ul {
+    padding-left: 1em; }
+  .navigation li:before {
+    font-family: "FontAwesome";
+    content: "\f196";
+    margin-right: 0.3em; }
+  .navigation li.opened:before {
+    content: "\f147"; }
+  .navigation li.noIcon:before {
+    content: "";
+    display: none; }
+  .navigation li.noIcon a {
+    display: inline; }
+    .navigation li.noIcon a[data-bookmark] {
+      float: right; }
+    .navigation li.noIcon a[data-bookmark="true"] i:before {
+      content: "\f02e"; }
+  .navigation .hasChildren[data-expanded="true"] {
+    display: block; }
+    .navigation .hasChildren[data-expanded="true"] .true {
+      color: red; }
+  .navigation .componentWrapper {
+    padding: 0px; }
 
-.navigation ul {
-  padding-left: 1em; }
-
-.navigation li:before {
-  font-family: "FontAwesome";
-  content: "\f196";
-  margin-left: 0.3em; }
-
-.navigation li.opened:before {
-  content: "\f147"; }
+body, p, div, span, td, th, li, a, a:link, input, textarea, .tile .listPrice, #cartRightContent li > div h3, table td .fa-heart {
+  font-size: 14px !important; }
 
 .personal-details-edit {
   position: relative; }
