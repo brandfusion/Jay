@@ -1,4 +1,5 @@
 $(function () {
+
   var Navigation = React.createClass({
     displayName: "Navigation",
 
@@ -57,14 +58,12 @@ $(function () {
             // do something with key and val
           });
           this.setState({ data: this.state.data });
-          console.dir(this.state.data);
         }
       }.bind(this));
     },
     openChild: function (e) {
       e.preventDefault();
       var target = e.target;
-      console.log($(target).attr("data-expanded"));
       if ($(target).attr("data-expanded") == "true") {
         $(target).attr("data-expanded", "false");
         $(target).children(".hasChildren").hide();
@@ -73,17 +72,9 @@ $(function () {
         $(target).children(".hasChildren").show();
       }
     },
-    // update: function(){   
-    //   var newState = "state";
-    //   this.props.callbackParent(newState);
-    // },
-    registerBookmark: function (e) {
-      e.preventDefault();
-      console.log("Bookmarked");
-    },
-    onChildChanged: function (newState) {
-      console.log(newState);
-    },
+    // updateBookmark: function(){
+    //   this.props.updateBookmark;
+    // },  
     eachItem: function (item, i) {
       if (item.Nodes.length != 0) {
         return React.createElement(
@@ -102,7 +93,7 @@ $(function () {
           React.createElement(
             "ul",
             { className: "hasChildren", "data-expanded": item.Expanded },
-            React.createElement(NavigationTree, { data: item.Nodes, callbackParent: this.onChildChanged })
+            React.createElement(NavigationTree, { data: item.Nodes })
           )
         );
       } else {
@@ -141,17 +132,76 @@ $(function () {
     getInitialState: function () {
       return {
         data: [],
-        itemId: ""
+        bookmark: ""
       };
     },
-    update: function (e) {
-      e.preventDefault();
-      var newState = "state";
-      this.setState({ itemId: newState });
+    update: function (arg) {
+      var target = $(arg.target);
+      var id = target.attr("href");
+      var encodedId = encodeURIComponent(id);
+      var link = "/Default.aspx?ID=126&groupId=" + encodedId;
+      $.ajax({
+        url: link,
+        type: 'get'
+      }).done(function (data) {
+        console.log(data);
+        $('#pageContent').html(data);
+      }).fail(function () {
+        // console.log("error");
+      }).always(function () {
+        // console.log("complete");
+      });
+    },
+    registerBookmark: function (arg) {
+      var target = $(arg.target).parent("a");
+      var bookmark = target[0].attributes["data-bookmark"].value;
+      var groupName = target[0].attributes["data-group"].value;
+      var id = target[0].attributes["href"].value;
+      var index = target[0].attributes["data-index"].value;
+      console.log(bookmark);
+
+      var that = this;
+      if (bookmark == "true") {
+        var requestUrl = "/Files/WebServices/Bookmarks.ashx?action=delete&group=" + encodeURIComponent(id);
+        $.ajax({
+          method: "GET",
+          url: requestUrl,
+          contentType: "application/json",
+          cache: false
+        }).done(function (msg) {
+          for (var i = 0; i < that.state.data.length; i++) {
+            var item = that.state.data[i];
+            var itemId = item.Id;
+            if (id == itemId) {
+              item.Bookmarked = false;
+              break;
+            }
+          }
+          that.setState(that.state);
+        }).fail(function (e) {});
+      } else {
+        $.ajax({
+          method: "POST",
+          url: "/Files/WebServices/Bookmarks.ashx",
+          data: JSON.stringify({ Group: id, Name: groupName }),
+          contentType: "application/json"
+        }).done(function (msg) {
+          for (var i = 0; i < that.state.data.length; i++) {
+            var item = that.state.data[i];
+            var itemId = item.Id;
+            if (id == itemId) {
+              item.Bookmarked = true;
+              break;
+            }
+          }
+          that.setState(that.state);
+        }).fail(function (e) {});
+      }
     },
     componentDidMount: function () {
       this.setState({ data: this.props.data });
     },
+
     eachItem: function (item, i) {
       if (item.Nodes.length != 0) {
         var nodes = item.Nodes;
@@ -185,12 +235,12 @@ $(function () {
           },
           React.createElement(
             "a",
-            { href: item.Id, onClick: this.update, className: item.Selected },
+            { href: item.Id, onClick: this.update, index: i, "data-overflow": true, className: item.Selected, "data-toggle": "tooltip", "data-placement": "right", title: item.Name },
             item.Name
           ),
           React.createElement(
             "a",
-            { href: "", "data-bookmark": item.Bookmarked, onClick: this.registerBookmark },
+            { href: item.Id, "data-index": i, "data-group": item.Name, "data-bookmark": item.Bookmarked, onClick: this.registerBookmark },
             React.createElement("i", { className: "fa fa-bookmark-o" })
           )
         );
@@ -209,12 +259,17 @@ $(function () {
 
     getInitialState: function () {
       return {
-        pageId: ""
+        pageId: "",
+        catalog: ""
       };
     },
-    update: function () {
-      this.setState({ pageID: "test" });
+    componentDidMount: function () {
+
+      var param = decodeURIComponent(location.search.split('catalog=')[1]);
+      var link = "/Files/WebServices/Navigation.ashx?catalog=" + param;
+      this.setState({ catalog: link });
     },
+
     //  onChildChanged: function(newState) {
     //       this.setState({ checked: newState });
     // },
@@ -260,7 +315,7 @@ $(function () {
             React.createElement(
               "section",
               { className: "catalogNavSection navSection navigation" },
-              React.createElement(Navigation, { source: "/Files/WebServices/Navigation.ashx", onChange: this.update })
+              React.createElement(Navigation, { source: "/Files/WebServices/Navigation.ashx?catalog=jayco", onChange: this.update })
             )
           )
         ),
@@ -268,9 +323,13 @@ $(function () {
           "div",
           { className: "col-sm-9" },
           React.createElement(
-            "p",
-            null,
-            "Loading..."
+            "div",
+            { id: "pageContent" },
+            React.createElement(
+              "p",
+              null,
+              "Loading..."
+            )
           )
         )
       );

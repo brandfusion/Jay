@@ -1,5 +1,5 @@
 $yellow: #be7004
-
+$blue: #0f4a72
 .header
   height: 20vh
   background-color: #aaa
@@ -7,6 +7,7 @@ $yellow: #be7004
 .navigation  
   height: 80vh
   overflow: auto
+  padding-right: 15px !important
   .hasChildren
     display: none
   .active 
@@ -27,8 +28,9 @@ $yellow: #be7004
       &:before       
         display: none
       a 
-        display: inline         
+        display: inline-block         
         &[data-bookmark]
+          display: block
           float: right 
           color: $yellow
         &[data-bookmark="true"]
@@ -47,3 +49,41 @@ $yellow: #be7004
 //fix
 body, p, div, span, td, th, li, a, a:link, input, textarea, .tile .listPrice, #cartRightContent li > div h3, table td .fa-heart
   font-size: 0.8rem
+.product-image, .product-attachments, .product-components
+  margin-bottom: 2em  
+.product-header  
+  background-color: $blue 
+  color: #fff 
+  padding: 0.5em 1em
+  margin-bottom: 1em
+  button
+    float: right 
+    line-height: 2 
+    color: inherit 
+    background-color: transparent
+    border-radius: 0.5em
+    border: 1px solid #fff
+    i 
+      margin-right: 0.3em      
+  .heading 
+    margin: 0
+    display: inline-block
+    line-height: 2   
+    color: inherit 
+    font-size: 1.4em
+    text-transform: uppercase
+    font-weight: 300
+    i 
+      font-size: 1.5em
+      line-height: 1
+      vertical-align: middle
+a[data-overflow]
+  +text-overflow 
+  width: 90%      
+.table-header
+  text-align: center
+  .form-group:first-child
+    float: left 
+    line-height: 34px
+  .form-group:last-child
+    float: right    
