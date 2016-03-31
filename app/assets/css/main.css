@@ -747,6 +747,13 @@ a[data-overflow] {
   .table-header .form-group:last-child {
     float: right; }
 
+button.button-download-group {
+  text-align: left;
+  width: 18em; }
+  button.button-download-group .caret {
+    float: right;
+    margin-top: 10px; }
+
 .personal-details-edit {
   position: relative; }
   .personal-details-edit .user-edit {

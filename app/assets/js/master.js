@@ -1,7 +1,25 @@
 $(function () {
 
+  function replaceUrlParam(url, paramName, paramValue) {
+    var pattern = new RegExp('\\b(' + paramName + '=).*?(&|$)');
+    if (url.search(pattern) >= 0) {
+      return url.replace(pattern, '$1' + paramValue + '$2');
+    }
+    return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
+  }
+  window.getQueryVariable = function (variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (pair[0] == variable) {
+        return pair[1];
+      }
+    }
+    return false;
+  };
   var Navigation = React.createClass({
-    displayName: "Navigation",
+    displayName: 'Navigation',
 
     getInitialState: function () {
       return {
@@ -45,7 +63,8 @@ $(function () {
           this.setState({
             data: result
           });
-          var param = decodeURIComponent(location.search.split('myParam=')[1]);
+          var param = getQueryVariable("bookmark");
+          param = decodeURIComponent(param);
           var that = this;
           this.setState({ selected: param });
           $.each(this.state.data, function (key, val) {
@@ -78,56 +97,56 @@ $(function () {
     eachItem: function (item, i) {
       if (item.Nodes.length != 0) {
         return React.createElement(
-          "li",
+          'li',
           { key: i,
             index: i,
             className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
             onClick: this.openChild,
-            "data-expanded": item.Expanded
+            'data-expanded': item.Expanded
           },
           React.createElement(
-            "a",
+            'a',
             { href: item.Id, className: item.Selected },
             item.Name
           ),
           React.createElement(
-            "ul",
-            { className: "hasChildren", "data-expanded": item.Expanded },
+            'ul',
+            { className: 'hasChildren', 'data-expanded': item.Expanded },
             React.createElement(NavigationTree, { data: item.Nodes })
           )
         );
       } else {
         return React.createElement(
-          "li",
+          'li',
           { key: i,
             index: i,
             className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
             onClick: this.openChild,
-            "data-expanded": item.Expanded
+            'data-expanded': item.Expanded
           },
           React.createElement(
-            "a",
+            'a',
             { href: item.Id, className: item.Selected },
             item.Name
           ),
           React.createElement(
-            "a",
-            { href: "", "data-bookmark": item.Bookmarked, onClick: this.registerBookmark },
-            React.createElement("i", { className: "fa fa-bookmark-o" })
+            'a',
+            { href: '', 'data-bookmark': item.Bookmarked, onClick: this.registerBookmark },
+            React.createElement('i', { className: 'fa fa-bookmark-o' })
           )
         );
       }
     },
     render: function () {
       return React.createElement(
-        "ul",
-        { className: "componentWrapper" },
+        'ul',
+        { className: 'componentWrapper' },
         this.state.data.map(this.eachItem)
       );
     }
   });
   var NavigationTree = React.createClass({
-    displayName: "NavigationTree",
+    displayName: 'NavigationTree',
 
     getInitialState: function () {
       return {
@@ -144,7 +163,7 @@ $(function () {
         url: link,
         type: 'get'
       }).done(function (data) {
-        console.log(data);
+        // console.log(data);
         $('#pageContent').html(data);
       }).fail(function () {
         // console.log("error");
@@ -158,7 +177,7 @@ $(function () {
       var groupName = target[0].attributes["data-group"].value;
       var id = target[0].attributes["href"].value;
       var index = target[0].attributes["data-index"].value;
-      console.log(bookmark);
+      // console.log(bookmark);
 
       var that = this;
       if (bookmark == "true") {
@@ -206,56 +225,121 @@ $(function () {
       if (item.Nodes.length != 0) {
         var nodes = item.Nodes;
         return React.createElement(
-          "li",
+          'li',
           { key: i,
             index: i,
             className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
             onClick: this.openChild,
-            "data-expanded": item.Expanded
+            'data-expanded': item.Expanded
           },
           React.createElement(
-            "a",
+            'a',
             { href: item.Id, className: item.Selected },
             item.Name
           ),
           React.createElement(
-            "ul",
-            { className: "hasChildren", "data-expanded": item.Expanded },
+            'ul',
+            { className: 'hasChildren', 'data-expanded': item.Expanded },
             React.createElement(NavigationTree, { key: i, data: item.Nodes })
           )
         );
       } else {
         return React.createElement(
-          "li",
+          'li',
           { key: i,
             index: i,
-            className: "noIcon",
+            className: 'noIcon',
             onClick: this.openChild,
-            "data-expanded": item.Expanded
+            'data-expanded': item.Expanded
           },
           React.createElement(
-            "a",
-            { href: item.Id, onClick: this.update, index: i, "data-overflow": true, className: item.Selected, "data-toggle": "tooltip", "data-placement": "right", title: item.Name },
+            'a',
+            { href: item.Id, onClick: this.update, index: i, 'data-overflow': true, className: item.Selected, 'data-toggle': 'tooltip', 'data-placement': 'right', title: item.Name },
             item.Name
           ),
           React.createElement(
-            "a",
-            { href: item.Id, "data-index": i, "data-group": item.Name, "data-bookmark": item.Bookmarked, onClick: this.registerBookmark },
-            React.createElement("i", { className: "fa fa-bookmark-o" })
+            'a',
+            { href: item.Id, 'data-index': i, 'data-group': item.Name, 'data-bookmark': item.Bookmarked, onClick: this.registerBookmark },
+            React.createElement('i', { className: 'fa fa-bookmark-o' })
           )
         );
       }
     },
     render: function () {
       return React.createElement(
-        "div",
+        'div',
         null,
         this.state.data.map(this.eachItem)
       );
     }
   });
+  var MainContent = React.createClass({
+    displayName: 'MainContent',
+
+    getInitialState: function () {
+      return {
+        data: ""
+      };
+    },
+    componentDidMount: function () {
+      var _this = this;
+      var param = getQueryVariable("bookmark");
+      if (param != false) {
+        var link = '/Default.aspx?ID=126&groupId=' + param;
+        $.ajax({
+          url: link,
+          type: 'get'
+        }).done(function (result) {
+          if (_this.isMounted()) {
+            _this.setState({ data: result });
+            $('#pageContent').html(result);
+            (function () {
+              $('[data-select-downloadable] a').on("click", function (e) {
+                e.preventDefault();
+                var value = $(this).attr("data-option-value");
+                var name = $(this).attr("data-option-name");
+                $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+                $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+                console.log("intra-buton");
+              });
+              console.log("intra");
+              $('.product-list-link').on("click", function (e) {
+                e.preventDefault();
+                var groupId = encodeURIComponent($(this).attr("data-group-id"));
+                var productId = $(this).attr("href");
+                var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId;
+                console.log(link);
+                $.ajax({
+                  url: link,
+                  type: 'get'
+                }).done(function (newResult) {
+                  // console.log(data);
+                  $('#pageContent').html(newResult);
+                }).fail(function () {
+                  // console.log("error");
+                }).always(function () {
+                  // console.log("complete");
+                });
+              });
+            })();
+          }
+        }).fail(function () {
+          // console.log("error");
+        }).always(function () {
+          // console.log("complete");
+        });
+      }
+      $('[data-select-downloadable] a').on("click", function (e) {
+        e.preventDefault();
+        alert("click");
+      });
+    },
+    render: function () {
+      return React.createElement('div', { id: 'pageContent' });
+    }
+  });
   var RenderPage = React.createClass({
-    displayName: "RenderPage",
+    displayName: 'RenderPage',
 
     getInitialState: function () {
       return {
@@ -264,10 +348,8 @@ $(function () {
       };
     },
     componentDidMount: function () {
-
       var param = decodeURIComponent(location.search.split('catalog=')[1]);
       var link = "/Files/WebServices/Navigation.ashx?catalog=" + param;
-      this.setState({ catalog: link });
     },
 
     //  onChildChanged: function(newState) {
@@ -275,62 +357,54 @@ $(function () {
     // },
     render: function () {
       return React.createElement(
-        "div",
-        { className: "wrapper" },
+        'div',
+        { className: 'wrapper' },
         React.createElement(
-          "div",
-          { className: "col-sm-3" },
+          'div',
+          { className: 'col-sm-3' },
           React.createElement(
-            "div",
-            { id: "catalogNavContainer" },
+            'div',
+            { id: 'catalogNavContainer' },
             React.createElement(
-              "section",
-              { className: "catalogNavSection topSection" },
+              'section',
+              { className: 'catalogNavSection topSection' },
               React.createElement(
-                "h1",
+                'h1',
                 null,
-                "JAYCO"
+                'JAYCO'
               ),
               React.createElement(
-                "a",
-                { className: "btn btn-sm btn-warning pull-right" },
-                "Select Catalog"
+                'a',
+                { className: 'btn btn-sm btn-warning pull-right' },
+                'Select Catalog'
               )
             ),
             React.createElement(
-              "section",
-              { className: "catalogNavSection searchSection" },
+              'section',
+              { className: 'catalogNavSection searchSection' },
               React.createElement(
-                "form",
-                { action: "/Default.aspx", id: "searchForm" },
-                React.createElement("input", { type: "hidden", name: "ID", value: "@resultsPage" }),
-                React.createElement("input", { placeholder: "Serial #", id: "searchSubmit", "data-error": "Search for something", type: "text", name: "q", value: "" }),
+                'form',
+                { action: '/Default.aspx', id: 'searchForm' },
+                React.createElement('input', { type: 'hidden', name: 'ID', value: '@resultsPage' }),
+                React.createElement('input', { placeholder: 'Serial #', id: 'searchSubmit', 'data-error': 'Search for something', type: 'text', name: 'q', value: '' }),
                 React.createElement(
-                  "button",
-                  { className: "btn btn-sm btn-warning", type: "submit" },
-                  React.createElement("i", { className: "fa fa-search" })
+                  'button',
+                  { className: 'btn btn-sm btn-warning', type: 'submit' },
+                  React.createElement('i', { className: 'fa fa-search' })
                 )
               )
             ),
             React.createElement(
-              "section",
-              { className: "catalogNavSection navSection navigation" },
-              React.createElement(Navigation, { source: "/Files/WebServices/Navigation.ashx?catalog=jayco", onChange: this.update })
+              'section',
+              { className: 'catalogNavSection navSection navigation' },
+              React.createElement(Navigation, { source: '/Files/WebServices/Navigation.ashx?catalog=jayco', onChange: this.update })
             )
           )
         ),
         React.createElement(
-          "div",
-          { className: "col-sm-9" },
-          React.createElement(
-            "div",
-            { id: "pageContent" },
-            React.createElement(
-              "p",
-              null,
-              "Loading..."
-            )
-          )
+          'div',
+          { className: 'col-sm-9' },
+          React.createElement(MainContent, null)
         )
       );
     }

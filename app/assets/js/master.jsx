@@ -1,5 +1,21 @@
 $(function(){
 
+function replaceUrlParam(url, paramName, paramValue){
+    var pattern = new RegExp('\\b('+paramName+'=).*?(&|$)')
+    if(url.search(pattern)>=0){
+        return url.replace(pattern,'$1' + paramValue + '$2');
+    }
+    return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue 
+} 
+window.getQueryVariable = function(variable){
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
 var Navigation = React.createClass({
 	getInitialState: function(){
 		return {
@@ -43,7 +59,8 @@ var Navigation = React.createClass({
 	        this.setState({
 	          data: result
 	        });	        
-          var param = decodeURIComponent(location.search.split('myParam=')[1]); 
+          var param = getQueryVariable("bookmark");
+          param = decodeURIComponent(param); 
           var that = this;
           this.setState({selected: param});  
           $.each(this.state.data, function(key,val){
@@ -133,7 +150,7 @@ var NavigationTree =  React.createClass({
       type: 'get'
     })
     .done(function(data) {
-      console.log(data);
+      // console.log(data);
       $('#pageContent').html(data);
     })
     .fail(function() {
@@ -149,7 +166,7 @@ var NavigationTree =  React.createClass({
     var groupName = target[0].attributes["data-group"].value;
     var id = target[0].attributes["href"].value;
     var index = target[0].attributes["data-index"].value;
-    console.log(bookmark);
+    // console.log(bookmark);
    
     var that = this;
     if(bookmark == "true") {    
@@ -240,6 +257,85 @@ var NavigationTree =  React.createClass({
       );
   }
 });
+var MainContent = React.createClass({
+   getInitialState: function(){
+    return {
+      data: ""
+    }
+  },
+  componentDidMount: function(){
+    var _this = this;
+    var param = getQueryVariable("bookmark");
+    if(param != false) {
+      var link = '/Default.aspx?ID=126&groupId=' + param;     
+      $.ajax({
+      url: link,
+      type: 'get'
+      })
+      .done(function(result) {
+        if (_this.isMounted()) {
+          _this.setState({data: result});
+          $('#pageContent').html(result);
+          (function(){            
+            $('[data-select-downloadable] a').on("click", function(e){
+              e.preventDefault();
+              var value= $(this).attr("data-option-value");
+              var name= $(this).attr("data-option-name");              
+              $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+              $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+               console.log("intra-buton");
+            });
+            console.log("intra");
+            $('.product-list-link').on("click", function(e){
+              e.preventDefault();
+              var groupId = encodeURIComponent($(this).attr("data-group-id"));
+              var productId =$(this).attr("href");
+              var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
+              console.log(link);
+              $.ajax({
+                url: link,
+                type: 'get'
+              })
+              .done(function(newResult) {
+                // console.log(data);
+                $('#pageContent').html(newResult);
+
+              })
+              .fail(function() {
+                // console.log("error");
+              })
+              .always(function() {
+                // console.log("complete");
+              });           
+            });
+          })(); 
+        }
+        
+       
+        
+       
+      })
+      .fail(function() {
+        // console.log("error");
+      })
+      .always(function() {
+        // console.log("complete");
+      });
+    } 
+    $('[data-select-downloadable] a').on("click", function(e){
+      e.preventDefault();
+      alert("click");
+    });
+
+    
+    
+  },
+  render: function() {
+    return (
+       <div id="pageContent"></div>
+    );
+  }
+});
 var RenderPage = React.createClass({
   getInitialState: function(){
     return {     
@@ -248,14 +344,8 @@ var RenderPage = React.createClass({
     }
   },
   componentDidMount: function(){
-
     var param = decodeURIComponent(location.search.split('catalog=')[1]);        
     var link = "/Files/WebServices/Navigation.ashx?catalog=" + param;
-    this.setState({catalog: link });   
-
-   
-   
-   
   },
   
   //  onChildChanged: function(newState) {
@@ -288,11 +378,8 @@ var RenderPage = React.createClass({
           </div>
         </div>
 
-          <div className="col-sm-9">
-            <div id="pageContent">
-              <p>Loading...</p>
-            </div>
-            
+          <div className="col-sm-9">           
+            <MainContent />
           </div>
         </div>  
 
