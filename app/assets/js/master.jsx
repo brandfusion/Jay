@@ -297,7 +297,7 @@ var MainContent = React.createClass({
                 type: 'get'
               })
               .done(function(newResult) {
-                // console.log(data);
+                console.log("loading");
                 $('#pageContent').html(newResult);
 
               })

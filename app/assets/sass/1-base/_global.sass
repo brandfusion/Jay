@@ -41,24 +41,29 @@
   +make-sm-column(4)
   +make-md-column(2)
 .breadcrumbs
-  padding: 0px $spacing
+  // padding: 0px $spacing
   font-size: 0.8em
   font-weight: 400
+  color: #fff
+  line-height: 29px
   ul
     +h-nav
   a
-    color: #000
+    color: #fff
     line-height: 2.2em
     &:hover
       color: $primary
   li
+    color: #fff
     &:after
-      content: "/"
+      font-family: "FontAwesome"
+      content: "\f105 "
       margin-left: 0.2em
       margin-right: 0.2em
       font-weight: 400      
     &:last-child:after    
       color: $primary
+      display: none
 * 
   transition: all 0.3s ease-out      
 .form-group

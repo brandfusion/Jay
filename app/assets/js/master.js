@@ -313,7 +313,7 @@ $(function () {
                   url: link,
                   type: 'get'
                 }).done(function (newResult) {
-                  // console.log(data);
+                  console.log("loading");
                   $('#pageContent').html(newResult);
                 }).fail(function () {
                   // console.log("error");
