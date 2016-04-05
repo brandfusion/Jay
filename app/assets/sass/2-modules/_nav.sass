@@ -1,12 +1,12 @@
 $yellow: #be7004
 $blue: #0f4a72
-.header
-  height: 20vh
-  background-color: #aaa
+// .header
+//   height: 20vh
+//   background-color: #aaa
 
 .navigation  
-  height: 80vh
-  overflow: auto
+  // height: 80vh
+  overflow-y: auto
   padding-right: 15px !important
   .hasChildren
     display: none
@@ -120,3 +120,49 @@ button.button-download-group
   column-count: 2 
 #addToCartSubmit
   background-color: #68aa00    
+#headerContainer
+  position: fixed
+  left: 0
+  right: 0
+  top: 0
+  z-index: 2
+#catalogNavContainer
+  position: fixed
+  top: 84px
+  bottom: 53px
+  width: 252.5px
+  z-index: 2  
+  padding: 0
+  & > .catalogNavSection h1
+    margin: 0
+    font-size: 1.8em
+    line-height: 1.6     
+#contentWrapper
+  padding-top: 84px
+  min-height: 90vh
+#footer
+  position: fixed
+  z-index: 2
+  bottom: 0   
+
+#topMenu > li > a .fa
+  font-size: 2em
+#homeContent
+  .paragraphText
+    border: 1px solid #eee 
+    text-align: center
+    padding: 2em
+    img 
+      height: 145px
+      width: auto  
+    h2 
+      margin: 0
+      line-height: 1
+      margin-top: 0.2em
+.jayco      
+  .loading-image
+    background-image: url(/Files/Images/Jayco.jpg)
+    background-size: contain
+    height: 80vh
+    background-position: center
+    background-repeat: no-repeat

@@ -7,6 +7,38 @@ $(function () {
     }
     return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
   }
+  window.addToFavorites = function (arg) {
+    var addToFavorites = arg.attr("data-add-favorites");
+    $.ajax({
+      url: addToFavorites,
+      type: 'POST'
+    }).done(function (response) {
+      console.log("success");
+      alert("sent");
+      arg.find(".fa-heart").removeClass("fa-heart-o");
+      arg.attr("data-favorite", "true");
+    }).fail(function (response) {
+      // console.log("error");
+    }).always(function (response) {
+      // console.log("complete");
+    });
+  };
+  window.removeFromFavorites = function (arg) {
+    var removeFromFavorites = arg.attr("data-remove-favorites");
+    $.ajax({
+      url: removeFromFavorites,
+      type: 'POST'
+    }).done(function (response) {
+      console.log("success");
+      alert("sent");
+      arg.find(".fa-heart").addClass("fa-heart-o");
+      arg.attr("data-favorite", "false");
+    }).fail(function (response) {
+      // console.log("error");
+    }).always(function (response) {
+      // console.log("complete");
+    });
+  };
   window.getQueryVariable = function (variable) {
     var query = window.location.search.substring(1);
     var vars = query.split("&");
@@ -165,6 +197,59 @@ $(function () {
       }).done(function (data) {
         // console.log(data);
         $('#pageContent').html(data);
+
+        $('[data-select-downloadable] a').on("click", function (e) {
+          e.preventDefault();
+          var value = $(this).attr("data-option-value");
+          var name = $(this).attr("data-option-name");
+          $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+          $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+          console.log("intra-buton");
+        });
+        $('[data-tooltip]').tooltip();
+        $('[data-favorite]').on("click", function (f) {
+          f.preventDefault();
+          var dataFavorite = $(this).attr("data-favorite");
+          if (dataFavorite == "true") {
+            removeFromFavorites($(this));
+          } else {
+            addToFavorites($(this));
+          }
+        });
+        $('.product-list-link').on("click", function (e) {
+          e.preventDefault();
+          var groupId = encodeURIComponent($(this).attr("data-group-id"));
+          var productId = $(this).attr("href");
+          var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId;
+          console.log(link);
+
+          var n = noty({
+            text: 'Loading content...',
+            layout: 'center',
+            theme: 'relax',
+            animation: {
+              open: { height: 'toggle' }, // jQuery animate function property object
+              close: { height: 'toggle' }, // jQuery animate function property object
+              easing: 'swing', // easing
+              speed: 500 // opening & closing animation speed
+            },
+            type: 'information',
+            timeout: false
+
+          });
+          $.ajax({
+            url: link,
+            type: 'get'
+          }).done(function (newResult) {
+            console.log("loading");
+            $('#pageContent').html(newResult);
+            $.noty.closeAll();
+          }).fail(function () {
+            // console.log("error");
+          }).always(function () {
+            // console.log("complete");
+          });
+        });
       }).fail(function () {
         // console.log("error");
       }).always(function () {
@@ -302,6 +387,28 @@ $(function () {
                 $(this).parents(".btn-group").find("[data-selected-name]").html(name);
                 console.log("intra-buton");
               });
+              $('[data-tooltip]').tooltip();
+              $('[data-favorite]').on("click", function (f) {
+                f.preventDefault();
+                var dataFavorite = $(this).attr("data-favorite");
+                if (dataFavorite == "true") {
+                  removeFromFavorites($(this));
+                } else {
+                  addToFavorites($(this));
+                }
+              });
+              setTimeout(function () {
+                console.log("enter 1200");
+                $('[data-favorite]').on("click", function (f) {
+                  f.preventDefault();
+                  var dataFavorite = $(this).attr("data-favorite");
+                  if (dataFavorite == "true") {
+                    removeFromFavorites($(this));
+                  } else {
+                    addToFavorites($(this));
+                  }
+                }, 1000);
+              });
               console.log("intra");
               $('.product-list-link').on("click", function (e) {
                 e.preventDefault();
@@ -328,14 +435,57 @@ $(function () {
         }).always(function () {
           // console.log("complete");
         });
-      }
+      } else {
+
+          console.log("intra else");
+          $('[data-select-downloadable] a').on("click", function (e) {
+            e.preventDefault();
+            var value = $(this).attr("data-option-value");
+            var name = $(this).attr("data-option-name");
+            $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+            $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+            console.log("intra-buton");
+          });
+          $('[data-tooltip]').tooltip();
+          $('[data-favorite]').on("click", function (f) {
+            f.preventDefault();
+            var dataFavorite = $(this).attr("data-favorite");
+            if (dataFavorite == "true") {
+              removeFromFavorites($(this));
+            } else {
+              addToFavorites($(this));
+            }
+          });
+          $('.product-list-link').on("click", function (e) {
+            e.preventDefault();
+            var groupId = encodeURIComponent($(this).attr("data-group-id"));
+            var productId = $(this).attr("href");
+            var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId;
+            console.log(link);
+            $.ajax({
+              url: link,
+              type: 'get'
+            }).done(function (newResult) {
+              console.log("loading");
+              $('#pageContent').html(newResult);
+            }).fail(function () {
+              // console.log("error");
+            }).always(function () {
+              // console.log("complete");
+            });
+          });
+        }
       $('[data-select-downloadable] a').on("click", function (e) {
         e.preventDefault();
         alert("click");
       });
     },
     render: function () {
-      return React.createElement('div', { id: 'pageContent' });
+      return React.createElement(
+        'div',
+        { id: 'pageContent' },
+        React.createElement('div', { className: 'loading-image' })
+      );
     }
   });
   var RenderPage = React.createClass({
@@ -375,7 +525,7 @@ $(function () {
               ),
               React.createElement(
                 'a',
-                { className: 'btn btn-sm btn-warning pull-right' },
+                { href: '/Default.aspx?ID=1', className: 'btn btn-sm btn-warning pull-right' },
                 'Select Catalog'
               )
             ),
