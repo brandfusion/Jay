@@ -133,6 +133,7 @@ button.button-download-group
   width: 252.5px
   z-index: 2  
   padding: 0
+  overflow-y: scroll
   & > .catalogNavSection h1
     margin: 0
     font-size: 1.8em
@@ -163,6 +164,22 @@ button.button-download-group
   .loading-image
     background-image: url(/Files/Images/Jayco.jpg)
     background-size: contain
+    opacity: 0.6
     height: 80vh
     background-position: center
     background-repeat: no-repeat
+
+
+//Image Catalog
+#productsList > li
+  margin: 0
+#productsList
+  .product-item 
+    .media-left
+      width: 30%  
+    .h2
+      margin-bottom: 0.2em
+      a 
+        font-size: 1em    
+    .prodNumber
+      margin-bottom: 0.2em        

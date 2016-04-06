@@ -1,5 +1,16 @@
 $(function(){
-
+window.downloadPdf = function(){ 
+  $('.download-pdf').on("click", function(f){
+    f.preventDefault();
+    var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");   
+     $(this).parents(".form-group").find("a").each(function(){    
+     var currentValue = $(this).attr("data-option-value");   
+     if (currentValue == value) {
+        $('#pdfDownloadFrame').attr("src", value);       
+     }
+   });
+  });
+}
 function replaceUrlParam(url, paramName, paramValue){
     var pattern = new RegExp('\\b('+paramName+'=).*?(&|$)')
     if(url.search(pattern)>=0){
@@ -202,7 +213,7 @@ var NavigationTree =  React.createClass({
               var name= $(this).attr("data-option-name");              
               $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
               $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-               console.log("intra-buton");
+               console.log("intra-buton1");
             });
             $('[data-tooltip]').tooltip();
             $('[data-favorite]').on("click", function(f){
@@ -214,7 +225,8 @@ var NavigationTree =  React.createClass({
                 addToFavorites($(this));               
               }
 
-            });         
+            });       
+            downloadPdf();  
             $('.product-list-link').on("click", function(e){
               e.preventDefault();
               var groupId = encodeURIComponent($(this).attr("data-group-id"));
@@ -244,7 +256,68 @@ var NavigationTree =  React.createClass({
                 console.log("loading");
                 $('#pageContent').html(newResult);
                 $.noty.closeAll();
-               
+                //EVENT LISTENERS
+                $('[data-select-downloadable] a').on("click", function(e){
+                    e.preventDefault();
+                    var value= $(this).attr("data-option-value");
+                    var name= $(this).attr("data-option-name");              
+                    $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+                    $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+                     console.log("intra-buton2");
+                  });
+                  $('[data-tooltip]').tooltip();
+                  $('[data-favorite]').on("click", function(f){
+                    f.preventDefault();
+                    var dataFavorite = $(this).attr("data-favorite");
+                    if(dataFavorite == "true") {
+                      removeFromFavorites($(this));
+                    } else {
+                      addToFavorites($(this));               
+                    }
+
+                  });     
+                  downloadPdf();     
+                  $('.product-list-link').on("click", function(e){
+                    e.preventDefault();
+                    var groupId = encodeURIComponent($(this).attr("data-group-id"));
+                    var productId =$(this).attr("href");
+                    var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
+                    console.log(link);
+
+                    var n = noty({
+                        text: 'Loading content...',
+                        layout: 'center',
+                        theme: 'relax',
+                        animation: {
+                            open: {height: 'toggle'}, // jQuery animate function property object
+                            close: {height: 'toggle'}, // jQuery animate function property object
+                            easing: 'swing', // easing
+                            speed: 500 // opening & closing animation speed
+                        },
+                        type: 'information',
+                        timeout: false,
+
+                    });
+                    $.ajax({
+                      url: link,
+                      type: 'get'
+                    })
+                    .done(function(newResult) {
+                      console.log("loading");
+                      $('#pageContent').html(newResult);
+                      $.noty.closeAll();
+                     
+                    })
+                    .fail(function() {
+                      // console.log("error");
+                    })
+                    .always(function() {
+                      // console.log("complete");
+                    });           
+                  });
+                  console.log("downloadenter");
+                  downloadPdf();
+                //EVENT LISTENERS
               })
               .fail(function() {
                 // console.log("error");
@@ -384,8 +457,9 @@ var MainContent = React.createClass({
               var name= $(this).attr("data-option-name");              
               $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
               $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-               console.log("intra-buton");
+               console.log("intra-buton3");
             });
+            downloadPdf(); 
             $('[data-tooltip]').tooltip();
             $('[data-favorite]').on("click", function(f){
               f.preventDefault();
@@ -448,14 +522,14 @@ var MainContent = React.createClass({
       });
     } else {      
       
-          console.log("intra else");
+          
             $('[data-select-downloadable] a').on("click", function(e){
               e.preventDefault();
               var value= $(this).attr("data-option-value");
               var name= $(this).attr("data-option-name");              
               $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
               $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-               console.log("intra-buton");
+               console.log("intra-buton4");
             });
             $('[data-tooltip]').tooltip();
             $('[data-favorite]').on("click", function(f){
@@ -467,7 +541,8 @@ var MainContent = React.createClass({
                 addToFavorites($(this));               
               }
 
-            });         
+            }); 
+            downloadPdf();          
             $('.product-list-link').on("click", function(e){
               e.preventDefault();
               var groupId = encodeURIComponent($(this).attr("data-group-id"));

@@ -1,5 +1,16 @@
 $(function () {
-
+  window.downloadPdf = function () {
+    $('.download-pdf').on("click", function (f) {
+      f.preventDefault();
+      var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");
+      $(this).parents(".form-group").find("a").each(function () {
+        var currentValue = $(this).attr("data-option-value");
+        if (currentValue == value) {
+          $('#pdfDownloadFrame').attr("src", value);
+        }
+      });
+    });
+  };
   function replaceUrlParam(url, paramName, paramValue) {
     var pattern = new RegExp('\\b(' + paramName + '=).*?(&|$)');
     if (url.search(pattern) >= 0) {
@@ -51,7 +62,7 @@ $(function () {
     return false;
   };
   var Navigation = React.createClass({
-    displayName: 'Navigation',
+    displayName: "Navigation",
 
     getInitialState: function () {
       return {
@@ -129,56 +140,56 @@ $(function () {
     eachItem: function (item, i) {
       if (item.Nodes.length != 0) {
         return React.createElement(
-          'li',
+          "li",
           { key: i,
             index: i,
             className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
             onClick: this.openChild,
-            'data-expanded': item.Expanded
+            "data-expanded": item.Expanded
           },
           React.createElement(
-            'a',
+            "a",
             { href: item.Id, className: item.Selected },
             item.Name
           ),
           React.createElement(
-            'ul',
-            { className: 'hasChildren', 'data-expanded': item.Expanded },
+            "ul",
+            { className: "hasChildren", "data-expanded": item.Expanded },
             React.createElement(NavigationTree, { data: item.Nodes })
           )
         );
       } else {
         return React.createElement(
-          'li',
+          "li",
           { key: i,
             index: i,
             className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
             onClick: this.openChild,
-            'data-expanded': item.Expanded
+            "data-expanded": item.Expanded
           },
           React.createElement(
-            'a',
+            "a",
             { href: item.Id, className: item.Selected },
             item.Name
           ),
           React.createElement(
-            'a',
-            { href: '', 'data-bookmark': item.Bookmarked, onClick: this.registerBookmark },
-            React.createElement('i', { className: 'fa fa-bookmark-o' })
+            "a",
+            { href: "", "data-bookmark": item.Bookmarked, onClick: this.registerBookmark },
+            React.createElement("i", { className: "fa fa-bookmark-o" })
           )
         );
       }
     },
     render: function () {
       return React.createElement(
-        'ul',
-        { className: 'componentWrapper' },
+        "ul",
+        { className: "componentWrapper" },
         this.state.data.map(this.eachItem)
       );
     }
   });
   var NavigationTree = React.createClass({
-    displayName: 'NavigationTree',
+    displayName: "NavigationTree",
 
     getInitialState: function () {
       return {
@@ -204,7 +215,7 @@ $(function () {
           var name = $(this).attr("data-option-name");
           $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
           $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-          console.log("intra-buton");
+          console.log("intra-buton1");
         });
         $('[data-tooltip]').tooltip();
         $('[data-favorite]').on("click", function (f) {
@@ -216,6 +227,7 @@ $(function () {
             addToFavorites($(this));
           }
         });
+        downloadPdf();
         $('.product-list-link').on("click", function (e) {
           e.preventDefault();
           var groupId = encodeURIComponent($(this).attr("data-group-id"));
@@ -244,6 +256,63 @@ $(function () {
             console.log("loading");
             $('#pageContent').html(newResult);
             $.noty.closeAll();
+            //EVENT LISTENERS
+            $('[data-select-downloadable] a').on("click", function (e) {
+              e.preventDefault();
+              var value = $(this).attr("data-option-value");
+              var name = $(this).attr("data-option-name");
+              $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+              $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+              console.log("intra-buton2");
+            });
+            $('[data-tooltip]').tooltip();
+            $('[data-favorite]').on("click", function (f) {
+              f.preventDefault();
+              var dataFavorite = $(this).attr("data-favorite");
+              if (dataFavorite == "true") {
+                removeFromFavorites($(this));
+              } else {
+                addToFavorites($(this));
+              }
+            });
+            downloadPdf();
+            $('.product-list-link').on("click", function (e) {
+              e.preventDefault();
+              var groupId = encodeURIComponent($(this).attr("data-group-id"));
+              var productId = $(this).attr("href");
+              var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId;
+              console.log(link);
+
+              var n = noty({
+                text: 'Loading content...',
+                layout: 'center',
+                theme: 'relax',
+                animation: {
+                  open: { height: 'toggle' }, // jQuery animate function property object
+                  close: { height: 'toggle' }, // jQuery animate function property object
+                  easing: 'swing', // easing
+                  speed: 500 // opening & closing animation speed
+                },
+                type: 'information',
+                timeout: false
+
+              });
+              $.ajax({
+                url: link,
+                type: 'get'
+              }).done(function (newResult) {
+                console.log("loading");
+                $('#pageContent').html(newResult);
+                $.noty.closeAll();
+              }).fail(function () {
+                // console.log("error");
+              }).always(function () {
+                // console.log("complete");
+              });
+            });
+            console.log("downloadenter");
+            downloadPdf();
+            //EVENT LISTENERS
           }).fail(function () {
             // console.log("error");
           }).always(function () {
@@ -310,56 +379,56 @@ $(function () {
       if (item.Nodes.length != 0) {
         var nodes = item.Nodes;
         return React.createElement(
-          'li',
+          "li",
           { key: i,
             index: i,
             className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
             onClick: this.openChild,
-            'data-expanded': item.Expanded
+            "data-expanded": item.Expanded
           },
           React.createElement(
-            'a',
+            "a",
             { href: item.Id, className: item.Selected },
             item.Name
           ),
           React.createElement(
-            'ul',
-            { className: 'hasChildren', 'data-expanded': item.Expanded },
+            "ul",
+            { className: "hasChildren", "data-expanded": item.Expanded },
             React.createElement(NavigationTree, { key: i, data: item.Nodes })
           )
         );
       } else {
         return React.createElement(
-          'li',
+          "li",
           { key: i,
             index: i,
-            className: 'noIcon',
+            className: "noIcon",
             onClick: this.openChild,
-            'data-expanded': item.Expanded
+            "data-expanded": item.Expanded
           },
           React.createElement(
-            'a',
-            { href: item.Id, onClick: this.update, index: i, 'data-overflow': true, className: item.Selected, 'data-toggle': 'tooltip', 'data-placement': 'right', title: item.Name },
+            "a",
+            { href: item.Id, onClick: this.update, index: i, "data-overflow": true, className: item.Selected, "data-toggle": "tooltip", "data-placement": "right", title: item.Name },
             item.Name
           ),
           React.createElement(
-            'a',
-            { href: item.Id, 'data-index': i, 'data-group': item.Name, 'data-bookmark': item.Bookmarked, onClick: this.registerBookmark },
-            React.createElement('i', { className: 'fa fa-bookmark-o' })
+            "a",
+            { href: item.Id, "data-index": i, "data-group": item.Name, "data-bookmark": item.Bookmarked, onClick: this.registerBookmark },
+            React.createElement("i", { className: "fa fa-bookmark-o" })
           )
         );
       }
     },
     render: function () {
       return React.createElement(
-        'div',
+        "div",
         null,
         this.state.data.map(this.eachItem)
       );
     }
   });
   var MainContent = React.createClass({
-    displayName: 'MainContent',
+    displayName: "MainContent",
 
     getInitialState: function () {
       return {
@@ -385,8 +454,9 @@ $(function () {
                 var name = $(this).attr("data-option-name");
                 $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
                 $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-                console.log("intra-buton");
+                console.log("intra-buton3");
               });
+              downloadPdf();
               $('[data-tooltip]').tooltip();
               $('[data-favorite]').on("click", function (f) {
                 f.preventDefault();
@@ -437,14 +507,13 @@ $(function () {
         });
       } else {
 
-          console.log("intra else");
           $('[data-select-downloadable] a').on("click", function (e) {
             e.preventDefault();
             var value = $(this).attr("data-option-value");
             var name = $(this).attr("data-option-name");
             $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
             $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-            console.log("intra-buton");
+            console.log("intra-buton4");
           });
           $('[data-tooltip]').tooltip();
           $('[data-favorite]').on("click", function (f) {
@@ -456,6 +525,7 @@ $(function () {
               addToFavorites($(this));
             }
           });
+          downloadPdf();
           $('.product-list-link').on("click", function (e) {
             e.preventDefault();
             var groupId = encodeURIComponent($(this).attr("data-group-id"));
@@ -482,14 +552,14 @@ $(function () {
     },
     render: function () {
       return React.createElement(
-        'div',
-        { id: 'pageContent' },
-        React.createElement('div', { className: 'loading-image' })
+        "div",
+        { id: "pageContent" },
+        React.createElement("div", { className: "loading-image" })
       );
     }
   });
   var RenderPage = React.createClass({
-    displayName: 'RenderPage',
+    displayName: "RenderPage",
 
     getInitialState: function () {
       return {
@@ -507,53 +577,53 @@ $(function () {
     // },
     render: function () {
       return React.createElement(
-        'div',
-        { className: 'wrapper' },
+        "div",
+        { className: "wrapper" },
         React.createElement(
-          'div',
-          { className: 'col-sm-3' },
+          "div",
+          { className: "col-sm-3" },
           React.createElement(
-            'div',
-            { id: 'catalogNavContainer' },
+            "div",
+            { id: "catalogNavContainer" },
             React.createElement(
-              'section',
-              { className: 'catalogNavSection topSection' },
+              "section",
+              { className: "catalogNavSection topSection" },
               React.createElement(
-                'h1',
+                "h1",
                 null,
-                'JAYCO'
+                "JAYCO"
               ),
               React.createElement(
-                'a',
-                { href: '/Default.aspx?ID=1', className: 'btn btn-sm btn-warning pull-right' },
-                'Select Catalog'
+                "a",
+                { href: "/Default.aspx?ID=1", className: "btn btn-sm btn-warning pull-right" },
+                "Select Catalog"
               )
             ),
             React.createElement(
-              'section',
-              { className: 'catalogNavSection searchSection' },
+              "section",
+              { className: "catalogNavSection searchSection" },
               React.createElement(
-                'form',
-                { action: '/Default.aspx', id: 'searchForm' },
-                React.createElement('input', { type: 'hidden', name: 'ID', value: '@resultsPage' }),
-                React.createElement('input', { placeholder: 'Serial #', id: 'searchSubmit', 'data-error': 'Search for something', type: 'text', name: 'q', value: '' }),
+                "form",
+                { action: "/Default.aspx", id: "searchForm" },
+                React.createElement("input", { type: "hidden", name: "ID", value: "@resultsPage" }),
+                React.createElement("input", { placeholder: "Serial #", id: "searchSubmit", "data-error": "Search for something", type: "text", name: "q", value: "" }),
                 React.createElement(
-                  'button',
-                  { className: 'btn btn-sm btn-warning', type: 'submit' },
-                  React.createElement('i', { className: 'fa fa-search' })
+                  "button",
+                  { className: "btn btn-sm btn-warning", type: "submit" },
+                  React.createElement("i", { className: "fa fa-search" })
                 )
               )
             ),
             React.createElement(
-              'section',
-              { className: 'catalogNavSection navSection navigation' },
-              React.createElement(Navigation, { source: '/Files/WebServices/Navigation.ashx?catalog=jayco', onChange: this.update })
+              "section",
+              { className: "catalogNavSection navSection navigation" },
+              React.createElement(Navigation, { source: "/Files/WebServices/Navigation.ashx?catalog=jayco", onChange: this.update })
             )
           )
         ),
         React.createElement(
-          'div',
-          { className: 'col-sm-9' },
+          "div",
+          { className: "col-sm-9" },
           React.createElement(MainContent, null)
         )
       );
