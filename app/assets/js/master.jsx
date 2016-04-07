@@ -587,33 +587,37 @@ var MainContent = React.createClass({
 });
 var RenderPage = React.createClass({
   getInitialState: function(){
-    return {     
-      pageId: "",
-      catalog: ""
+    return {
+      catalog: "",
+      catgalogName: ""
     }
   },
-  componentDidMount: function(){
-    var param = decodeURIComponent(location.search.split('catalog=')[1]);        
+  componentDidMount: function(){ 
+    var name = getQueryVariable("catalog");  
+    var param = getQueryVariable("catalog").toLowerCase();     
     var link = "/Files/WebServices/Navigation.ashx?catalog=" + param;
+    this.setState({ catalogName: name });
+    this.setState({ catalog: link });
   },
   
   //  onChildChanged: function(newState) {
   //       this.setState({ checked: newState });
   // },
   render: function() { 
+
       return (
         <div className="wrapper">
         <div className="col-sm-3">
           <div id="catalogNavContainer">
             
             <section className="catalogNavSection topSection">
-              <h1>JAYCO</h1><a href="/Default.aspx?ID=1" className="btn btn-sm btn-warning pull-right">Select Catalog</a>
+              <h1>{this.state.catalogName}</h1><a href="/Default.aspx?ID=1" className="btn btn-sm btn-warning pull-right">Select Catalog</a>
             </section>
             
             <section className="catalogNavSection searchSection">
               <form action="/Default.aspx" id="searchForm">
-                <input type="hidden" name="ID" value="@resultsPage" />
-                  <input placeholder='Serial #' id="searchSubmit" data-error='Search for something' type="text" name="q" value="" />
+                <input type="hidden" name="ID" value="127" />
+                  <input placeholder='Serial #' id="searchSubmit" data-error='Search for something' type="text" name="q" value={this.props.children} />
                   <button className="btn btn-sm btn-warning" type="submit">
                   <i className="fa fa-search"></i>
                 </button>
@@ -621,7 +625,7 @@ var RenderPage = React.createClass({
             </section>
             
             <section className="catalogNavSection navSection navigation">
-              <Navigation source='/Files/WebServices/Navigation.ashx?catalog=jayco' onChange={this.update} />
+              <Navigation test-source={this.state.catalog} source='/Files/WebServices/Navigation.ashx?catalog=jayco' onChange={this.update} />
             </section>
               
           </div>

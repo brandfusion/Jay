@@ -81,13 +81,55 @@
   margin-bottom: 1em
   margin-top: 1em
 
-.border-button 
-  padding: 0.5rem
-  line-height: 1
-  font-style: italic
-  border: 1px solid #000
-  &:hover
-    color: #000
-    text-decoration: underline 
-.mb1 
-  margin-bottom: 1em    
+
+
+
+#miniCartContainer
+  a 
+    color: #000 
+  footer 
+    background-color: transparent  
+#miniCart
+  z-index: 9000
+  right: 0
+  top: 100%
+  border: 1px solid black
+.productCount
+  font-weight: 700
+  color: #fff
+.logo 
+  width: 148px
+  height: 80px
+  display: inline-block
+  background-color: transparent 
+  background-repeat: no-repeat
+  background-size: contain 
+  background-position: center  
+  img 
+    display: none
+.btn-primary  
+  border: none  
+.jayco
+  .logo 
+    background-image: url(/Files/Templates/Designs/Jayco/images/logo-jayco.png)
+  .btn-primary, .btn-bg
+    background-color: $jayco 
+    color: #fff !important
+    &:hover 
+      background-color: darken( $jayco, 10% )  
+.entegra
+  .logo
+    background-image: url(/Files/Templates/Designs/Jayco/images/logo-entegra.png) 
+  .btn-primary, .btn-bg
+    background-color: $entegra 
+    color: #fff !important
+    &:hover 
+      background-color: darken( $entegra, 10% ) 
+.starcraft
+  .logo
+    background-image: url(/Files/Templates/Designs/Jayco/images/logo-starcraft.png) 
+  .btn-primary, .btn-bg
+    background-color: $starcraft 
+    color: #fff !important
+    &:hover 
+      background-color: darken( $starcraft, 10% )      

@@ -563,19 +563,23 @@ $(function () {
 
     getInitialState: function () {
       return {
-        pageId: "",
-        catalog: ""
+        catalog: "",
+        catgalogName: ""
       };
     },
     componentDidMount: function () {
-      var param = decodeURIComponent(location.search.split('catalog=')[1]);
+      var name = getQueryVariable("catalog");
+      var param = getQueryVariable("catalog").toLowerCase();
       var link = "/Files/WebServices/Navigation.ashx?catalog=" + param;
+      this.setState({ catalogName: name });
+      this.setState({ catalog: link });
     },
 
     //  onChildChanged: function(newState) {
     //       this.setState({ checked: newState });
     // },
     render: function () {
+
       return React.createElement(
         "div",
         { className: "wrapper" },
@@ -591,7 +595,7 @@ $(function () {
               React.createElement(
                 "h1",
                 null,
-                "JAYCO"
+                this.state.catalogName
               ),
               React.createElement(
                 "a",
@@ -605,8 +609,8 @@ $(function () {
               React.createElement(
                 "form",
                 { action: "/Default.aspx", id: "searchForm" },
-                React.createElement("input", { type: "hidden", name: "ID", value: "@resultsPage" }),
-                React.createElement("input", { placeholder: "Serial #", id: "searchSubmit", "data-error": "Search for something", type: "text", name: "q", value: "" }),
+                React.createElement("input", { type: "hidden", name: "ID", value: "127" }),
+                React.createElement("input", { placeholder: "Serial #", id: "searchSubmit", "data-error": "Search for something", type: "text", name: "q", value: this.props.children }),
                 React.createElement(
                   "button",
                   { className: "btn btn-sm btn-warning", type: "submit" },
@@ -617,7 +621,7 @@ $(function () {
             React.createElement(
               "section",
               { className: "catalogNavSection navSection navigation" },
-              React.createElement(Navigation, { source: "/Files/WebServices/Navigation.ashx?catalog=jayco", onChange: this.update })
+              React.createElement(Navigation, { "test-source": this.state.catalog, source: "/Files/WebServices/Navigation.ashx?catalog=jayco", onChange: this.update })
             )
           )
         ),
