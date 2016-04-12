@@ -455,187 +455,187 @@ var MainContent = React.createClass({
     }
   },
   componentDidMount: function(){
-    var _this = this;
-    var source = _this.props.source;
-    // var groupId = getQueryVariable("bookmark");
-    // var productId = getQueryVariable("favorite");
-    // contentSource = "";
-    // if(productId) {
-    //   contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
-    // } else {
-    //   if(groupId) {
-    //     contentSource = '/Default.aspx?ID=126&groupid=' + groupId
-    //   } 
-    // }
-    
-   
-    // _this.setState({data: this.props.source === "" ? this.state.data : this.props.source});
-    // if(_this.props.source != "") {
-    
-        // _this.serverRequest = $.get(source, function (result) {
-        //   console.log("result:" + result[0]);
-        //   _this.setState({data: "data"});          
-        // }.bind(_this));
-        // this.forceUpdate();
-        _this.setState({data: "data"});
-        // setTimeout(function(){}, 1000);
+    setTimeout(function(){
+      var _this = this;
+      var source = _this.props.source;
+      var groupId = getQueryVariable("bookmark");
+      var productId = getQueryVariable("favorite");
+      contentSource = "";
+      console.log(groupId);
+      console.log(productId);
+      if(productId) {
+        contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
+      } else {
+        if(groupId) {
+          contentSource = '/Default.aspx?ID=126&groupid=' + groupId
+        } 
+      } 
+      // _this.setState({data: this.props.source === "" ? this.state.data : this.props.source});
+      // if(_this.props.source != "") {
+      
+      //     _this.serverRequest = $.get(source, function (result) {
+      //       console.log("result:" + result[0]);
+      //       _this.setState({data: "data"});          
+      //     }.bind(_this));
 
+      //     _this.setState({data: "data"});
+      //      var serverRequest = $.ajax({
+      //         url: source,
+      //         type: 'GET'          
+      //       })
+      //       .done(function(result) {
+      //           console.log(result);
+      //           _this.setState({data: result});
+      //       });
 
-
-         // var serverRequest = $.ajax({
-         //    url: source,
-         //    type: 'GET'          
-         //  })
-         //  .done(function(result) {
-         //      console.log(result);
-         //      _this.setState({data: result});
-         //  });
-
-                    
+                      
+          
         
+      // }
       
-    // }
-    
 
 
 
-    // var param = getQueryVariable("bookmark");
-    // if(param != false) {
-    //   var link = '/Default.aspx?ID=126&groupId=' + param;     
-    //   $.ajax({
-    //   url: link,
-    //   type: 'get'
-    //   })
-    //   .done(function(result) {
-    //     // if (_this.isMounted()) {
-    //       _this.setState({data: result}); 
-
-    //       // $('#pageContent').html(result);
-    //       // (function(){    
+      var param = getQueryVariable("bookmark");
+      // if(param != false) {
 
 
+        // var link = '/Default.aspx?ID=126&groupId=' + param;     
+        console.log(contentSource);
+        var link = contentSource;
+        $.ajax({
+        url: link,
+        type: 'get'
+        })
+        .done(function(result) {
+          // if (_this.isMounted()) {
+            _this.setState({data: result}); 
 
-    //         $('[data-select-downloadable] a').on("click", function(e){
-    //           e.preventDefault();
-    //           var value= $(this).attr("data-option-value");
-    //           var name= $(this).attr("data-option-name");              
-    //           $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
-    //           $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-    //            console.log("intra-buton3");
-    //         });
-    //         downloadPdf(); 
-    //         $('[data-tooltip]').tooltip();
-    //         $('[data-favorite]').on("click", function(f){
-    //           f.preventDefault();
-    //           var dataFavorite = $(this).attr("data-favorite");
-    //           if(dataFavorite == "true") {
-    //             removeFromFavorites($(this));
-    //           } else {
-    //             addToFavorites($(this));               
-    //           }
-
-    //         });
+            // $('#pageContent').html(result);
+            // (function(){    
 
 
 
+              $('[data-select-downloadable] a').on("click", function(e){
+                e.preventDefault();
+                var value= $(this).attr("data-option-value");
+                var name= $(this).attr("data-option-name");              
+                $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+                $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+                 console.log("intra-buton3");
+              });
+              downloadPdf(); 
+              $('[data-tooltip]').tooltip();
+              $('[data-favorite]').on("click", function(f){
+                f.preventDefault();
+                var dataFavorite = $(this).attr("data-favorite");
+                if(dataFavorite == "true") {
+                  removeFromFavorites($(this));
+                } else {
+                  addToFavorites($(this));               
+                }
+
+              });
 
 
-    //         // setTimeout(function(){
-    //         //   console.log("enter 1200");
-    //         //   $('[data-favorite]').on("click", function(f){
-    //         //   f.preventDefault();
-    //         //   var dataFavorite = $(this).attr("data-favorite");
-    //         //   if(dataFavorite == "true") {
-    //         //     removeFromFavorites($(this));
-    //         //   } else {
-    //         //     addToFavorites($(this));               
-    //         //   }
 
-    //         //   },1000);
-    //         // });
-    //       //   console.log("intra");
-    //       //   $('.product-list-link').on("click", function(e){
-    //       //     e.preventDefault();
-    //       //     var groupId = encodeURIComponent($(this).attr("data-group-id"));
-    //       //     var productId =$(this).attr("href");
-    //       //     var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
-    //       //     console.log(link);
-    //       //     $.ajax({
-    //       //       url: link,
-    //       //       type: 'get'
-    //       //     })
-    //       //     .done(function(newResult) {
-    //       //       console.log("loading");
-    //       //       $('#pageContent').html(newResult);
-               
-    //       //     })
-    //       //     .fail(function() {
-    //       //       // console.log("error");
-    //       //     })
-    //       //     .always(function() {
-    //       //       // console.log("complete");
-    //       //     });           
-    //       //   });
-    //       // })(); 
-    //     // }       
-    //   })
-    //   .fail(function() {
-    //     // console.log("error");
-    //   })
-    //   .always(function() {
-    //     // console.log("complete");
-    //   });
-    // } else {      
-      
-          
-    //         $('[data-select-downloadable] a').on("click", function(e){
-    //           e.preventDefault();
-    //           var value= $(this).attr("data-option-value");
-    //           var name= $(this).attr("data-option-name");              
-    //           $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
-    //           $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-    //            console.log("intra-buton4");
-    //         });
-    //         $('[data-tooltip]').tooltip();
-    //         $('[data-favorite]').on("click", function(f){
-    //           f.preventDefault();
-    //           var dataFavorite = $(this).attr("data-favorite");
-    //           if(dataFavorite == "true") {
-    //             removeFromFavorites($(this));
-    //           } else {
-    //             addToFavorites($(this));               
-    //           }
 
-    //         }); 
-    //         downloadPdf();          
-    //         $('.product-list-link').on("click", function(e){
-    //           e.preventDefault();
-    //           var groupId = encodeURIComponent($(this).attr("data-group-id"));
-    //           var productId =$(this).attr("href");
-    //           var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
-    //           console.log(link);
-    //           $.ajax({
-    //             url: link,
-    //             type: 'get'
-    //           })
-    //           .done(function(newResult) {
-    //             console.log("loading");
-    //             $('#pageContent').html(newResult);
-               
-    //           })
-    //           .fail(function() {
-    //             // console.log("error");
-    //           })
-    //           .always(function() {
-    //             // console.log("complete");
-    //           });           
-    //         });
-          
-    // }
-    // $('[data-select-downloadable] a').on("click", function(e){
-    //   e.preventDefault();
-    //   alert("click");
-    // });    
+
+             
+                // console.log("enter 1200");
+                // $('[data-favorite]').on("click", function(f){
+                // f.preventDefault();
+                // var dataFavorite = $(this).attr("data-favorite");
+                // if(dataFavorite == "true") {
+                //   removeFromFavorites($(this));
+                // } else {
+                //   addToFavorites($(this));               
+                // }
+
+                // },1000);          
+             
+              $('.product-list-link').on("click", function(e){
+                e.preventDefault();
+                var groupId = encodeURIComponent($(this).attr("data-group-id"));
+                var productId =$(this).attr("href");
+                var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
+                console.log(link);
+                $.ajax({
+                  url: link,
+                  type: 'get'
+                })
+                .done(function(newResult) {
+                  console.log("loading");
+                  $('#pageContent').html(newResult);
+                 
+                })
+                .fail(function() {
+                  // console.log("error");
+                })
+                .always(function() {
+                  // console.log("complete");
+                });           
+              });
+            // })(); 
+        })
+        .fail(function() {
+          // console.log("error");
+        })
+        .always(function() {
+          // console.log("complete");
+        });
+      // } else {      
+        
+            
+      //         $('[data-select-downloadable] a').on("click", function(e){
+      //           e.preventDefault();
+      //           var value= $(this).attr("data-option-value");
+      //           var name= $(this).attr("data-option-name");              
+      //           $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+      //           $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+      //            console.log("intra-buton4");
+      //         });
+      //         $('[data-tooltip]').tooltip();
+      //         $('[data-favorite]').on("click", function(f){
+      //           f.preventDefault();
+      //           var dataFavorite = $(this).attr("data-favorite");
+      //           if(dataFavorite == "true") {
+      //             removeFromFavorites($(this));
+      //           } else {
+      //             addToFavorites($(this));               
+      //           }
+
+      //         }); 
+      //         downloadPdf();          
+      //         $('.product-list-link').on("click", function(e){
+      //           e.preventDefault();
+      //           var groupId = encodeURIComponent($(this).attr("data-group-id"));
+      //           var productId =$(this).attr("href");
+      //           var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
+      //           console.log(link);
+      //           $.ajax({
+      //             url: link,
+      //             type: 'get'
+      //           })
+      //           .done(function(newResult) {
+      //             console.log("loading");
+      //             $('#pageContent').html(newResult);
+                 
+      //           })
+      //           .fail(function() {
+      //             // console.log("error");
+      //           })
+      //           .always(function() {
+      //             // console.log("complete");
+      //           });           
+      //         });          
+      // }
+      $('[data-select-downloadable] a').on("click", function(e){
+        e.preventDefault();
+        alert("click");
+      });   
+
+    },100); 
   },
   // componentWillUnmount: function() {   
     

@@ -954,16 +954,87 @@ button.button-download-group {
 #productsList > li {
   margin: 0; }
 
-#productsList .product-item .media-left {
-  width: 30%; }
+.headerBox {
+  background-color: #F4F4F4;
+  border: none; }
 
-#productsList .product-item h2 {
-  margin-bottom: 0.2em; }
-  #productsList .product-item h2 a {
-    font-size: 1em; }
+h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title, #stepsList > li i, #shareContainer i, #playPause i {
+  font-size: 1em; }
+
+#productsList .addToCart {
+  color: #fff; }
+
+#productsList .product-item {
+  margin-bottom: 2rem; }
+  #productsList .product-item h2 {
+    margin-bottom: 0; }
+  #productsList .product-item h2 a.title {
+    display: block;
+    font-size: 0.6em;
+    color: #000;
+    line-height: 1.4em;
+    min-height: 2.8em; }
+
+#productsList .listPrice {
+  color: #EE5921;
+  font-size: 1.8em; }
 
 #productsList .product-item .prodNumber {
-  margin-bottom: 0.2em; }
+  margin: 0px;
+  color: #000000;
+  font-weight: bold;
+  font-size: 0.7em; }
+
+#productsList .addToCart {
+  float: left; }
+  #productsList .addToCart span {
+    color: #fff; }
+
+@media (min-width: 768px) {
+  #orderProdList label, .headerBox > span {
+    margin-top: 0px; } }
+
+.listMode > li {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin-left: 0.5em;
+  color: #000;
+  vertical-align: middle;
+  line-height: 2em;
+  height: 2em; }
+  .listMode > li.active {
+    background-color: transparent;
+    color: #000; }
+  .listMode > li i {
+    vertical-align: middle; }
+
+#orderProdList fieldset > label {
+  line-height: 2em;
+  height: 2em; }
+
+.productCount {
+  line-height: 2em;
+  height: 2em;
+  color: #000; }
+
+.form-style {
+  border: 1px solid #aaa;
+  line-height: 2em;
+  height: 2em; }
+
+.removeFiltersContainer {
+  padding: 1em; }
+
+.whishlistItem {
+  margin-bottom: 1rem; }
+  .whishlistItem:before, .whishlistItem:after {
+    content: " ";
+    display: table; }
+  .whishlistItem:after {
+    clear: both; }
+  .whishlistItem h2 a {
+    font-size: 0.7em; }
 
 .jayco #headerContainer {
   background-color: #0577be; }
