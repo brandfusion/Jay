@@ -1,4 +1,4 @@
-$(function(){
+
 window.downloadPdf = function(){ 
   $('.download-pdf').on("click", function(f){
     f.preventDefault();
@@ -10,6 +10,34 @@ window.downloadPdf = function(){
      }
    });
   });
+}
+window.markSelected = function(node, selected) {
+  if (!node) {
+    return null;
+  }
+
+  node.Selected = node.Id == selected;
+
+  if (node.Selected) {
+    node.Selected = true;
+    return node;
+  }
+
+  if (!node.Nodes || !node.Nodes.length) {
+    return null;
+  }
+
+  for (var i = 0; i < node.Nodes.length; i++) {
+    var nodeChild = node.Nodes[i];
+    var nodeFound = markSelected(nodeChild, selected);
+
+    if (nodeFound) {
+      node.Expanded = true;
+      return nodeFound;
+    }
+  }
+
+  return null;
 }
 function replaceUrlParam(url, paramName, paramValue){
     var pattern = new RegExp('\\b('+paramName+'=).*?(&|$)')
@@ -75,41 +103,12 @@ var Navigation = React.createClass({
 		}
 	},
 	componentDidMount: function() {
+    setTimeout(function(){
 
-    function markSelected(node, selected) {
-      if (!node) {
-        return null;
-      }
-
-      node.Selected = node.Id == selected;
-
-      if (node.Selected) {
-        node.Selected = true;
-        return node;
-      }
-
-      if (!node.Nodes || !node.Nodes.length) {
-        return null;
-      }
-
-      for (var i = 0; i < node.Nodes.length; i++) {
-        var nodeChild = node.Nodes[i];
-        var nodeFound = markSelected(nodeChild, selected);
-
-        if (nodeFound) {
-          node.Expanded = true;
-          return nodeFound;
-        }
-      }
-
-      return null;
-    }
-
-    $.getJSON(this.props.source, function(result) {     	
-	      if (this.isMounted()) {
-	        this.setState({
-	          data: result
-	        });	        
+      $.getJSON(this.props.source, function(result) {  
+          this.setState({
+            data: result
+          });         
           var param = getQueryVariable("bookmark");
           param = decodeURIComponent(param); 
           var that = this;
@@ -123,14 +122,15 @@ var Navigation = React.createClass({
               }
               // do something with key and val
           });
-        this.setState({data: this.state.data}); 
-        
-        
-       
+        this.setState({data: this.state.data});
+    }.bind(this))
 
-      }
-	     
-	  }.bind(this))
+
+
+
+
+    }, 0);
+    
   },  
   openChild: function(e){
     e.preventDefault();    
@@ -191,6 +191,9 @@ var NavigationTree =  React.createClass({
       bookmark: ""
     }
   },
+  componentDidMount: function() {   
+    this.setState({data: this.props.data }); 
+  },  
   update: function(arg){     
     var target = $(arg.target)
     var id = target.attr("href");
@@ -391,13 +394,8 @@ var NavigationTree =  React.createClass({
       .fail(function (e) {
       });
     }
-   
-   
-   
   },  
-  componentDidMount: function() {   
-    this.setState({data: this.props.data }); 
-  },  
+  
   
   eachItem: function(item, i) {    
     if (item.Nodes.length != 0) {
@@ -451,25 +449,47 @@ var NavigationLink =  React.createClass({
 var MainContent = React.createClass({
    getInitialState: function(){
     return {
-      data: ""
+      data: "",
+      url: ""
     }
   },
-  componentDidMount: function(){
-    setTimeout(function(){
-      var _this = this;
-      var source = _this.props.source;
-      var groupId = getQueryVariable("bookmark");
-      var productId = getQueryVariable("favorite");
-      contentSource = "";
-      console.log(groupId);
-      console.log(productId);
-      if(productId) {
-        contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
-      } else {
-        if(groupId) {
-          contentSource = '/Default.aspx?ID=126&groupid=' + groupId
-        } 
+  componentWillMount: function(){
+    var _this = this;
+    // var source = _this.props.source;
+    var groupId = getQueryVariable("bookmark");
+    var productId = getQueryVariable("favorite");
+    contentSource = "";
+    console.log(groupId);
+    console.log(productId);
+    if(productId) {
+      contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
+    } else {
+      if(groupId) {
+        contentSource = '/Default.aspx?ID=126&groupid=' + groupId
       } 
+    } 
+    this.state.url = contentSource;
+    console.log(this.state.url);
+    this.setState({url: this.state.url});
+  },
+  componentDidMount: function(){
+      setTimeout(function(){
+          var _this = this;   
+          // var source = _this.props.source;
+          var groupId = getQueryVariable("bookmark");
+          var productId = getQueryVariable("favorite");
+          contentSource = "";
+          // console.log(groupId);
+          // console.log(productId);
+          if(productId) {
+            contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
+          } else {
+            if(groupId) {
+              contentSource = '/Default.aspx?ID=126&groupid=' + groupId
+            } 
+          } 
+        },0);  
+      }, 
       // _this.setState({data: this.props.source === "" ? this.state.data : this.props.source});
       // if(_this.props.source != "") {
       
@@ -496,94 +516,80 @@ var MainContent = React.createClass({
 
 
 
-      var param = getQueryVariable("bookmark");
+       // var param = getQueryVariable("bookmark");
       // if(param != false) {
 
 
         // var link = '/Default.aspx?ID=126&groupId=' + param;     
-        console.log(contentSource);
-        var link = contentSource;
-        $.ajax({
-        url: link,
-        type: 'get'
-        })
-        .done(function(result) {
-          // if (_this.isMounted()) {
-            _this.setState({data: result}); 
+        // console.log(contentSource);
+        // console.log(this.props.source);
+        // var link = contentSource;
+        // // console.log(this.state.url);
+        // $.ajax({
+        //   url: link,
+        //   type: 'get'
+        //   })
+        //   .done(function(result) {
+        //     // if (_this.isMounted()) {
+        //       // _this.setState({data: this.state.url === "" ? this.state.data : this.state.url});
+        //       _this.setState({data: result}); 
 
-            // $('#pageContent').html(result);
-            // (function(){    
-
-
-
-              $('[data-select-downloadable] a').on("click", function(e){
-                e.preventDefault();
-                var value= $(this).attr("data-option-value");
-                var name= $(this).attr("data-option-name");              
-                $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
-                $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-                 console.log("intra-buton3");
-              });
-              downloadPdf(); 
-              $('[data-tooltip]').tooltip();
-              $('[data-favorite]').on("click", function(f){
-                f.preventDefault();
-                var dataFavorite = $(this).attr("data-favorite");
-                if(dataFavorite == "true") {
-                  removeFromFavorites($(this));
-                } else {
-                  addToFavorites($(this));               
-                }
-
-              });
+        //       // $('#pageContent').html(result);
+        //       // (function(){    
 
 
 
+        //         // $('[data-select-downloadable] a').on("click", function(e){
+        //         //   e.preventDefault();
+        //         //   var value= $(this).attr("data-option-value");
+        //         //   var name= $(this).attr("data-option-name");              
+        //         //   $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+        //         //   $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+        //         //    console.log("intra-buton3");
+        //         // });
+        //         // downloadPdf(); 
+        //         // $('[data-tooltip]').tooltip();
+        //         // $('[data-favorite]').on("click", function(f){
+        //         //   f.preventDefault();
+        //         //   var dataFavorite = $(this).attr("data-favorite");
+        //         //   if(dataFavorite == "true") {
+        //         //     removeFromFavorites($(this));
+        //         //   } else {
+        //         //     addToFavorites($(this));               
+        //         //   }
 
-
-             
-                // console.log("enter 1200");
-                // $('[data-favorite]').on("click", function(f){
-                // f.preventDefault();
-                // var dataFavorite = $(this).attr("data-favorite");
-                // if(dataFavorite == "true") {
-                //   removeFromFavorites($(this));
-                // } else {
-                //   addToFavorites($(this));               
-                // }
-
-                // },1000);          
-             
-              $('.product-list-link').on("click", function(e){
-                e.preventDefault();
-                var groupId = encodeURIComponent($(this).attr("data-group-id"));
-                var productId =$(this).attr("href");
-                var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
-                console.log(link);
-                $.ajax({
-                  url: link,
-                  type: 'get'
-                })
-                .done(function(newResult) {
-                  console.log("loading");
-                  $('#pageContent').html(newResult);
-                 
-                })
-                .fail(function() {
-                  // console.log("error");
-                })
-                .always(function() {
-                  // console.log("complete");
-                });           
-              });
-            // })(); 
-        })
-        .fail(function() {
-          // console.log("error");
-        })
-        .always(function() {
-          // console.log("complete");
-        });
+        //         // });  
+               
+        //         // $('.product-list-link').on("click", function(e){
+        //         //   e.preventDefault();
+        //         //   var groupId = encodeURIComponent($(this).attr("data-group-id"));
+        //         //   var productId =$(this).attr("href");
+        //         //   var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
+        //         //   console.log(link);
+        //         //   $.ajax({
+        //         //     url: link,
+        //         //     type: 'get'
+        //         //   })
+        //         //   .done(function(newResult) {
+        //         //     console.log("loading");
+        //         //     $('#pageContent').html(newResult);
+                   
+        //         //   })
+        //         //   .fail(function() {
+        //         //     // console.log("error");
+        //         //   })
+        //         //   .always(function() {
+        //         //     // console.log("complete");
+        //         //   });           
+        //         // });
+        //     // })(); 
+        // })
+        // .fail(function() {
+        //   // console.log("error");
+        // })
+        // .always(function() {
+        //   // console.log("complete");
+        // });
       // } else {      
         
             
@@ -630,13 +636,13 @@ var MainContent = React.createClass({
       //           });           
       //         });          
       // }
-      $('[data-select-downloadable] a').on("click", function(e){
-        e.preventDefault();
-        alert("click");
-      });   
+      // $('[data-select-downloadable] a').on("click", function(e){
+      //   e.preventDefault();
+      //   alert("click");
+      // });   
 
-    },100); 
-  },
+   
+  
   // componentWillUnmount: function() {   
     
   //   this.serverRequest.abort();
@@ -658,7 +664,7 @@ var MainContent = React.createClass({
     );
   },    
   render: function() {
-    console.log(this.props.source);
+    // console.log(this.props.source);
     if(this.state.data == "") {
       return this.renderEmptyContent();
     } else {
@@ -671,15 +677,13 @@ var RenderPage = React.createClass({
   getInitialState: function(){
     return {
       catalog: "",
-      catgalogName: "",
       groupId: "",
       productId: "",
       contentSource: "",
     }
   },
-  componentDidMount: function(){ 
-    var name = getQueryVariable("catalog");  
-    var catalog = getQueryVariable("catalog").toLowerCase();     
+  componentWillMount: function(){   
+    var catalog = getQueryVariable("catalog");     
     var link = "/Files/WebServices/Navigation.ashx?catalog=" + catalog;
     var groupId = getQueryVariable("bookmark");
     var productId = getQueryVariable("favorite");
@@ -692,14 +696,19 @@ var RenderPage = React.createClass({
       } 
     }
     
-    this.setState({ catalogName: name, catalog: link, groupID: groupId, productId: productId, contentSource: contentSource });
+    this.setState({ catalogName: catalog, catalog: link, groupID: groupId, productId: productId, contentSource: contentSource });
 
      
     // if(param != false) {
     //   var link = '/Default.aspx?ID=126&groupId=' + param;   
    
   },
-  
+  componentDidMount: function(){
+    console.log(this.state.catalog);
+    console.log(this.state.contentSource);
+    console.log(this.state.groupId);
+    console.log(this.state.productId);
+  },
   //  onChildChanged: function(newState) {
   //       this.setState({ checked: newState });
   // },
@@ -732,7 +741,7 @@ var RenderPage = React.createClass({
         </div>
 
           <div className="col-sm-9">           
-            <MainContent source={this.state.contentSource}/>
+            <MainContent source={this.state.contentSource} />
           </div>
         </div>  
 
@@ -740,10 +749,8 @@ var RenderPage = React.createClass({
   }
 });
 
-
-
-
-
-  ReactDOM.render(<RenderPage  />, document.getElementById('react-renderPage'));
-  // ReactDOM.render(<Navigation source="http://localhost:3000/resources/navigation.json"  />, document.getElementById('react-navigation'));
-});
+$(function(){
+  if (document.getElementById('react-renderPage') !== null ){
+    ReactDOM.render(<RenderPage  />, document.getElementById('react-renderPage'));
+  }
+}); 
