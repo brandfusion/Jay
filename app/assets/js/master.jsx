@@ -1,4 +1,3 @@
-
 window.downloadPdf = function(){ 
   $('.download-pdf').on("click", function(f){
     f.preventDefault();
@@ -39,32 +38,17 @@ window.markSelected = function(node, selected) {
 
   return null;
 }
-function replaceUrlParam(url, paramName, paramValue){
-    var pattern = new RegExp('\\b('+paramName+'=).*?(&|$)')
-    if(url.search(pattern)>=0){
-        return url.replace(pattern,'$1' + paramValue + '$2');
-    }
-    return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue 
-}
 window.addToFavorites = function(arg) {
   var addToFavorites = arg.attr("data-add-favorites");
   $.ajax({
     url: addToFavorites,
     type: 'POST'    
   })
-  .done(function(response) {
-    // console.log("success");
+  .done(function(response) {   
     alert("sent");
     arg.find(".fa-heart").removeClass("fa-heart-o");
     arg.attr("data-favorite", "true");
-  })
-  .fail(function(response) {
-    // console.log("error");
-  })
-  .always(function(response) {
-    // console.log("complete");
-  });
-  
+  });  
 } 
 window.removeFromFavorites = function(arg) {
   var removeFromFavorites = arg.attr("data-remove-favorites");
@@ -77,14 +61,7 @@ window.removeFromFavorites = function(arg) {
     alert("sent");
     arg.find(".fa-heart").addClass("fa-heart-o");
     arg.attr("data-favorite", "false");
-  })
-  .fail(function(response) {
-    // console.log("error");
-  })
-  .always(function(response) {
-    // console.log("complete");
-  });
-  
+  })  
 } 
 window.getQueryVariable = function(variable){
        var query = window.location.search.substring(1);
@@ -95,6 +72,17 @@ window.getQueryVariable = function(variable){
        }
        return(false);
 }
+window.replaceUrlParam = function(url, paramName, paramValue){
+    var pattern = new RegExp('\\b('+paramName+'=).*?(&|$)')
+    if(url.search(pattern)>=0){
+        return url.replace(pattern,'$1' + paramValue + '$2');
+    }
+    return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue 
+}
+
+
+
+
 var Navigation = React.createClass({
 	getInitialState: function(){
 		return {
@@ -102,36 +90,30 @@ var Navigation = React.createClass({
       selected: ""
 		}
 	},
-	componentDidMount: function() {
-    setTimeout(function(){
-
-      $.getJSON(this.props.source, function(result) {  
-          this.setState({
+	componentWillMount: function(){
+    var _this = this;
+    var link = "/Files/WebServices/Navigation.ashx?catalog=" + _this.props.source; 
+     _this.serverRequest = $.getJSON(link, function (response) {     
+      var result = response[0].Nodes;
+      // result =  result[0].Nodes;
+      // var resultJSON = JSON.stringify(response);
+      // console.log(nodes);
+      _this.setState({
             data: result
-          });         
-          var param = getQueryVariable("bookmark");
-          param = decodeURIComponent(param); 
-          var that = this;
-          this.setState({selected: param});  
-          $.each(this.state.data, function(key,val){
-
-              var node = markSelected(val, that.state.selected);
-
-              if (node) {
-                node.Expanded = true;
-              }
-              // do something with key and val
-          });
-        this.setState({data: this.state.data});
-    }.bind(this))
-
-
-
-
-
-    }, 0);
-    
+          });   
+      }.bind(this));
+  },
+  componentWillUnmount: function() {
+    var _this = this;
+    _this.serverRequest.abort();
   },  
+  componentDidMount: function() {
+     var _this = this;
+     setTimeout(function(){     
+      // console.log(_this.state.data);
+    },100);
+    
+  },
   openChild: function(e){
     e.preventDefault();    
     var target= e.target;     
@@ -146,12 +128,12 @@ var Navigation = React.createClass({
   // updateBookmark: function(){
   //   this.props.updateBookmark;
   // },   
-  eachItem: function(item, i) {       
-    if (item.Nodes.length != 0) {        
-      return (
+  eachItem: function(item, i) {
+    // var items = item;   
+    if (item.Nodes.length != 0) {      
+      return (       
         <li key={i}
-                index={i}
-                className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}
+                index={i}               
                 onClick={this.openChild}
                 data-expanded={item.Expanded}
             ><a href={item.Id} className={item.Selected}>{item.Name}</a>
@@ -160,7 +142,7 @@ var Navigation = React.createClass({
             </ul>
         </li>
       );
-    } else {
+    } else {             
        return (
             <li key={i}
                 index={i}
@@ -171,10 +153,10 @@ var Navigation = React.createClass({
 
             </li>
         );
-
     }
   },  
-  render: function() { 
+  render: function() {      
+      // console.log(this.state.data);
       return (
       		<ul className="componentWrapper">
       			{this.state.data.map(this.eachItem)}
@@ -202,15 +184,12 @@ var NavigationTree =  React.createClass({
     $('.navigation').find('a').removeClass("true");
     $('.navigation').find('li').removeAttr('data-expanded');
     $(this).parents("li").attr("data-expanded","true");
-    $(this).addClass("true");
-    // console.log(this.ref.link);
-    // console.log($(this).parents("li"));
+    $(this).addClass("true");  
     $.ajax({
       url: link,
       type: 'get'
     })
-    .done(function(data) {
-      // console.log(data);
+    .done(function(data) {    
       $('#pageContent').html(data);
 
 
@@ -222,7 +201,7 @@ var NavigationTree =  React.createClass({
               var name= $(this).attr("data-option-name");              
               $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
               $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-               // console.log("intra-buton1");
+             
             });
             $('[data-tooltip]').tooltip();
             $('[data-favorite]').on("click", function(f){
@@ -241,7 +220,7 @@ var NavigationTree =  React.createClass({
               var groupId = encodeURIComponent($(this).attr("data-group-id"));
               var productId =$(this).attr("href");
               var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
-              // console.log(link);
+             
 
               var n = noty({
                   text: 'Loading content...',
@@ -262,7 +241,7 @@ var NavigationTree =  React.createClass({
                 type: 'get'
               })
               .done(function(newResult) {
-                // console.log("loading");
+               
                 $('#pageContent').html(newResult);
                 $.noty.closeAll();
                 //EVENT LISTENERS
@@ -272,7 +251,7 @@ var NavigationTree =  React.createClass({
                     var name= $(this).attr("data-option-name");              
                     $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
                     $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-                     // console.log("intra-buton2");
+                   
                   });
                   $('[data-tooltip]').tooltip();
                   $('[data-favorite]').on("click", function(f){
@@ -312,35 +291,16 @@ var NavigationTree =  React.createClass({
                       type: 'get'
                     })
                     .done(function(newResult) {
-                      // console.log("loading");
+                     
                       $('#pageContent').html(newResult);
                       $.noty.closeAll();
                      
-                    })
-                    .fail(function() {
-                      // console.log("error");
-                    })
-                    .always(function() {
-                      // console.log("complete");
-                    });           
-                  });
-                  console.log("downloadenter");
+                    });         
+                  });                
                   downloadPdf();
                 //EVENT LISTENERS
-              })
-              .fail(function() {
-                // console.log("error");
-              })
-              .always(function() {
-                // console.log("complete");
               });           
             });
-    })
-    .fail(function() {
-      // console.log("error");
-    })
-    .always(function() {
-      // console.log("complete");
     });
   }, 
   registerBookmark: function(arg){
@@ -349,7 +309,7 @@ var NavigationTree =  React.createClass({
     var groupName = target[0].attributes["data-group"].value;
     var id = target[0].attributes["href"].value;
     var index = target[0].attributes["data-index"].value;
-    // console.log(bookmark);
+   
    
     var that = this;
     if(bookmark == "true") {    
@@ -459,8 +419,8 @@ var MainContent = React.createClass({
     var groupId = getQueryVariable("bookmark");
     var productId = getQueryVariable("favorite");
     contentSource = "";
-    console.log(groupId);
-    console.log(productId);
+    // console.log(groupId);
+    // console.log(productId);
     if(productId) {
       contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
     } else {
@@ -469,7 +429,7 @@ var MainContent = React.createClass({
       } 
     } 
     this.state.url = contentSource;
-    console.log(this.state.url);
+    // console.log(this.state.url);
     this.setState({url: this.state.url});
   },
   componentDidMount: function(){
@@ -683,8 +643,8 @@ var RenderPage = React.createClass({
     }
   },
   componentWillMount: function(){   
-    var catalog = getQueryVariable("catalog");     
-    var link = "/Files/WebServices/Navigation.ashx?catalog=" + catalog;
+
+    var catalog = getQueryVariable("catalog"); 
     var groupId = getQueryVariable("bookmark");
     var productId = getQueryVariable("favorite");
     contentSource = "";
@@ -695,8 +655,7 @@ var RenderPage = React.createClass({
         contentSource = '/Default.aspx?ID=126&groupid=' + groupId
       } 
     }
-    
-    this.setState({ catalogName: catalog, catalog: link, groupID: groupId, productId: productId, contentSource: contentSource });
+    this.setState({catalog: catalog, groupID: groupId, productId: productId, contentSource: contentSource });
 
      
     // if(param != false) {
@@ -704,23 +663,27 @@ var RenderPage = React.createClass({
    
   },
   componentDidMount: function(){
-    console.log(this.state.catalog);
-    console.log(this.state.contentSource);
-    console.log(this.state.groupId);
-    console.log(this.state.productId);
+    // var _this = this;
+    // setTimeout(function(){
+    //   console.log(_this.state.catalog);     
+    //   console.log(_this.state.groupId);
+    //   console.log(_this.state.productId);
+    //   console.log(_this.state.contentSource);
+    // },10);
+   
+
   },
   //  onChildChanged: function(newState) {
   //       this.setState({ checked: newState });
   // },
-  render: function() { 
-      // console.log(this.state.contentSource);
+  render: function() {       
       return (
         <div className="wrapper">
         <div className="col-sm-3">
           <div id="catalogNavContainer">
             
             <section className="catalogNavSection topSection">
-              <h1>{this.state.catalogName}</h1><a href="/Default.aspx?ID=1" className="btn btn-sm btn-warning pull-right">Select Catalog</a>
+              <h1>{this.state.catalog}</h1><a href="/Default.aspx?ID=1" className="btn btn-sm btn-warning pull-right">Select Catalog</a>
             </section>
             
             <section className="catalogNavSection searchSection">
@@ -734,14 +697,14 @@ var RenderPage = React.createClass({
             </section>
             
             <section className="catalogNavSection navSection navigation">
-              <Navigation test-source={this.state.catalog} source='/Files/WebServices/Navigation.ashx?catalog=jayco' onChange={this.update} />
+              <Navigation source={this.state.catalog} onChange={this.update} />
             </section>
               
           </div>
         </div>
 
           <div className="col-sm-9">           
-            <MainContent source={this.state.contentSource} />
+            <MainContent  />
           </div>
         </div>  
 
@@ -749,8 +712,9 @@ var RenderPage = React.createClass({
   }
 });
 
-$(function(){
+
   if (document.getElementById('react-renderPage') !== null ){
     ReactDOM.render(<RenderPage  />, document.getElementById('react-renderPage'));
-  }
-}); 
+  }  
+
+

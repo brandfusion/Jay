@@ -897,7 +897,7 @@ button.button-download-group {
   width: 252.5px;
   z-index: 2;
   padding: 0; }
-  #catalogNavContainer section.catalogNavSection {
+  #catalogNavContainer section.catalogNavSection.navigation {
     position: relative;
     border: 0;
     padding-bottom: 76px;

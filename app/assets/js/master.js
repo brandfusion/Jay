@@ -1,4 +1,3 @@
-
 window.downloadPdf = function () {
   $('.download-pdf').on("click", function (f) {
     f.preventDefault();
@@ -39,27 +38,15 @@ window.markSelected = function (node, selected) {
 
   return null;
 };
-function replaceUrlParam(url, paramName, paramValue) {
-  var pattern = new RegExp('\\b(' + paramName + '=).*?(&|$)');
-  if (url.search(pattern) >= 0) {
-    return url.replace(pattern, '$1' + paramValue + '$2');
-  }
-  return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
-}
 window.addToFavorites = function (arg) {
   var addToFavorites = arg.attr("data-add-favorites");
   $.ajax({
     url: addToFavorites,
     type: 'POST'
   }).done(function (response) {
-    // console.log("success");
     alert("sent");
     arg.find(".fa-heart").removeClass("fa-heart-o");
     arg.attr("data-favorite", "true");
-  }).fail(function (response) {
-    // console.log("error");
-  }).always(function (response) {
-    // console.log("complete");
   });
 };
 window.removeFromFavorites = function (arg) {
@@ -72,10 +59,6 @@ window.removeFromFavorites = function (arg) {
     alert("sent");
     arg.find(".fa-heart").addClass("fa-heart-o");
     arg.attr("data-favorite", "false");
-  }).fail(function (response) {
-    // console.log("error");
-  }).always(function (response) {
-    // console.log("complete");
   });
 };
 window.getQueryVariable = function (variable) {
@@ -89,6 +72,14 @@ window.getQueryVariable = function (variable) {
   }
   return false;
 };
+window.replaceUrlParam = function (url, paramName, paramValue) {
+  var pattern = new RegExp('\\b(' + paramName + '=).*?(&|$)');
+  if (url.search(pattern) >= 0) {
+    return url.replace(pattern, '$1' + paramValue + '$2');
+  }
+  return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
+};
+
 var Navigation = React.createClass({
   displayName: "Navigation",
 
@@ -98,29 +89,28 @@ var Navigation = React.createClass({
       selected: ""
     };
   },
+  componentWillMount: function () {
+    var _this = this;
+    var link = "/Files/WebServices/Navigation.ashx?catalog=" + _this.props.source;
+    _this.serverRequest = $.getJSON(link, function (response) {
+      var result = response[0].Nodes;
+      // result =  result[0].Nodes;
+      // var resultJSON = JSON.stringify(response);
+      // console.log(nodes);
+      _this.setState({
+        data: result
+      });
+    }.bind(this));
+  },
+  componentWillUnmount: function () {
+    var _this = this;
+    _this.serverRequest.abort();
+  },
   componentDidMount: function () {
+    var _this = this;
     setTimeout(function () {
-
-      $.getJSON(this.props.source, function (result) {
-        this.setState({
-          data: result
-        });
-        var param = getQueryVariable("bookmark");
-        param = decodeURIComponent(param);
-        var that = this;
-        this.setState({ selected: param });
-        $.each(this.state.data, function (key, val) {
-
-          var node = markSelected(val, that.state.selected);
-
-          if (node) {
-            node.Expanded = true;
-          }
-          // do something with key and val
-        });
-        this.setState({ data: this.state.data });
-      }.bind(this));
-    }, 0);
+      // console.log(_this.state.data);
+    }, 100);
   },
   openChild: function (e) {
     e.preventDefault();
@@ -137,12 +127,12 @@ var Navigation = React.createClass({
   //   this.props.updateBookmark;
   // },  
   eachItem: function (item, i) {
+    // var items = item;  
     if (item.Nodes.length != 0) {
       return React.createElement(
         "li",
         { key: i,
           index: i,
-          className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
           onClick: this.openChild,
           "data-expanded": item.Expanded
         },
@@ -180,6 +170,7 @@ var Navigation = React.createClass({
     }
   },
   render: function () {
+    // console.log(this.state.data);
     return React.createElement(
       "ul",
       { className: "componentWrapper" },
@@ -208,13 +199,10 @@ var NavigationTree = React.createClass({
     $('.navigation').find('li').removeAttr('data-expanded');
     $(this).parents("li").attr("data-expanded", "true");
     $(this).addClass("true");
-    // console.log(this.ref.link);
-    // console.log($(this).parents("li"));
     $.ajax({
       url: link,
       type: 'get'
     }).done(function (data) {
-      // console.log(data);
       $('#pageContent').html(data);
 
       $('[data-select-downloadable] a').on("click", function (e) {
@@ -223,7 +211,6 @@ var NavigationTree = React.createClass({
         var name = $(this).attr("data-option-name");
         $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
         $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-        // console.log("intra-buton1");
       });
       $('[data-tooltip]').tooltip();
       $('[data-favorite]').on("click", function (f) {
@@ -241,7 +228,6 @@ var NavigationTree = React.createClass({
         var groupId = encodeURIComponent($(this).attr("data-group-id"));
         var productId = $(this).attr("href");
         var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId;
-        // console.log(link);
 
         var n = noty({
           text: 'Loading content...',
@@ -261,7 +247,7 @@ var NavigationTree = React.createClass({
           url: link,
           type: 'get'
         }).done(function (newResult) {
-          // console.log("loading");
+
           $('#pageContent').html(newResult);
           $.noty.closeAll();
           //EVENT LISTENERS
@@ -271,7 +257,6 @@ var NavigationTree = React.createClass({
             var name = $(this).attr("data-option-name");
             $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
             $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-            // console.log("intra-buton2");
           });
           $('[data-tooltip]').tooltip();
           $('[data-favorite]').on("click", function (f) {
@@ -309,28 +294,15 @@ var NavigationTree = React.createClass({
               url: link,
               type: 'get'
             }).done(function (newResult) {
-              // console.log("loading");
+
               $('#pageContent').html(newResult);
               $.noty.closeAll();
-            }).fail(function () {
-              // console.log("error");
-            }).always(function () {
-              // console.log("complete");
             });
           });
-          console.log("downloadenter");
           downloadPdf();
           //EVENT LISTENERS
-        }).fail(function () {
-          // console.log("error");
-        }).always(function () {
-          // console.log("complete");
         });
       });
-    }).fail(function () {
-      // console.log("error");
-    }).always(function () {
-      // console.log("complete");
     });
   },
   registerBookmark: function (arg) {
@@ -339,7 +311,6 @@ var NavigationTree = React.createClass({
     var groupName = target[0].attributes["data-group"].value;
     var id = target[0].attributes["href"].value;
     var index = target[0].attributes["data-index"].value;
-    // console.log(bookmark);
 
     var that = this;
     if (bookmark == "true") {
@@ -470,8 +441,8 @@ var MainContent = React.createClass({
     var groupId = getQueryVariable("bookmark");
     var productId = getQueryVariable("favorite");
     contentSource = "";
-    console.log(groupId);
-    console.log(productId);
+    // console.log(groupId);
+    // console.log(productId);
     if (productId) {
       contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
     } else {
@@ -480,7 +451,7 @@ var MainContent = React.createClass({
       }
     }
     this.state.url = contentSource;
-    console.log(this.state.url);
+    // console.log(this.state.url);
     this.setState({ url: this.state.url });
   },
   componentDidMount: function () {
@@ -678,8 +649,8 @@ var RenderPage = React.createClass({
     };
   },
   componentWillMount: function () {
+
     var catalog = getQueryVariable("catalog");
-    var link = "/Files/WebServices/Navigation.ashx?catalog=" + catalog;
     var groupId = getQueryVariable("bookmark");
     var productId = getQueryVariable("favorite");
     contentSource = "";
@@ -690,23 +661,25 @@ var RenderPage = React.createClass({
         contentSource = '/Default.aspx?ID=126&groupid=' + groupId;
       }
     }
-
-    this.setState({ catalogName: catalog, catalog: link, groupID: groupId, productId: productId, contentSource: contentSource });
+    this.setState({ catalog: catalog, groupID: groupId, productId: productId, contentSource: contentSource });
 
     // if(param != false) {
     //   var link = '/Default.aspx?ID=126&groupId=' + param; 
   },
   componentDidMount: function () {
-    console.log(this.state.catalog);
-    console.log(this.state.contentSource);
-    console.log(this.state.groupId);
-    console.log(this.state.productId);
+    // var _this = this;
+    // setTimeout(function(){
+    //   console.log(_this.state.catalog);    
+    //   console.log(_this.state.groupId);
+    //   console.log(_this.state.productId);
+    //   console.log(_this.state.contentSource);
+    // },10);
+
   },
   //  onChildChanged: function(newState) {
   //       this.setState({ checked: newState });
   // },
   render: function () {
-    // console.log(this.state.contentSource);
     return React.createElement(
       "div",
       { className: "wrapper" },
@@ -722,7 +695,7 @@ var RenderPage = React.createClass({
             React.createElement(
               "h1",
               null,
-              this.state.catalogName
+              this.state.catalog
             ),
             React.createElement(
               "a",
@@ -748,21 +721,19 @@ var RenderPage = React.createClass({
           React.createElement(
             "section",
             { className: "catalogNavSection navSection navigation" },
-            React.createElement(Navigation, { "test-source": this.state.catalog, source: "/Files/WebServices/Navigation.ashx?catalog=jayco", onChange: this.update })
+            React.createElement(Navigation, { source: this.state.catalog, onChange: this.update })
           )
         )
       ),
       React.createElement(
         "div",
         { className: "col-sm-9" },
-        React.createElement(MainContent, { source: this.state.contentSource })
+        React.createElement(MainContent, null)
       )
     );
   }
 });
 
-$(function () {
-  if (document.getElementById('react-renderPage') !== null) {
-    ReactDOM.render(React.createElement(RenderPage, null), document.getElementById('react-renderPage'));
-  }
-});
+if (document.getElementById('react-renderPage') !== null) {
+  ReactDOM.render(React.createElement(RenderPage, null), document.getElementById('react-renderPage'));
+}
