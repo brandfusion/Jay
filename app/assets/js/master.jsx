@@ -206,9 +206,13 @@ var NavigationTree =  React.createClass({
     }
   },  
   update: function(e){
-    e.preventDefault();     
+    e.preventDefault();
+    
+    var targetIn = $(e.currentTarget);
+    console.dir($(e.currentTarget)[0].attributes.href.value);  
     var target = this.refs.link;   
-    var id = $(target).attr("href");
+    // var id = $(target).attr("href");
+    var id = $(e.currentTarget)[0].attributes.href.value;
     var encodedId = encodeURIComponent(id); 
     var link = "/Default.aspx?ID=126&groupId=" +  encodedId;
     $('.navigation').find('a').removeClass("selected");
