@@ -763,13 +763,19 @@ main {
     font-size: 1em; }
   .navigation ul {
     padding-left: 1em; }
-  .navigation li:before {
-    color: #be7004;
-    font-family: "FontAwesome";
-    content: "\f196";
-    margin-right: 0.3em; }
-  .navigation li.opened:before {
-    content: "\f147"; }
+  .navigation li a {
+    color: #000; }
+    .navigation li a:before {
+      color: #be7004;
+      font-family: "FontAwesome";
+      content: "\f196";
+      margin-right: 0.3em; }
+    .navigation li a[data-overflow]:before, .navigation li a[data-bookmark]:before {
+      content: ""; }
+    .navigation li a.opened:before {
+      content: "\f147"; }
+    .navigation li a[data-overflow].selected {
+      color: #be7004; }
   .navigation li.noIcon:before {
     display: none; }
   .navigation li.noIcon a {
@@ -780,10 +786,12 @@ main {
       color: #be7004; }
     .navigation li.noIcon a[data-bookmark="true"] i:before {
       content: "\f02e"; }
-  .navigation li[data-expanded="true"] {
-    color: #be7004; }
-    .navigation li[data-expanded="true"]:before {
-      content: "\f147"; }
+  .navigation li .collapsed .hasChildren {
+    display: none; }
+  .navigation li .branch-opened .hasChildren {
+    display: block; }
+    .navigation li .branch-opened .hasChildren .hasChildren {
+      display: none; }
   .navigation .hasChildren[data-expanded="true"] {
     display: block; }
     .navigation .hasChildren[data-expanded="true"] .true {
@@ -855,7 +863,8 @@ button.button-download-group {
   text-align: right; }
 
 #pageContent {
-  padding-top: 20px; }
+  padding-top: 20px;
+  padding-bottom: 56px; }
 
 .product-title {
   font-size: 1.2rem;

@@ -1,3 +1,15 @@
+window.replaceUrlParam = function(url, paramName, paramValue){
+    var pattern = new RegExp('\\b('+paramName+'=).*?(&|$)')
+    if(url.search(pattern)>=0){
+        return url.replace(pattern,'$1' + paramValue + '$2');
+    }
+    return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue 
+}
+// window.changePageSize = function(size) {    
+//     var url= window.location.href;
+//     var paramExists = getQueryVariable("PageSize");
+//     var newUrl = replaceUrlParam(url, "PageSize", size);
+// }
 window.downloadPdf = function(){ 
   $('.download-pdf').on("click", function(f){
     f.preventDefault();
@@ -110,19 +122,21 @@ var Navigation = React.createClass({
   componentDidMount: function() {
      var _this = this;
      setTimeout(function(){     
-      // console.log(_this.state.data);
+     
     },100);
     
   },
   openChild: function(e){
     e.preventDefault();    
     var target= e.target;     
-    if ($(target).attr("data-expanded") == "true") {
-      $(target).attr("data-expanded","false"); 
-      $(target).children(".hasChildren").hide();
+    if ($(target).parent().attr("data-expanded") == "true") {
+      $(target).parent().attr("data-expanded","false"); 
+      $(target).parent().children(".hasChildren").hide();
+      $(target).removeClass("opened");
     } else { 
-      $(target).attr("data-expanded","true"); 
-      $(target).children(".hasChildren").show();
+      $(target).parent().attr("data-expanded","true"); 
+      $(target).parent().children(".hasChildren").show();
+      $(target).addClass("opened");
     }
   },  
   // updateBookmark: function(){
@@ -133,10 +147,9 @@ var Navigation = React.createClass({
     if (item.Nodes.length != 0) {      
       return (       
         <li key={i}
-                index={i}               
-                onClick={this.openChild}
+                index={i} 
                 data-expanded={item.Expanded}
-            ><a href={item.Id} className={item.Selected}>{item.Name}</a>
+            ><a href={item.Id} className={item.Selected} onClick={this.openChild}>{item.Name}</a>
              <ul className="hasChildren" data-expanded={item.Expanded}>
                  <NavigationTree data={item.Nodes} />
             </ul>
@@ -146,8 +159,7 @@ var Navigation = React.createClass({
        return (
             <li key={i}
                 index={i}
-                className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}
-                onClick={this.openChild}
+                className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}                
                 data-expanded={item.Expanded}
             ><a href={item.Id}  className={item.Selected}>{item.Name}</a><a href="" data-bookmark={item.Bookmarked} onClick={this.registerBookmark}><i className="fa fa-bookmark-o"></i></a>
 
@@ -176,26 +188,72 @@ var NavigationTree =  React.createClass({
   componentDidMount: function() {   
     this.setState({data: this.props.data }); 
   },  
-  update: function(arg){     
-    var target = $(arg.target)
-    var id = target.attr("href");
+  openChild: function(e){
+    e.preventDefault();    
+    var target= e.target;     
+    if ($(target).parent().attr("data-expanded") == "true") {
+      $(target).parent().attr("data-expanded","false"); 
+      $(target).parent().children(".hasChildren").hide();
+      $(target).removeClass("opened");
+    } else { 
+      $(target).addClass("opened");
+      // $(target).parents(".hasChildren").find(".branch-opened").removeClass('collapsed').removeClass('branch-opened');
+      // console.log($(target).parents(".hasChildren").find("li.branch-opened"));
+      $(target).parent().attr("data-expanded","true"); 
+      // $(target).parents(".hasChildren").find("li .hasChildren").hide();
+      // $(target).parents(".hasChildren").find('li').not(".branch-opened").addClass("collapsed");      
+      $(target).parent().children(".hasChildren").show();
+    }
+  },  
+  update: function(e){
+    e.preventDefault();     
+    var target = this.refs.link;   
+    var id = $(target).attr("href");
     var encodedId = encodeURIComponent(id); 
-    var link = "/Default.aspx?ID=126&groupId=" +  encodedId
-    $('.navigation').find('a').removeClass("true");
+    var link = "/Default.aspx?ID=126&groupId=" +  encodedId;
+    $('.navigation').find('a').removeClass("selected");
     $('.navigation').find('li').removeAttr('data-expanded');
-    $(this).parents("li").attr("data-expanded","true");
-    $(this).addClass("true");  
+    $(e.currentTarget).parents("li").attr("data-expanded","true");
+    $(e.currentTarget).addClass("selected");  
     $.ajax({
       url: link,
       type: 'get'
     })
     .done(function(data) {    
       $('#pageContent').html(data);
-
-
-
-
-      $('[data-select-downloadable] a').on("click", function(e){
+      // $('[data-page-size]').on("change", function(){
+      //   var value = $(this).val();
+      //   var url= $(this).attr("data-url");
+      //   // var paramExists = getQueryVariable("PageSize");
+      //   var newUrl = replaceUrlParam(url, "PageSize", value);
+      //   // console.log(newUrl);
+      //   $.ajax({
+      //     url: newUrl,
+      //     type: 'get'
+      //   })
+      //   .done(function(newResult) {         
+      //     $('#pageContent').html(newResult);
+         
+         
+      //   });
+      // });
+       $('#pageContent').on('change','[data-page-size]', function(){
+        var value = $(this).val();
+        var url= $(this).attr("data-url");
+        // var paramExists = getQueryVariable("PageSize");
+        var newUrl = replaceUrlParam(url, "PageSize", value);
+        // console.log(newUrl);
+        $.ajax({
+          url: newUrl,
+          type: 'get'
+        })
+        .done(function(newResult) {         
+          $('#pageContent').html(newResult);
+         
+         
+        });
+      });
+             $('#pageContent').on("click", '[data-select-downloadable] a', function(e){
               e.preventDefault();
               var value= $(this).attr("data-option-value");
               var name= $(this).attr("data-option-name");              
@@ -204,7 +262,7 @@ var NavigationTree =  React.createClass({
              
             });
             $('[data-tooltip]').tooltip();
-            $('[data-favorite]').on("click", function(f){
+            $('#pageContent').on("click", '[data-favorite]', function(f){
               f.preventDefault();
               var dataFavorite = $(this).attr("data-favorite");
               if(dataFavorite == "true") {
@@ -215,7 +273,7 @@ var NavigationTree =  React.createClass({
 
             });       
             downloadPdf();  
-            $('.product-list-link').on("click", function(e){
+            $('#pageContent').on("click", '.product-list-link', function(e){
               e.preventDefault();
               var groupId = encodeURIComponent($(this).attr("data-group-id"));
               var productId =$(this).attr("href");
@@ -245,6 +303,13 @@ var NavigationTree =  React.createClass({
                 $('#pageContent').html(newResult);
                 $.noty.closeAll();
                 //EVENT LISTENERS
+                // $('[data-page-size]').on("change", function(){
+                //   var value = $(this).val();
+                //   var url= $(this).attr("data-url");
+                //   // var paramExists = getQueryVariable("PageSize");
+                //   var newUrl = replaceUrlParam(url, "PageSize", value);
+                //   console.log(newUrl);
+                // });
                 $('[data-select-downloadable] a').on("click", function(e){
                     e.preventDefault();
                     var value= $(this).attr("data-option-value");
@@ -363,10 +428,9 @@ var NavigationTree =  React.createClass({
         return (
           <li key={i}
                   index={i}
-                  className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'} 
-                  onClick={this.openChild}
+                  className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}                  
                   data-expanded={item.Expanded}
-              ><a href={item.Id} className={item.Selected}>{item.Name}</a>
+              ><a href={item.Id} className={item.Selected}  onClick={this.openChild}>{item.Name}</a>
                <ul className="hasChildren" data-expanded={item.Expanded}>
                 <NavigationTree key={i} data={item.Nodes}  />
               </ul>
@@ -376,10 +440,9 @@ var NavigationTree =  React.createClass({
          return (
               <li key={i}
                   index={i}
-                  className="noIcon"  
-                  onClick={this.openChild} 
+                  className="noIcon" 
                   data-expanded={item.Expanded}
-              ><a href={item.Id}  onClick={this.update} index={i} data-overflow className={item.Selected} data-toggle="tooltip" data-placement="right" title={item.Name}>{item.Name}</a><a href={item.Id} data-index={i} data-group={item.Name} data-bookmark={item.Bookmarked} onClick={this.registerBookmark} ref="link"><i className="fa fa-bookmark-o"></i></a>
+              ><a href={item.Id} ref="link" onClick={this.update} index={i} data-overflow className={item.Selected} data-toggle="tooltip" data-placement="right" title={item.Name}>{item.Name}</a><a href={item.Id} data-index={i} data-group={item.Name} data-bookmark={item.Bookmarked} onClick={this.registerBookmark} ref="link"><i className="fa fa-bookmark-o"></i></a>
               </li>
               // <NavigationLink key={i} index={i} expanded={item.Expanded} itemId={item.Id} name={item.Name} bookmark={item.Bookmarked} />
           );

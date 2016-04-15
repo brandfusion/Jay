@@ -17,13 +17,19 @@ $blue: #0f4a72
   ul 
     padding-left: 1em
   li 
-    &:before
-      color: $yellow
-      font-family: "FontAwesome"
-      content: "\f196"
-      margin-right: 0.3em
-    &.opened:before           
-      content: "\f147"
+    a
+      color: #000
+      &:before
+        color: $yellow
+        font-family: "FontAwesome"
+        content: "\f196"
+        margin-right: 0.3em
+      &[data-overflow]:before, &[data-bookmark]:before 
+        content: ""
+      &.opened:before           
+        content: "\f147"
+      &[data-overflow].selected 
+        color: $yellow  
     &.noIcon
       &:before       
         display: none
@@ -36,10 +42,18 @@ $blue: #0f4a72
         &[data-bookmark="true"]
           i:before
             content: "\f02e"
-    &[data-expanded="true"]
-      color: $yellow
-      &:before
-        content: "\f147"      
+    .collapsed 
+      .hasChildren
+        display: none         
+    .branch-opened
+      .hasChildren
+        display: block
+        .hasChildren
+          display: none            
+    // &[data-expanded="true"]
+    //   color: $yellow
+    //   &:before
+    //     content: "\f147"      
   .hasChildren[data-expanded="true"]    
     display: block      
     .true
@@ -103,7 +117,7 @@ button.button-download-group
   text-align: right
 #pageContent
   padding-top: 20px
-
+  padding-bottom: 56px
 .product-title 
   font-size: 1.2rem
   line-height: 1.2 

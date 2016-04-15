@@ -4,6 +4,10 @@ $(document).ready(function() {
 		$(this).parent(".dropdown").closest(".hasChildren").slideToggle(slow);
 		console.log("click");
 	});
+
+
+
+
 	
 
 });
