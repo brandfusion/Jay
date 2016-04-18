@@ -11,7 +11,7 @@ window.replaceUrlParam = function(url, paramName, paramValue){
 //     var newUrl = replaceUrlParam(url, "PageSize", size);
 // }
 window.downloadPdf = function(){ 
-  $('.download-pdf').on("click", function(f){
+  $('#pageContent').on("click", '.download-pdf', function(f){
     f.preventDefault();
     var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");   
      $(this).parents(".form-group").find("a").each(function(){    
@@ -241,7 +241,17 @@ var NavigationTree =  React.createClass({
          
       //   });
       // });
-       $('#pageContent').on('change','[data-page-size]', function(){
+      $('#pageContent').on("click", '.download-pdf', function(f){
+        f.preventDefault();
+        var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");   
+         $(this).parents(".form-group").find("a").each(function(){    
+         var currentValue = $(this).attr("data-option-value");   
+         if (currentValue == value) {
+            $('#pdfDownloadFrame').attr("src", value);       
+         }
+       });
+      });
+      $('#pageContent').on('change','[data-page-size]', function(){
         var value = $(this).val();
         var url= $(this).attr("data-url");
         // var paramExists = getQueryVariable("PageSize");
@@ -257,26 +267,36 @@ var NavigationTree =  React.createClass({
          
         });
       });
-             $('#pageContent').on("click", '[data-select-downloadable] a', function(e){
-              e.preventDefault();
-              var value= $(this).attr("data-option-value");
-              var name= $(this).attr("data-option-name");              
-              $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
-              $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-             
-            });
-            $('[data-tooltip]').tooltip();
-            $('#pageContent').on("click", '[data-favorite]', function(f){
-              f.preventDefault();
-              var dataFavorite = $(this).attr("data-favorite");
-              if(dataFavorite == "true") {
-                removeFromFavorites($(this));
-              } else {
-                addToFavorites($(this));               
-              }
+      $('#pageContent').on("click", '[data-select-downloadable] a', function(e){
+        e.preventDefault();
+        var value= $(this).attr("data-option-value");
+        var name= $(this).attr("data-option-name");              
+        $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+        $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+      });
+      $('[data-tooltip]').tooltip();
+      $('#pageContent').on("click", '[data-favorite]', function(f){
+        f.preventDefault();
+        var dataFavorite = $(this).attr("data-favorite");
+        if(dataFavorite == "true") {
+          removeFromFavorites($(this));
+        } else {
+          addToFavorites($(this));               
+        }
 
-            });       
-            downloadPdf();  
+      });  
+      $(document).ajaxComplete(function(){
+          // fire when any Ajax requests complete
+          $(".zoom-image")
+            .wrap('<span style="display:inline-block"></span>')
+            .css('display', 'block')
+            .parent()
+            .zoom();
+      })     
+      
+
+    
+      downloadPdf();  
             $('#pageContent').on("click", '.product-list-link', function(e){
               e.preventDefault();
               var groupId = encodeURIComponent($(this).attr("data-group-id"));
@@ -481,41 +501,52 @@ var MainContent = React.createClass({
     }
   },
   componentWillMount: function(){
-    var _this = this;
+    // var _this = this;
     // var source = _this.props.source;
-    var groupId = getQueryVariable("bookmark");
-    var productId = getQueryVariable("favorite");
-    contentSource = "";
+    // var groupId = getQueryVariable("bookmark");
+    // var productId = getQueryVariable("favorite");
+    // contentSource = "";
     // console.log(groupId);
     // console.log(productId);
-    if(productId) {
-      contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
-    } else {
-      if(groupId) {
-        contentSource = '/Default.aspx?ID=126&groupid=' + groupId
-      } 
-    } 
-    this.state.url = contentSource;
+    // if(productId) {
+    //   contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
+    // } else {
+    //   if(groupId) {
+    //     contentSource = '/Default.aspx?ID=126&groupid=' + groupId
+    //   } 
+    // } 
+    // this.state.url = contentSource;
     // console.log(this.state.url);
-    this.setState({url: this.state.url});
+    var _this = this;
+    var url = this.props.source;
+    _this.setState({url: url});
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'html'
+    })
+    .done(function(response) {
+      var data = response;
+      _this.setState({data: data});
+    });
   },
   componentDidMount: function(){
-      setTimeout(function(){
-          var _this = this;   
-          // var source = _this.props.source;
-          var groupId = getQueryVariable("bookmark");
-          var productId = getQueryVariable("favorite");
-          contentSource = "";
-          // console.log(groupId);
-          // console.log(productId);
-          if(productId) {
-            contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
-          } else {
-            if(groupId) {
-              contentSource = '/Default.aspx?ID=126&groupid=' + groupId
-            } 
-          } 
-        },0);  
+      // setTimeout(function(){
+          // var _this = this;   
+          // // var source = _this.props.source;
+          // var groupId = getQueryVariable("bookmark");
+          // var productId = getQueryVariable("favorite");
+          // contentSource = "";
+          // // console.log(groupId);
+          // // console.log(productId);
+          // if(productId) {
+          //   contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
+          // } else {
+          //   if(groupId) {
+          //     contentSource = '/Default.aspx?ID=126&groupid=' + groupId
+          //   } 
+          // } 
+        // },0);  
       }, 
       // _this.setState({data: this.props.source === "" ? this.state.data : this.props.source});
       // if(_this.props.source != "") {
@@ -692,7 +723,7 @@ var MainContent = React.createClass({
   },    
   render: function() {
     // console.log(this.props.source);
-    if(this.state.data == "") {
+    if(this.props.source == "") {
       return this.renderEmptyContent();
     } else {
       return this.renderLoadedContent();
@@ -771,7 +802,7 @@ var RenderPage = React.createClass({
         </div>
 
           <div className="col-sm-9">           
-            <MainContent  />
+            <MainContent source={this.state.contentSource} />
           </div>
         </div>  
 
