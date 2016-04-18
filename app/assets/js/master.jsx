@@ -91,8 +91,16 @@ window.replaceUrlParam = function(url, paramName, paramValue){
     }
     return url + (url.indexOf('?')>0 ? '&' : '?') + paramName + '=' + paramValue 
 }
-
-
+window.updateContent = function(link){  
+  var newUrl = link;
+}
+var loadedContent = "";
+var h = {
+  loadedMainContent: function(newLink) {    
+    loadedContent = newLink;
+    return loadedContent;
+  }
+}
 
 
 var Navigation = React.createClass({
@@ -121,10 +129,12 @@ var Navigation = React.createClass({
   },  
   componentDidMount: function() {
      var _this = this;
-     setTimeout(function(){     
-     
-    },100);
-    
+     setTimeout(function(){  
+      console.log("mounted");
+    },100);    
+  },
+  componentDidUpdate: function() {
+    console.log("updated");
   },
   openChild: function(e){
     e.preventDefault();    
@@ -141,27 +151,31 @@ var Navigation = React.createClass({
   },  
   // updateBookmark: function(){
   //   this.props.updateBookmark;
-  // },   
+  // }, 
+  onUpdate: function(){
+    // this.props.onUpdate(link);
+    console.log("updated");
+  },  
   eachItem: function(item, i) {
     // var items = item;   
-    if (item.Nodes.length != 0) {      
+    if (item.Nodes.length != 0) {   
+      var that = this;   
       return (       
         <li key={i}
                 index={i} 
                 data-expanded={item.Expanded}
             ><a href={item.Id} className={item.Selected} onClick={this.openChild}>{item.Name}</a>
              <ul className="hasChildren" data-expanded={item.Expanded}>
-                 <NavigationTree data={item.Nodes} />
+                 <NavigationTree data={item.Nodes} onUpdate={this.onUpdate} />
             </ul>
         </li>
       );
     } else {             
        return (
             <li key={i}
-                index={i}
-                className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}                
+                index={i}               
                 data-expanded={item.Expanded}
-            ><a href={item.Id}  className={item.Selected}>{item.Name}</a><a href="" data-bookmark={item.Bookmarked} onClick={this.registerBookmark}><i className="fa fa-bookmark-o"></i></a>
+            ><a href={item.Id} className={item.Selected}>{item.Name}</a><a href="" data-bookmark={item.Bookmarked} onClick={this.registerBookmark}><i className="fa fa-bookmark-o"></i></a>
 
             </li>
         );
@@ -182,7 +196,8 @@ var NavigationTree =  React.createClass({
   getInitialState: function(){
     return {
       data: [],
-      bookmark: ""
+      bookmark: "", 
+      updated: false
     }
   },
   componentDidMount: function() {   
@@ -205,192 +220,197 @@ var NavigationTree =  React.createClass({
       $(target).parent().children(".hasChildren").show();
     }
   },  
+  // onUpdate: function(){
+  //   that.props.onUpdate();
+  // },
   update: function(e){
-    e.preventDefault();
-    
-    var targetIn = $(e.currentTarget);
-    console.dir($(e.currentTarget)[0].attributes.href.value);  
-    var target = this.refs.link;   
-    // var id = $(target).attr("href");
+    e.preventDefault();   
+    // e.preventDefault();    
+    // var targetIn = $(e.currentTarget);    
+    // var target = this.refs.link;   
+    // // var id = $(target).attr("href");
     var id = $(e.currentTarget)[0].attributes.href.value;
     var encodedId = encodeURIComponent(id); 
     var link = "/Default.aspx?ID=126&groupId=" +  encodedId;
+    // this.props.onUpdate(link);
     $('.navigation').find('a').removeClass("selected");
     $('.navigation').find('li').removeAttr('data-expanded');
     $(e.currentTarget).parents("li").attr("data-expanded","true");
     $(e.currentTarget).addClass("selected");  
-    $.ajax({
-      url: link,
-      type: 'get'
-    })
-    .done(function(data) {    
-      $('#pageContent').html(data);
-      // $('[data-page-size]').on("change", function(){
-      //   var value = $(this).val();
-      //   var url= $(this).attr("data-url");
-      //   // var paramExists = getQueryVariable("PageSize");
-      //   var newUrl = replaceUrlParam(url, "PageSize", value);
-      //   // console.log(newUrl);
-      //   $.ajax({
-      //     url: newUrl,
-      //     type: 'get'
-      //   })
-      //   .done(function(newResult) {         
-      //     $('#pageContent').html(newResult);
+    that.props.onUpdated();
+    h.loadedMainContent(link);
+    // $.ajax({
+    //   url: link,
+    //   type: 'get'
+    // })
+    // .done(function(data) {    
+    //   $('#pageContent').html(data);
+    //   // $('[data-page-size]').on("change", function(){
+    //   //   var value = $(this).val();
+    //   //   var url= $(this).attr("data-url");
+    //   //   // var paramExists = getQueryVariable("PageSize");
+    //   //   var newUrl = replaceUrlParam(url, "PageSize", value);
+    //   //   // console.log(newUrl);
+    //   //   $.ajax({
+    //   //     url: newUrl,
+    //   //     type: 'get'
+    //   //   })
+    //   //   .done(function(newResult) {         
+    //   //     $('#pageContent').html(newResult);
          
          
-      //   });
-      // });
-      $('#pageContent').on("click", '.download-pdf', function(f){
-        f.preventDefault();
-        var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");   
-         $(this).parents(".form-group").find("a").each(function(){    
-         var currentValue = $(this).attr("data-option-value");   
-         if (currentValue == value) {
-            $('#pdfDownloadFrame').attr("src", value);       
-         }
-       });
-      });
-      $('#pageContent').on('change','[data-page-size]', function(){
-        var value = $(this).val();
-        var url= $(this).attr("data-url");
-        // var paramExists = getQueryVariable("PageSize");
-        var newUrl = replaceUrlParam(url, "PageSize", value);
-        // console.log(newUrl);
-        $.ajax({
-          url: newUrl,
-          type: 'get'
-        })
-        .done(function(newResult) {         
-          $('#pageContent').html(newResult);
+    //   //   });
+    //   // });
+    //   $('#pageContent').on("click", '.download-pdf', function(f){
+    //     f.preventDefault();
+    //     var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");   
+    //      $(this).parents(".form-group").find("a").each(function(){    
+    //      var currentValue = $(this).attr("data-option-value");   
+    //      if (currentValue == value) {
+    //         $('#pdfDownloadFrame').attr("src", value);       
+    //      }
+    //    });
+    //   });
+    //   $('#pageContent').on('change','[data-page-size]', function(){
+    //     var value = $(this).val();
+    //     var url= $(this).attr("data-url");
+    //     // var paramExists = getQueryVariable("PageSize");
+    //     var newUrl = replaceUrlParam(url, "PageSize", value);
+    //     // console.log(newUrl);
+    //     $.ajax({
+    //       url: newUrl,
+    //       type: 'get'
+    //     })
+    //     .done(function(newResult) {         
+    //       $('#pageContent').html(newResult);
          
          
-        });
-      });
-      $('#pageContent').on("click", '[data-select-downloadable] a', function(e){
-        e.preventDefault();
-        var value= $(this).attr("data-option-value");
-        var name= $(this).attr("data-option-name");              
-        $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
-        $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-      });
-      $('[data-tooltip]').tooltip();
-      $('#pageContent').on("click", '[data-favorite]', function(f){
-        f.preventDefault();
-        var dataFavorite = $(this).attr("data-favorite");
-        if(dataFavorite == "true") {
-          removeFromFavorites($(this));
-        } else {
-          addToFavorites($(this));               
-        }
+    //     });
+    //   });
+    //   $('#pageContent').on("click", '[data-select-downloadable] a', function(e){
+    //     e.preventDefault();
+    //     var value= $(this).attr("data-option-value");
+    //     var name= $(this).attr("data-option-name");              
+    //     $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+    //     $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+    //   });
+    //   $('[data-tooltip]').tooltip();
+    //   $('#pageContent').on("click", '[data-favorite]', function(f){
+    //     f.preventDefault();
+    //     var dataFavorite = $(this).attr("data-favorite");
+    //     if(dataFavorite == "true") {
+    //       removeFromFavorites($(this));
+    //     } else {
+    //       addToFavorites($(this));               
+    //     }
 
-      });  
-      $(document).ajaxComplete(function(){
-          // fire when any Ajax requests complete
-          $(".zoom-image")
-            .wrap('<span style="display:inline-block"></span>')
-            .css('display', 'block')
-            .parent()
-            .zoom();
-      })     
+    //   });  
+    //   $(document).ajaxComplete(function(){
+    //       // fire when any Ajax requests complete
+    //       $(".zoom-image")
+    //         .wrap('<span style="display:inline-block"></span>')
+    //         .css('display', 'block')
+    //         .parent()
+    //         .zoom();
+    //   })     
       
 
     
-      downloadPdf();  
-            $('#pageContent').on("click", '.product-list-link', function(e){
-              e.preventDefault();
-              var groupId = encodeURIComponent($(this).attr("data-group-id"));
-              var productId =$(this).attr("href");
-              var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
+    //   downloadPdf();  
+    //         $('#pageContent').on("click", '.product-list-link', function(e){
+    //           e.preventDefault();
+    //           var groupId = encodeURIComponent($(this).attr("data-group-id"));
+    //           var productId =$(this).attr("href");
+    //           var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
              
 
-              var n = noty({
-                  text: 'Loading content...',
-                  layout: 'center',
-                  theme: 'relax',
-                  animation: {
-                      open: {height: 'toggle'}, // jQuery animate function property object
-                      close: {height: 'toggle'}, // jQuery animate function property object
-                      easing: 'swing', // easing
-                      speed: 500 // opening & closing animation speed
-                  },
-                  type: 'information',
-                  timeout: false,
+    //           var n = noty({
+    //               text: 'Loading content...',
+    //               layout: 'center',
+    //               theme: 'relax',
+    //               animation: {
+    //                   open: {height: 'toggle'}, // jQuery animate function property object
+    //                   close: {height: 'toggle'}, // jQuery animate function property object
+    //                   easing: 'swing', // easing
+    //                   speed: 500 // opening & closing animation speed
+    //               },
+    //               type: 'information',
+    //               timeout: false,
 
-              });
-              $.ajax({
-                url: link,
-                type: 'get'
-              })
-              .done(function(newResult) {
+    //           });
+    //           $.ajax({
+    //             url: link,
+    //             type: 'get'
+    //           })
+    //           .done(function(newResult) {
                
-                $('#pageContent').html(newResult);
-                $.noty.closeAll();
-                //EVENT LISTENERS
-                // $('[data-page-size]').on("change", function(){
-                //   var value = $(this).val();
-                //   var url= $(this).attr("data-url");
-                //   // var paramExists = getQueryVariable("PageSize");
-                //   var newUrl = replaceUrlParam(url, "PageSize", value);
-                //   console.log(newUrl);
-                // });
-                $('[data-select-downloadable] a').on("click", function(e){
-                    e.preventDefault();
-                    var value= $(this).attr("data-option-value");
-                    var name= $(this).attr("data-option-name");              
-                    $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
-                    $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+    //             $('#pageContent').html(newResult);
+    //             $.noty.closeAll();
+    //             //EVENT LISTENERS
+    //             // $('[data-page-size]').on("change", function(){
+    //             //   var value = $(this).val();
+    //             //   var url= $(this).attr("data-url");
+    //             //   // var paramExists = getQueryVariable("PageSize");
+    //             //   var newUrl = replaceUrlParam(url, "PageSize", value);
+    //             //   console.log(newUrl);
+    //             // });
+    //             $('[data-select-downloadable] a').on("click", function(e){
+    //                 e.preventDefault();
+    //                 var value= $(this).attr("data-option-value");
+    //                 var name= $(this).attr("data-option-name");              
+    //                 $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+    //                 $(this).parents(".btn-group").find("[data-selected-name]").html(name);
                    
-                  });
-                  $('[data-tooltip]').tooltip();
-                  $('[data-favorite]').on("click", function(f){
-                    f.preventDefault();
-                    var dataFavorite = $(this).attr("data-favorite");
-                    if(dataFavorite == "true") {
-                      removeFromFavorites($(this));
-                    } else {
-                      addToFavorites($(this));               
-                    }
+    //               });
+    //               $('[data-tooltip]').tooltip();
+    //               $('[data-favorite]').on("click", function(f){
+    //                 f.preventDefault();
+    //                 var dataFavorite = $(this).attr("data-favorite");
+    //                 if(dataFavorite == "true") {
+    //                   removeFromFavorites($(this));
+    //                 } else {
+    //                   addToFavorites($(this));               
+    //                 }
 
-                  });     
-                  downloadPdf();     
-                  $('.product-list-link').on("click", function(e){
-                    e.preventDefault();
-                    var groupId = encodeURIComponent($(this).attr("data-group-id"));
-                    var productId =$(this).attr("href");
-                    var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
-                    // console.log(link);
+    //               });     
+    //               downloadPdf();     
+    //               $('.product-list-link').on("click", function(e){
+    //                 e.preventDefault();
+    //                 var groupId = encodeURIComponent($(this).attr("data-group-id"));
+    //                 var productId =$(this).attr("href");
+    //                 var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
+    //                 // console.log(link);
 
-                    var n = noty({
-                        text: 'Loading content...',
-                        layout: 'center',
-                        theme: 'relax',
-                        animation: {
-                            open: {height: 'toggle'}, // jQuery animate function property object
-                            close: {height: 'toggle'}, // jQuery animate function property object
-                            easing: 'swing', // easing
-                            speed: 500 // opening & closing animation speed
-                        },
-                        type: 'information',
-                        timeout: false,
+    //                 var n = noty({
+    //                     text: 'Loading content...',
+    //                     layout: 'center',
+    //                     theme: 'relax',
+    //                     animation: {
+    //                         open: {height: 'toggle'}, // jQuery animate function property object
+    //                         close: {height: 'toggle'}, // jQuery animate function property object
+    //                         easing: 'swing', // easing
+    //                         speed: 500 // opening & closing animation speed
+    //                     },
+    //                     type: 'information',
+    //                     timeout: false,
 
-                    });
-                    $.ajax({
-                      url: link,
-                      type: 'get'
-                    })
-                    .done(function(newResult) {
+    //                 });
+    //                 $.ajax({
+    //                   url: link,
+    //                   type: 'get'
+    //                 })
+    //                 .done(function(newResult) {
                      
-                      $('#pageContent').html(newResult);
-                      $.noty.closeAll();
+    //                   $('#pageContent').html(newResult);
+    //                   $.noty.closeAll();
                      
-                    });         
-                  });                
-                  downloadPdf();
-                //EVENT LISTENERS
-              });           
-            });
-    });
+    //                 });         
+    //               });                
+    //               downloadPdf();
+    //             //EVENT LISTENERS
+    //           });           
+    //         });
+    // });
   }, 
   registerBookmark: function(arg){
     var target = $(arg.target).parent("a");
@@ -456,7 +476,7 @@ var NavigationTree =  React.createClass({
                   data-expanded={item.Expanded}
               ><a href={item.Id} className={item.Selected}  onClick={this.openChild}>{item.Name}</a>
                <ul className="hasChildren" data-expanded={item.Expanded}>
-                <NavigationTree key={i} data={item.Nodes}  />
+                <NavigationTree key={i} data={item.Nodes} onUpdate={this.onUpdate} />
               </ul>
           </li>
         );
@@ -466,7 +486,7 @@ var NavigationTree =  React.createClass({
                   index={i}
                   className="noIcon" 
                   data-expanded={item.Expanded}
-              ><a href={item.Id} ref="link" onClick={this.update} index={i} data-overflow className={item.Selected} data-toggle="tooltip" data-placement="right" title={item.Name}>{item.Name}</a><a href={item.Id} data-index={i} data-group={item.Name} data-bookmark={item.Bookmarked} onClick={this.registerBookmark} ref="link"><i className="fa fa-bookmark-o"></i></a>
+              ><a href={item.Id} onClick={this.update} index={i} data-overflow className={item.Selected} data-toggle="tooltip" data-placement="right" title={item.Name}>{item.Name}</a><a href={item.Id} data-index={i} data-group={item.Name} data-bookmark={item.Bookmarked} onClick={this.registerBookmark} ref="link"><i className="fa fa-bookmark-o"></i></a>
               </li>
               // <NavigationLink key={i} index={i} expanded={item.Expanded} itemId={item.Id} name={item.Name} bookmark={item.Bookmarked} />
           );
@@ -484,15 +504,6 @@ var NavigationTree =  React.createClass({
   }
 });
 
-var NavigationLink =  React.createClass({
-  render: function(){
-    return (
-      <li className="noIcon" data-expanded={this.props.expanded}>
-        <a href={this.props.href} data-overflow className={this.props.className} data-toggle="tooltip" data-placement="right" title={this.props.title}>{this.props.title}</a><a href={item.Id} data-index={i} data-group={item.Name} data-bookmark={item.Bookmarked} onClick={this.registerBookmark} ref="link"><i className="fa fa-bookmark-o"></i></a>
-      </li>
-    );
-  }
-});
 var MainContent = React.createClass({
    getInitialState: function(){
     return {
@@ -750,10 +761,10 @@ var RenderPage = React.createClass({
       contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
     } else {
       if(groupId) {
-        contentSource = '/Default.aspx?ID=126&groupid=' + groupId
+        contentSource = '/Default.aspx?ID=126&groupid=' + groupId;
       } 
     }
-    this.setState({catalog: catalog, groupID: groupId, productId: productId, contentSource: contentSource });
+    this.setState({catalog: catalog, groupId: groupId, productId: productId, contentSource: contentSource });
 
      
     // if(param != false) {
@@ -770,6 +781,10 @@ var RenderPage = React.createClass({
     // },10);
    
 
+  },
+  onUpdate: function(link) {
+    var newUrl = link;
+    this.setState({contentSource: newUrl});
   },
   //  onChildChanged: function(newState) {
   //       this.setState({ checked: newState });
@@ -795,7 +810,7 @@ var RenderPage = React.createClass({
             </section>
             
             <section className="catalogNavSection navSection navigation">
-              <Navigation source={this.state.catalog} onChange={this.update} />
+              <Navigation source={this.state.catalog} onUpdate={this.onUpdate} />
             </section>
               
           </div>

@@ -91,6 +91,16 @@ window.replaceUrlParam = function (url, paramName, paramValue) {
   }
   return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
 };
+window.updateContent = function (link) {
+  var newUrl = link;
+};
+var loadedContent = "";
+var h = {
+  loadedMainContent: function (newLink) {
+    loadedContent = newLink;
+    return loadedContent;
+  }
+};
 
 var Navigation = React.createClass({
   displayName: 'Navigation',
@@ -120,7 +130,12 @@ var Navigation = React.createClass({
   },
   componentDidMount: function () {
     var _this = this;
-    setTimeout(function () {}, 100);
+    setTimeout(function () {
+      console.log("mounted");
+    }, 100);
+  },
+  componentDidUpdate: function () {
+    console.log("updated");
   },
   openChild: function (e) {
     e.preventDefault();
@@ -137,10 +152,15 @@ var Navigation = React.createClass({
   },
   // updateBookmark: function(){
   //   this.props.updateBookmark;
-  // },  
+  // },
+  onUpdate: function () {
+    // this.props.onUpdate(link);
+    console.log("updated");
+  },
   eachItem: function (item, i) {
     // var items = item;  
     if (item.Nodes.length != 0) {
+      var that = this;
       return React.createElement(
         'li',
         { key: i,
@@ -155,7 +175,7 @@ var Navigation = React.createClass({
         React.createElement(
           'ul',
           { className: 'hasChildren', 'data-expanded': item.Expanded },
-          React.createElement(NavigationTree, { data: item.Nodes })
+          React.createElement(NavigationTree, { data: item.Nodes, onUpdate: this.onUpdate })
         )
       );
     } else {
@@ -163,7 +183,6 @@ var Navigation = React.createClass({
         'li',
         { key: i,
           index: i,
-          className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
           'data-expanded': item.Expanded
         },
         React.createElement(
@@ -194,7 +213,8 @@ var NavigationTree = React.createClass({
   getInitialState: function () {
     return {
       data: [],
-      bookmark: ""
+      bookmark: "",
+      updated: false
     };
   },
   componentDidMount: function () {
@@ -217,174 +237,192 @@ var NavigationTree = React.createClass({
       $(target).parent().children(".hasChildren").show();
     }
   },
+  // onUpdate: function(){
+  //   that.props.onUpdate();
+  // },
   update: function (e) {
     e.preventDefault();
-
-    var targetIn = $(e.currentTarget);
-    console.dir($(e.currentTarget)[0].attributes.href.value);
-    var target = this.refs.link;
-    // var id = $(target).attr("href");
+    // e.preventDefault();   
+    // var targetIn = $(e.currentTarget);   
+    // var target = this.refs.link;  
+    // // var id = $(target).attr("href");
     var id = $(e.currentTarget)[0].attributes.href.value;
     var encodedId = encodeURIComponent(id);
     var link = "/Default.aspx?ID=126&groupId=" + encodedId;
+    // this.props.onUpdate(link);
     $('.navigation').find('a').removeClass("selected");
     $('.navigation').find('li').removeAttr('data-expanded');
     $(e.currentTarget).parents("li").attr("data-expanded", "true");
     $(e.currentTarget).addClass("selected");
-    $.ajax({
-      url: link,
-      type: 'get'
-    }).done(function (data) {
-      $('#pageContent').html(data);
-      // $('[data-page-size]').on("change", function(){
-      //   var value = $(this).val();
-      //   var url= $(this).attr("data-url");
-      //   // var paramExists = getQueryVariable("PageSize");
-      //   var newUrl = replaceUrlParam(url, "PageSize", value);
-      //   // console.log(newUrl);
-      //   $.ajax({
-      //     url: newUrl,
-      //     type: 'get'
-      //   })
-      //   .done(function(newResult) {        
-      //     $('#pageContent').html(newResult);
+    that.props.onUpdated();
+    h.loadedMainContent(link);
+    // $.ajax({
+    //   url: link,
+    //   type: 'get'
+    // })
+    // .done(function(data) {   
+    //   $('#pageContent').html(data);
+    //   // $('[data-page-size]').on("change", function(){
+    //   //   var value = $(this).val();
+    //   //   var url= $(this).attr("data-url");
+    //   //   // var paramExists = getQueryVariable("PageSize");
+    //   //   var newUrl = replaceUrlParam(url, "PageSize", value);
+    //   //   // console.log(newUrl);
+    //   //   $.ajax({
+    //   //     url: newUrl,
+    //   //     type: 'get'
+    //   //   })
+    //   //   .done(function(newResult) {        
+    //   //     $('#pageContent').html(newResult);
 
-      //   });
-      // });
-      $('#pageContent').on("click", '.download-pdf', function (f) {
-        f.preventDefault();
-        var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");
-        $(this).parents(".form-group").find("a").each(function () {
-          var currentValue = $(this).attr("data-option-value");
-          if (currentValue == value) {
-            $('#pdfDownloadFrame').attr("src", value);
-          }
-        });
-      });
-      $('#pageContent').on('change', '[data-page-size]', function () {
-        var value = $(this).val();
-        var url = $(this).attr("data-url");
-        // var paramExists = getQueryVariable("PageSize");
-        var newUrl = replaceUrlParam(url, "PageSize", value);
-        // console.log(newUrl);
-        $.ajax({
-          url: newUrl,
-          type: 'get'
-        }).done(function (newResult) {
-          $('#pageContent').html(newResult);
-        });
-      });
-      $('#pageContent').on("click", '[data-select-downloadable] a', function (e) {
-        e.preventDefault();
-        var value = $(this).attr("data-option-value");
-        var name = $(this).attr("data-option-name");
-        $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
-        $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-      });
-      $('[data-tooltip]').tooltip();
-      $('#pageContent').on("click", '[data-favorite]', function (f) {
-        f.preventDefault();
-        var dataFavorite = $(this).attr("data-favorite");
-        if (dataFavorite == "true") {
-          removeFromFavorites($(this));
-        } else {
-          addToFavorites($(this));
-        }
-      });
-      $(document).ajaxComplete(function () {
-        // fire when any Ajax requests complete
-        $(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
-      });
+    //   //   });
+    //   // });
+    //   $('#pageContent').on("click", '.download-pdf', function(f){
+    //     f.preventDefault();
+    //     var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");  
+    //      $(this).parents(".form-group").find("a").each(function(){   
+    //      var currentValue = $(this).attr("data-option-value");  
+    //      if (currentValue == value) {
+    //         $('#pdfDownloadFrame').attr("src", value);      
+    //      }
+    //    });
+    //   });
+    //   $('#pageContent').on('change','[data-page-size]', function(){
+    //     var value = $(this).val();
+    //     var url= $(this).attr("data-url");
+    //     // var paramExists = getQueryVariable("PageSize");
+    //     var newUrl = replaceUrlParam(url, "PageSize", value);
+    //     // console.log(newUrl);
+    //     $.ajax({
+    //       url: newUrl,
+    //       type: 'get'
+    //     })
+    //     .done(function(newResult) {        
+    //       $('#pageContent').html(newResult);
 
-      downloadPdf();
-      $('#pageContent').on("click", '.product-list-link', function (e) {
-        e.preventDefault();
-        var groupId = encodeURIComponent($(this).attr("data-group-id"));
-        var productId = $(this).attr("href");
-        var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId;
+    //     });
+    //   });
+    //   $('#pageContent').on("click", '[data-select-downloadable] a', function(e){
+    //     e.preventDefault();
+    //     var value= $(this).attr("data-option-value");
+    //     var name= $(this).attr("data-option-name");             
+    //     $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+    //     $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+    //   });
+    //   $('[data-tooltip]').tooltip();
+    //   $('#pageContent').on("click", '[data-favorite]', function(f){
+    //     f.preventDefault();
+    //     var dataFavorite = $(this).attr("data-favorite");
+    //     if(dataFavorite == "true") {
+    //       removeFromFavorites($(this));
+    //     } else {
+    //       addToFavorites($(this));              
+    //     }
 
-        var n = noty({
-          text: 'Loading content...',
-          layout: 'center',
-          theme: 'relax',
-          animation: {
-            open: { height: 'toggle' }, // jQuery animate function property object
-            close: { height: 'toggle' }, // jQuery animate function property object
-            easing: 'swing', // easing
-            speed: 500 // opening & closing animation speed
-          },
-          type: 'information',
-          timeout: false
+    //   }); 
+    //   $(document).ajaxComplete(function(){
+    //       // fire when any Ajax requests complete
+    //       $(".zoom-image")
+    //         .wrap('<span style="display:inline-block"></span>')
+    //         .css('display', 'block')
+    //         .parent()
+    //         .zoom();
+    //   })    
 
-        });
-        $.ajax({
-          url: link,
-          type: 'get'
-        }).done(function (newResult) {
+    //   downloadPdf(); 
+    //         $('#pageContent').on("click", '.product-list-link', function(e){
+    //           e.preventDefault();
+    //           var groupId = encodeURIComponent($(this).attr("data-group-id"));
+    //           var productId =$(this).attr("href");
+    //           var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
 
-          $('#pageContent').html(newResult);
-          $.noty.closeAll();
-          //EVENT LISTENERS
-          // $('[data-page-size]').on("change", function(){
-          //   var value = $(this).val();
-          //   var url= $(this).attr("data-url");
-          //   // var paramExists = getQueryVariable("PageSize");
-          //   var newUrl = replaceUrlParam(url, "PageSize", value);
-          //   console.log(newUrl);
-          // });
-          $('[data-select-downloadable] a').on("click", function (e) {
-            e.preventDefault();
-            var value = $(this).attr("data-option-value");
-            var name = $(this).attr("data-option-name");
-            $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
-            $(this).parents(".btn-group").find("[data-selected-name]").html(name);
-          });
-          $('[data-tooltip]').tooltip();
-          $('[data-favorite]').on("click", function (f) {
-            f.preventDefault();
-            var dataFavorite = $(this).attr("data-favorite");
-            if (dataFavorite == "true") {
-              removeFromFavorites($(this));
-            } else {
-              addToFavorites($(this));
-            }
-          });
-          downloadPdf();
-          $('.product-list-link').on("click", function (e) {
-            e.preventDefault();
-            var groupId = encodeURIComponent($(this).attr("data-group-id"));
-            var productId = $(this).attr("href");
-            var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId;
-            // console.log(link);
+    //           var n = noty({
+    //               text: 'Loading content...',
+    //               layout: 'center',
+    //               theme: 'relax',
+    //               animation: {
+    //                   open: {height: 'toggle'}, // jQuery animate function property object
+    //                   close: {height: 'toggle'}, // jQuery animate function property object
+    //                   easing: 'swing', // easing
+    //                   speed: 500 // opening & closing animation speed
+    //               },
+    //               type: 'information',
+    //               timeout: false,
 
-            var n = noty({
-              text: 'Loading content...',
-              layout: 'center',
-              theme: 'relax',
-              animation: {
-                open: { height: 'toggle' }, // jQuery animate function property object
-                close: { height: 'toggle' }, // jQuery animate function property object
-                easing: 'swing', // easing
-                speed: 500 // opening & closing animation speed
-              },
-              type: 'information',
-              timeout: false
+    //           });
+    //           $.ajax({
+    //             url: link,
+    //             type: 'get'
+    //           })
+    //           .done(function(newResult) {
 
-            });
-            $.ajax({
-              url: link,
-              type: 'get'
-            }).done(function (newResult) {
+    //             $('#pageContent').html(newResult);
+    //             $.noty.closeAll();
+    //             //EVENT LISTENERS
+    //             // $('[data-page-size]').on("change", function(){
+    //             //   var value = $(this).val();
+    //             //   var url= $(this).attr("data-url");
+    //             //   // var paramExists = getQueryVariable("PageSize");
+    //             //   var newUrl = replaceUrlParam(url, "PageSize", value);
+    //             //   console.log(newUrl);
+    //             // });
+    //             $('[data-select-downloadable] a').on("click", function(e){
+    //                 e.preventDefault();
+    //                 var value= $(this).attr("data-option-value");
+    //                 var name= $(this).attr("data-option-name");             
+    //                 $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
+    //                 $(this).parents(".btn-group").find("[data-selected-name]").html(name);
 
-              $('#pageContent').html(newResult);
-              $.noty.closeAll();
-            });
-          });
-          downloadPdf();
-          //EVENT LISTENERS
-        });
-      });
-    });
+    //               });
+    //               $('[data-tooltip]').tooltip();
+    //               $('[data-favorite]').on("click", function(f){
+    //                 f.preventDefault();
+    //                 var dataFavorite = $(this).attr("data-favorite");
+    //                 if(dataFavorite == "true") {
+    //                   removeFromFavorites($(this));
+    //                 } else {
+    //                   addToFavorites($(this));              
+    //                 }
+
+    //               });    
+    //               downloadPdf();    
+    //               $('.product-list-link').on("click", function(e){
+    //                 e.preventDefault();
+    //                 var groupId = encodeURIComponent($(this).attr("data-group-id"));
+    //                 var productId =$(this).attr("href");
+    //                 var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
+    //                 // console.log(link);
+
+    //                 var n = noty({
+    //                     text: 'Loading content...',
+    //                     layout: 'center',
+    //                     theme: 'relax',
+    //                     animation: {
+    //                         open: {height: 'toggle'}, // jQuery animate function property object
+    //                         close: {height: 'toggle'}, // jQuery animate function property object
+    //                         easing: 'swing', // easing
+    //                         speed: 500 // opening & closing animation speed
+    //                     },
+    //                     type: 'information',
+    //                     timeout: false,
+
+    //                 });
+    //                 $.ajax({
+    //                   url: link,
+    //                   type: 'get'
+    //                 })
+    //                 .done(function(newResult) {
+
+    //                   $('#pageContent').html(newResult);
+    //                   $.noty.closeAll();
+
+    //                 });        
+    //               });               
+    //               downloadPdf();
+    //             //EVENT LISTENERS
+    //           });          
+    //         });
+    // });
   },
   registerBookmark: function (arg) {
     var target = $(arg.target).parent("a");
@@ -450,7 +488,7 @@ var NavigationTree = React.createClass({
         React.createElement(
           'ul',
           { className: 'hasChildren', 'data-expanded': item.Expanded },
-          React.createElement(NavigationTree, { key: i, data: item.Nodes })
+          React.createElement(NavigationTree, { key: i, data: item.Nodes, onUpdate: this.onUpdate })
         )
       );
     } else {
@@ -463,7 +501,7 @@ var NavigationTree = React.createClass({
         },
         React.createElement(
           'a',
-          { href: item.Id, ref: 'link', onClick: this.update, index: i, 'data-overflow': true, className: item.Selected, 'data-toggle': 'tooltip', 'data-placement': 'right', title: item.Name },
+          { href: item.Id, onClick: this.update, index: i, 'data-overflow': true, className: item.Selected, 'data-toggle': 'tooltip', 'data-placement': 'right', title: item.Name },
           item.Name
         ),
         React.createElement(
@@ -485,26 +523,6 @@ var NavigationTree = React.createClass({
   }
 });
 
-var NavigationLink = React.createClass({
-  displayName: 'NavigationLink',
-
-  render: function () {
-    return React.createElement(
-      'li',
-      { className: 'noIcon', 'data-expanded': this.props.expanded },
-      React.createElement(
-        'a',
-        { href: this.props.href, 'data-overflow': true, className: this.props.className, 'data-toggle': 'tooltip', 'data-placement': 'right', title: this.props.title },
-        this.props.title
-      ),
-      React.createElement(
-        'a',
-        { href: item.Id, 'data-index': i, 'data-group': item.Name, 'data-bookmark': item.Bookmarked, onClick: this.registerBookmark, ref: 'link' },
-        React.createElement('i', { className: 'fa fa-bookmark-o' })
-      )
-    );
-  }
-});
 var MainContent = React.createClass({
   displayName: 'MainContent',
 
@@ -750,7 +768,7 @@ var RenderPage = React.createClass({
         contentSource = '/Default.aspx?ID=126&groupid=' + groupId;
       }
     }
-    this.setState({ catalog: catalog, groupID: groupId, productId: productId, contentSource: contentSource });
+    this.setState({ catalog: catalog, groupId: groupId, productId: productId, contentSource: contentSource });
 
     // if(param != false) {
     //   var link = '/Default.aspx?ID=126&groupId=' + param; 
@@ -764,6 +782,10 @@ var RenderPage = React.createClass({
     //   console.log(_this.state.contentSource);
     // },10);
 
+  },
+  onUpdate: function (link) {
+    var newUrl = link;
+    this.setState({ contentSource: newUrl });
   },
   //  onChildChanged: function(newState) {
   //       this.setState({ checked: newState });
@@ -810,7 +832,7 @@ var RenderPage = React.createClass({
           React.createElement(
             'section',
             { className: 'catalogNavSection navSection navigation' },
-            React.createElement(Navigation, { source: this.state.catalog, onChange: this.update })
+            React.createElement(Navigation, { source: this.state.catalog, onUpdate: this.onUpdate })
           )
         )
       ),
