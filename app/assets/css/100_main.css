@@ -967,6 +967,19 @@ button.button-download-group {
 #productsList > li {
   margin: 0; }
 
+.thumbs-slider {
+  margin: -0.5em; }
+  .thumbs-slider .item {
+    margin: 0.5em; }
+  .thumbs-slider img {
+    width: 100%; }
+
+.DMForms .bootstrap-select > .btn {
+  line-height: 32px; }
+
+.DMForms .bootstrap-select.btn-group .btn .caret {
+  font-size: 1rem; }
+
 .headerBox {
   background-color: #F4F4F4;
   border: none; }
@@ -1039,15 +1052,59 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
 .removeFiltersContainer {
   padding: 1em; }
 
-.whishlistItem {
+#productsList .whishlistItem {
   margin-bottom: 1rem; }
-  .whishlistItem:before, .whishlistItem:after {
+  #productsList .whishlistItem:before, #productsList .whishlistItem:after {
     content: " ";
     display: table; }
-  .whishlistItem:after {
+  #productsList .whishlistItem:after {
     clear: both; }
-  .whishlistItem h2 a {
-    font-size: 0.7em; }
+  #productsList .whishlistItem form[name="change"] {
+    text-align: right; }
+  #productsList .whishlistItem button[type="submit"] {
+    display: inline-block;
+    float: none; }
+  #productsList .whishlistItem .form-style {
+    border: none;
+    line-height: 1.4;
+    height: auto; }
+  #productsList .whishlistItem .btn-group.bootstrap-select.form-style {
+    margin: 0 !important;
+    float: none; }
+    #productsList .whishlistItem .btn-group.bootstrap-select.form-style button.btn {
+      border: 1px solid #AFAFAF; }
+  #productsList .whishlistItem .bootstrap-select.btn-group .btn .caret:before {
+    font-size: 1em; }
+  #productsList .whishlistItem .form-group {
+    margin-bottom: 1em; }
+  #productsList .whishlistItem h2 {
+    margin: 0; }
+    #productsList .whishlistItem h2 a {
+      display: block;
+      font-size: 0.7em; }
+  #productsList .whishlistItem .listPrice {
+    text-align: right; }
+  #productsList .whishlistItem .wishlist-quantity {
+    width: 3em;
+    display: inline-block;
+    text-align: center; }
+  #productsList .whishlistItem .addToCart {
+    float: none;
+    margin-left: 1em; }
+  #productsList .whishlistItem .form-inline {
+    width: 100%; }
+    #productsList .whishlistItem .form-inline:before, #productsList .whishlistItem .form-inline:after {
+      content: " ";
+      display: table; }
+    #productsList .whishlistItem .form-inline:after {
+      clear: both; }
+
+#changeList .bootstrap-select {
+  border: none;
+  line-height: 1.4;
+  height: auto; }
+  #changeList .bootstrap-select.btn-group .btn .caret:before {
+    font-size: 1em; }
 
 .jayco #headerContainer {
   background-color: #0577be; }

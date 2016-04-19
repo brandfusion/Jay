@@ -63,9 +63,52 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
   height: 2em
 .removeFiltersContainer
   padding: 1em    
-.whishlistItem
-  margin-bottom: 1rem
-  +clearfix
-  h2 
-    a 
-      font-size: 0.7em  
+
+#productsList 
+  .whishlistItem
+    margin-bottom: 1rem
+    +clearfix
+    form[name="change"]
+      text-align: right
+    button[type="submit"]  
+      display: inline-block 
+      float: none
+    .form-style
+      border: none
+      line-height: 1.4
+      height: auto
+    .btn-group.bootstrap-select.form-style
+      margin: 0 !important
+      float: none
+      button.btn
+        border: 1px solid #AFAFAF
+        // line-height: 1.4
+        // height: auto     
+    .bootstrap-select.btn-group .btn .caret:before
+      font-size: 1em
+    .form-group 
+      margin-bottom: 1em
+    h2 
+      margin: 0
+      a 
+        display: block
+        font-size: 0.7em  
+    .listPrice      
+      text-align: right
+    .wishlist-quantity
+      width: 3em
+      display: inline-block
+      text-align: center
+    .addToCart  
+      float: none
+      margin-left: 1em
+    .form-inline
+      +clearfix
+      width: 100%  
+
+#changeList .bootstrap-select
+  border: none
+  line-height: 1.4
+  height: auto
+  &.btn-group .btn .caret:before
+    font-size: 1em      
