@@ -100,6 +100,23 @@ var h = {
     loadedContent = newLink;
     return loadedContent;
   },
+  getCompatibleList: function () {
+    console.log("getCompatibleList");
+    var productId = $('[data-productId]').attr('data-productId');
+    var link = "/Default.aspx?ID=132&productid=" + productId + "#body";
+    console.log("compatibleList:" + link);
+    $.ajax({
+      url: link,
+      type: 'GET',
+      dataType: 'html'
+    }).done(function (data) {
+      // var $response = $(data);
+      // console.log($response)
+      // var dataToAdd = $response.find('#body').html();
+      // console.log(dataToAdd);
+      $('#compatibleList').html(data);
+    });
+  },
   registerPageEvents: function () {
     console.log("registered");
     // $(document).ajaxComplete(function(){
@@ -109,7 +126,10 @@ var h = {
       slidesToShow: 3,
       slidesToScroll: 1,
       swipe: false,
-      touchMove: false
+      touchMove: false,
+      arrows: true,
+      nextArrow: "<i class='fa fa-chevron-right' aria-hidden='true'></i>",
+      prevArrow: "<i class='fa fa-chevron-left' aria-hidden='true'></i>"
     });
     $('#pageContent').on("click", ".thumbs-slider img", function () {
       var value = $(this).attr("data-big-src");
@@ -127,12 +147,43 @@ var h = {
         }
       });
     });
-    $('#pageContent').on('change', '[data-page-size]', function () {
-      var value = $(this).val();
-      var url = $(this).attr("data-url");
-      // var paramExists = getQueryVariable("PageSize");
-      var newUrl = replaceUrlParam(url, "PageSize", value);
+    $('#pageContent').on("click", '.view-pdf', function (d) {
+      d.preventDefault();
+      var value = $(this).parents(".form-group").find('[data-selected-link]').attr("data-selected-link");
+      $(this).parents(".form-group").find("a").each(function () {
+        var currentValue = $(this).attr("href");
+        // console.log(value);
+        if (currentValue == value) {
+          window.open(value, '_blank');
+        }
+      });
+    });
+    $('#pageContent').on('change', '[data-page-size], [data-section]', function () {
+      var pageSize = $('[data-page-size]').val();
+      var url = $('[data-url]').attr("data-url");
+      // var pageNumber = $('[data-current-page]').attr("data-current-page")
+      var section = $('[data-section]').val();
+      var newUrl = replaceUrlParam(url, "PageSize", pageSize);
+      newUrl = replaceUrlParam(newUrl, "Section", section);
+      // newUrl = replaceUrlParam(newUrl,"PageNum", pageNumber);
       // console.log(newUrl);
+      $.ajax({
+        url: newUrl,
+        type: 'get'
+      }).done(function (newResult) {
+        $('#pageContent').html(newResult);
+      });
+    });
+    $('#pageContent').on('click', '[data-pagination-number]', function (e) {
+      e.preventDefault();
+      var pageSize = $('[data-page-size]').val();
+      var url = $('[data-url]').attr("data-url");
+      var pageNumber = $(this).attr("data-pagination-number");
+      var section = $('[data-section]').val();
+      var newUrl = replaceUrlParam(url, "PageSize", pageSize);
+      newUrl = replaceUrlParam(newUrl, "Section", section);
+      newUrl = replaceUrlParam(newUrl, "PageNum", pageNumber);
+      console.log(newUrl);
       $.ajax({
         url: newUrl,
         type: 'get'
@@ -144,13 +195,15 @@ var h = {
       e.preventDefault();
       var value = $(this).attr("data-option-value");
       var name = $(this).attr("data-option-name");
+      var href = $(this).attr("href");
       $(this).parents(".btn-group").find("[data-selected-value]").attr("data-selected-value", value);
       $(this).parents(".btn-group").find("[data-selected-name]").html(name);
+      $(this).parents(".btn-group").find("[data-selected-link]").attr("data-selected-link", href);
     });
     $('[data-tooltip]').tooltip();
     $('#pageContent').on("click", '[data-favorite]', function (f) {
       f.preventDefault();
-      console.log("click");
+      // console.log("click");
       var dataFavorite = $(this).attr("data-favorite");
       if (dataFavorite == "true") {
         removeFromFavorites($(this));
@@ -158,7 +211,28 @@ var h = {
         addToFavorites($(this));
       }
     });
-    console.log("click on product link event");
+    $('#pageContent').on('change', '[compatible-list-option]', function () {
+      var productId = $('[compatible-productId]').attr("compatible-productId");
+      var url = "/Default.aspx?ID=132&productId=" + productId;
+      var options = "";
+      $("[compatible-list-option]").each(function () {
+        var name = $(this).attr("name");
+        var value = $(this).val();
+        options += "&" + name + "=" + value;
+      });
+      url = url + options;
+      $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'html'
+      }).done(function (data) {
+        $('#compatibleList').html(data);
+      });
+
+      console.log(url);
+    });
+
+    // console.log("click on product link event");
     $('#pageContent').on("click", '.product-list-link', function (e) {
       e.preventDefault();
       var groupId = encodeURIComponent($(this).attr("data-group-id"));
@@ -183,8 +257,9 @@ var h = {
         type: 'get'
       }).done(function (newResult) {
         $('#pageContent').html(newResult);
-        h.registerPageEvents();
-        // $.noty.closeAll(); 
+        // h.registerPageEvents();
+        // $.noty.closeAll();  
+        h.getCompatibleList();
       });
     });
 
@@ -209,32 +284,64 @@ var Navigation = React.createClass({
       // result =  result[0].Nodes;
       // var resultJSON = JSON.stringify(response);
       // console.log(nodes);
+      // $.each(result, function(key,val){
+
+      //     var node = markSelected(val, _this.state.selected);
+
+      //     if (node) {
+      //       node.Expanded = true;
+      //     }
+
+      // });
+      // _this.setState({data: _this.state.data});
       _this.setState({
         data: result
       });
     }.bind(this));
+    _this.setState({
+      selected: _this.props.bookmark
+    });
   },
-  // componentDidMount: function() {
-  //   console.log("mounted");
-  //   setTimeout(function(){
-  //       $.each(this.state.data, function(key,val){
+  componentDidMount: function () {
+    var _this = this;
+    console.log("mounted");
+    // console.log(_this.state.data);
+    // console.log(_this.state.selected);
 
-  //         var node = markSelected(val, that.state.selected);
+    setTimeout(function () {
+      console.log("entermarkbookmark");
+      $.each(_this.state.data, function (key, val) {
 
-  //         if (node) {
-  //           node.Expanded = true;
-  //         }
-  //         // do something with key and val
-  //     });
+        var node = markSelected(val, _this.state.selected);
 
-  //   }, 100);
-  //    setTimeout(function(){
+        if (node) {
+          node.Expanded = true;
+        }
+      });
+      _this.setState({ data: _this.state.data });
+    }, 500);
 
-  //     this.setState({data: this.state.data});
+    // setTimeout(function(){
+    //   // console.log(this.state.data);
+    //   //   $.each(this.state.data, function(key,val){
 
-  //    },200);
+    //   //     var node = markSelected(val, that.state.selected);
 
-  // },
+    //   //     if (node) {
+    //   //       node.Expanded = true;
+    //   //     }
+    //       // do something with key and val
+    //   // });
+    //   console.log(this.state.selected);
+    //   console.log(this.state.data);
+
+    // }, 100);
+    // setTimeout(function(){
+
+    //  console.log(this.state.data);
+
+    // },200);
+  },
   componentWillUnmount: function () {
     var _this = this;
     _this.serverRequest.abort();
@@ -261,6 +368,7 @@ var Navigation = React.createClass({
       $(target).addClass("opened");
     }
   },
+  // }, 
   // updateBookmark: function(){
   //   this.props.updateBookmark;
   // },
@@ -310,7 +418,8 @@ var Navigation = React.createClass({
     }
   },
   render: function () {
-    // console.log(this.state.data);
+    console.log(this.state.data);
+    // console.log(this.state.selected);
     return React.createElement(
       'ul',
       { className: 'componentWrapper' },
@@ -539,12 +648,21 @@ var NavigationTree = React.createClass({
   //         });
   // });
 
-  registerBookmark: function (arg) {
-    var target = $(arg.target).parent("a");
-    var bookmark = target[0].attributes["data-bookmark"].value;
-    var groupName = target[0].attributes["data-group"].value;
-    var id = target[0].attributes["href"].value;
-    var index = target[0].attributes["data-index"].value;
+  registerBookmark: function (e) {
+    e.preventDefault();
+    var target = $(e.currentTarget);
+    // console.log(e);
+    // console.log(target);
+
+    // var bookmark =  target[0].attributes["data-bookmark"].value;
+    // var groupName = target[0].attributes["data-group"].value;
+    // var id = target[0].attributes["href"].value;
+    // var index = target[0].attributes["data-index"].value;
+
+    var bookmark = target.attr("data-bookmark");
+    var groupName = target.attr("data-group");
+    var id = target.attr("href");
+    var index = target.attr("data-index");
 
     var that = this;
     if (bookmark == "true") {
@@ -564,7 +682,7 @@ var NavigationTree = React.createClass({
           }
         }
         that.setState(that.state);
-      }).fail(function (e) {});
+      });
     } else {
       $.ajax({
         method: "POST",
@@ -677,6 +795,10 @@ var MainContent = React.createClass({
     });
   },
   componentDidMount: function () {
+    // setTimeout(function(){
+    //   h.getCompatibleList();
+    // }, 500);
+
     // console.log("enter");
     // setTimeout(function(){
     //   h.registerPageEvents();
@@ -699,11 +821,8 @@ var MainContent = React.createClass({
     // }
     // },0); 
   },
-  componentdidUpdated: function () {
-    // console.log("updated");
-    // setTimeout(function(){
-    //   h.registerPageEvents();
-    // }, 250);
+  componentDidUpdate: function () {
+    h.getCompatibleList();
   },
   // _this.setState({data: this.props.source === "" ? this.state.data : this.props.source});
   // if(_this.props.source != "") {
@@ -947,7 +1066,7 @@ var RenderPage = React.createClass({
               'form',
               { action: '/Default.aspx', id: 'searchForm' },
               React.createElement('input', { type: 'hidden', name: 'ID', value: '127' }),
-              React.createElement('input', { placeholder: 'Serial #', id: 'searchSubmit', 'data-error': 'Search for something', type: 'text', name: 'q', value: this.props.children }),
+              React.createElement('input', { placeholder: 'Search', id: 'searchSubmit', 'data-error': 'Search for something', type: 'text', name: 'q', value: this.props.children }),
               React.createElement(
                 'button',
                 { className: 'btn btn-sm btn-warning', type: 'submit' },
@@ -958,7 +1077,7 @@ var RenderPage = React.createClass({
           React.createElement(
             'section',
             { className: 'catalogNavSection navSection navigation' },
-            React.createElement(Navigation, { source: this.state.catalog, onUpdate: this.onUpdate })
+            React.createElement(Navigation, { source: this.state.catalog, onUpdate: this.onUpdate, bookmark: this.state.groupId })
           )
         )
       ),

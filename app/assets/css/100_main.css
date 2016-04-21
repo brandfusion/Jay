@@ -864,7 +864,7 @@ button.button-download-group {
 
 #pageContent {
   padding-top: 20px;
-  padding-bottom: 56px; }
+  padding-bottom: 75px; }
 
 .product-title {
   font-size: 1.2rem;
@@ -909,7 +909,8 @@ button.button-download-group {
   #catalogNavContainer section.catalogNavSection.navigation {
     position: relative;
     border: 0;
-    padding-bottom: 76px;
+    bottom: 76px;
+    top: 5px;
     height: 100%; }
   #catalogNavContainer > .catalogNavSection h1 {
     margin: 0;
@@ -968,7 +969,25 @@ button.button-download-group {
   margin: 0; }
 
 .thumbs-slider {
-  margin: -0.5em; }
+  margin: -0.5em;
+  padding: 0 2em;
+  position: relative; }
+  .thumbs-slider .fa-chevron-left {
+    display: inline-block;
+    position: absolute;
+    z-index: 2;
+    left: 0.5em;
+    top: 50%;
+    font-size: 1em;
+    margin-top: -0.5em; }
+  .thumbs-slider .fa-chevron-right {
+    display: inline-block;
+    position: absolute;
+    z-index: 2;
+    right: 0.5em;
+    top: 50%;
+    font-size: 1em;
+    margin-top: -0.5em; }
   .thumbs-slider .item {
     margin: 0.5em; }
   .thumbs-slider img {
@@ -1105,6 +1124,9 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
   height: auto; }
   #changeList .bootstrap-select.btn-group .btn .caret:before {
     font-size: 1em; }
+
+#product-description {
+  margin-bottom: 2em; }
 
 .jayco #headerContainer {
   background-color: #0577be; }

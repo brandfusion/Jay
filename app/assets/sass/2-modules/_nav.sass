@@ -117,7 +117,7 @@ button.button-download-group
   text-align: right
 #pageContent
   padding-top: 20px
-  padding-bottom: 56px
+  padding-bottom: 75px
 .product-title 
   font-size: 1.2rem
   line-height: 1.2 
@@ -150,7 +150,9 @@ button.button-download-group
   section.catalogNavSection.navigation
     position: relative
     border: 0
-    padding-bottom: 76px
+    // padding-bottom: 76px
+    bottom: 76px
+    top: 5px
     height: 100%
   & > .catalogNavSection h1
     margin: 0
@@ -219,6 +221,24 @@ button.button-download-group
 //       margin-bottom: 0.2em     
 .thumbs-slider
   margin: -0.5em
+  padding: 0 2em
+  position: relative 
+  .fa-chevron-left
+    display: inline-block
+    position: absolute
+    z-index: 2
+    left: 0.5em
+    top: 50%
+    font-size: 1em
+    margin-top: -0.5em
+  .fa-chevron-right
+    display: inline-block
+    position: absolute
+    z-index: 2
+    right: 0.5em
+    top: 50%
+    font-size: 1em
+    margin-top: -0.5em  
   .item 
     margin: 0.5em
   img 
@@ -231,4 +251,8 @@ button.button-download-group
 .DMForms .bootstrap-select.btn-group .btn .caret
   font-size: 1rem
 
-    
+// #compatibleList
+//   margin-top: 2em    
+  // .associated-group-list
+  //   h4 
+  //     font-size: 1em
