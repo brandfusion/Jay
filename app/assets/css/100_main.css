@@ -704,6 +704,35 @@
   .starcraft .btn-primary:hover, .starcraft .btn-bg:hover {
     background-color: #466213; }
 
+.form-control {
+  border: 1px solid #AFAFAF; }
+
+.bootstrap-select.btn-group .btn .caret {
+  display: inline-block;
+  width: 30px;
+  height: 100%;
+  top: 0;
+  right: 10px;
+  margin: 0;
+  border: 0;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 30px;
+  font-size: 1rem; }
+
+.btn-print {
+  color: #ffffff;
+  background-color: #0577be;
+  border-color: #0577be; }
+
+.heading-page-wrapper {
+  line-height: 1.6;
+  font-size: 2em;
+  border-bottom: 1px solid #000;
+  margin-top: 1em; }
+  .heading-page-wrapper .btn-print {
+    margin-right: 0.5em; }
+
 html {
   font-size: 1em; }
 
@@ -917,9 +946,17 @@ button.button-download-group {
     font-size: 1.8em;
     line-height: 1.6; }
 
+#main:before, #main:after {
+  content: " ";
+  display: table; }
+
+#main:after {
+  clear: both; }
+
 #contentWrapper {
   padding-top: 84px;
-  min-height: 90vh; }
+  min-height: 90vh;
+  padding-bottom: 56px; }
 
 #footer {
   position: fixed;
@@ -1100,7 +1137,16 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
     margin: 0; }
     #productsList .whishlistItem h2 a {
       display: block;
-      font-size: 0.7em; }
+      font-size: 0.5em; }
+      #productsList .whishlistItem h2 a:hover {
+        color: #0f4a72; }
+  #productsList .whishlistItem figure {
+    text-align: left; }
+    #productsList .whishlistItem figure img {
+      max-width: 105px;
+      margin: 0; }
+    #productsList .whishlistItem figure a {
+      display: block; }
   #productsList .whishlistItem .listPrice {
     text-align: right; }
   #productsList .whishlistItem .wishlist-quantity {
@@ -1127,6 +1173,12 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
 
 #product-description {
   margin-bottom: 2em; }
+
+.favorite-quantity-wrapper {
+  text-align: right; }
+
+.favorite-update-quantity {
+  margin-right: 1em; }
 
 .jayco #headerContainer {
   background-color: #0577be; }
