@@ -1,0 +1,42 @@
+.product-list--list
+  .item 
+    margin-bottom: 1em
+    div 
+      font-size: 1em
+    .media-left
+      a 
+        width: 105px
+        display: block 
+        &:hover 
+          color: $blue
+    h2 
+      font-size: 1.2em
+      margin: 0 0 0.5em
+      padding: 0    
+      a 
+        font-size: inherit
+    .prodNumber
+      margin: 0    
+    .priceContainer 
+      text-align: right  
+    .listPrice
+      display: block 
+      font-size: 2em
+      color: #EE5921
+      margin-bottom: 0.25em
+    .wishlist-quantity
+      max-width: 5em
+      text-align: right 
+.product-list--list.product-list--wishlist
+  .favorite-quantity-wrapper
+      margin-bottom: 0.5em  
+  .priceContainer form[name="change"]     
+    .bootstrap-select
+      float: none !important
+      display: inline-block !important
+      vertical-align: middle !important
+      margin: 0 !important
+  form[name="addToCart"]  
+    margin-bottom: 0.5em  
+
+     
