@@ -711,6 +711,11 @@
   color: #ffffff;
   background-color: #0577be;
   border-color: #0577be; }
+  .btn-print:hover {
+    color: #fff; }
+  .btn-print .fa {
+    -webkit-transition: all 0s linear;
+            transition: all 0s linear; }
 
 .heading-page-wrapper {
   line-height: 1.6;
@@ -746,6 +751,12 @@
 
 .listMode > li {
   padding: 0 5px !important; }
+
+.btn-bg {
+  font-size: 1em; }
+
+#miniCart {
+  top: 100% !important; }
 
 html {
   font-size: 1em; }

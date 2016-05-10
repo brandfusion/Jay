@@ -121,7 +121,39 @@ var h = {
   registerPageEvents: function(){
     console.log("registered");
     // $(document).ajaxComplete(function(){
-      // fire when any Ajax requests complete
+      // fire when any Ajax requests complete  
+       $('#pageContent').on("click",".add-to-cart-button", function(f){
+        f.preventDefault();
+        var message = $(this).attr("data-message");
+        var productId = $(this).attr("data-product-id");
+        var orderContext = $(this).attr("data-order-context");
+        var quantity = "1";
+        var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add&quantity=" + quantity;
+        $.ajax({
+          url: linkAdd,
+          type: 'post'
+        })
+        .done(function(response) {         
+          alert(message); 
+        });
+        
+      });
+       $('#pageContent').on("click","#addToCartSubmit", function(f){
+        f.preventDefault();
+        var message = $(this).attr("data-message");
+        var productId = $(this).attr("data-product-id");
+        var orderContext = $(this).attr("data-order-context");
+        var quantity = $(".product-page-quantity").val();
+        var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add&quantity=" + quantity;
+        $.ajax({
+          url: linkAdd,
+          type: 'post'
+        })
+        .done(function(response) {         
+          alert(message); 
+        });
+        
+      });
       $('#pageContent').find(".thumbs-slider").slick({
         infinite: true,
         slidesToShow: 3,
@@ -442,8 +474,7 @@ var NavigationTree =  React.createClass({
   openChild: function(e){
     e.preventDefault();    
     var target= e.target;
-    // console.log(target); 
-    console.log(this.refs.target);    
+    // console.log(target);    
     if ($(target).parent().attr("data-expanded") == "true") {
       $(target).parents(".hasChildren").eq(0).find(".hasChildren").hide();
       $(target).parents(".hasChildren").eq(0).find("li").attr("data-expanded","false");
@@ -486,9 +517,10 @@ var NavigationTree =  React.createClass({
     })
     .done(function(response) {
       console.log("loading");
-      $('#pageContent').html(response);      
-      h.registerPageEvents();
+      $('#pageContent').html(response);
+      console.log("loadedevents");
     });
+    
   
   }, 
  
