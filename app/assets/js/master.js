@@ -443,11 +443,22 @@ var NavigationTree = React.createClass({
   openChild: function (e) {
     e.preventDefault();
     var target = e.target;
+    // console.log(target);
+    console.log(this.refs.target);
     if ($(target).parent().attr("data-expanded") == "true") {
+      $(target).parents(".hasChildren").eq(0).find(".hasChildren").hide();
+      $(target).parents(".hasChildren").eq(0).find("li").attr("data-expanded", "false");
+      $(target).parent().find("li").attr("data-expanded", "false");
       $(target).parent().attr("data-expanded", "false");
       $(target).parent().children(".hasChildren").hide();
       $(target).removeClass("opened");
     } else {
+      $(".componentWrapper").find(".opened").removeClass("opened");
+      // $(".componentWrapper").find("[data-expanded]").attr("data-expanded","false");_
+      $(target).parents(".hasChildren").eq(0).find(".hasChildren").hide();
+      $(target).parents(".hasChildren").eq(0).find("li").attr("data-expanded", "false");
+      $(target).parent().find("li").attr("data-expanded", "false");
+      console.log($(target).parents(".hasChildren")[0]);
       $(target).addClass("opened");
       // $(target).parents(".hasChildren").find(".branch-opened").removeClass('collapsed').removeClass('branch-opened');
       // console.log($(target).parents(".hasChildren").find("li.branch-opened"));
@@ -714,7 +725,7 @@ var NavigationTree = React.createClass({
         },
         React.createElement(
           'a',
-          { href: item.Id, className: item.Selected, onClick: this.openChild },
+          { href: item.Id, className: item.Selected, ref: 'target', onClick: this.openChild },
           item.Name
         ),
         React.createElement(
@@ -1052,11 +1063,6 @@ var RenderPage = React.createClass({
               'h1',
               null,
               this.state.catalog
-            ),
-            React.createElement(
-              'a',
-              { href: '/Default.aspx?ID=1', className: 'btn btn-sm btn-warning pull-right' },
-              'Select Catalog'
             )
           ),
           React.createElement(
@@ -1084,6 +1090,23 @@ var RenderPage = React.createClass({
       React.createElement(
         'div',
         { className: 'col-sm-9' },
+        React.createElement(
+          'div',
+          { className: 'row' },
+          React.createElement(
+            'div',
+            { classname: 'col-sm-12' },
+            React.createElement(
+              'div',
+              { className: 'heading-page-wrapper modifier' },
+              React.createElement(
+                'h1',
+                { className: 'heading-page' },
+                'Catalog'
+              )
+            )
+          )
+        ),
         React.createElement(MainContent, { source: this.state.contentSource })
       )
     );

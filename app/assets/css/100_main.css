@@ -717,6 +717,8 @@
   font-size: 2em;
   border-bottom: 1px solid #000;
   margin-top: 1em; }
+  .heading-page-wrapper.modifier {
+    margin-top: 0; }
   .heading-page-wrapper .btn-print {
     margin-right: 0.5em; }
 
@@ -952,7 +954,9 @@ button.button-download-group {
     border: 0;
     bottom: 76px;
     top: 5px;
-    height: 100%; }
+    height: 100%;
+    overflow-y: auto;
+    padding-bottom: 110px; }
   #catalogNavContainer > .catalogNavSection h1 {
     margin: 0;
     font-size: 1.8em;
@@ -1044,6 +1048,9 @@ button.button-download-group {
 
 .DMForms .bootstrap-select > .btn {
   line-height: 32px; }
+
+.catalogNavSection.topSection {
+  margin-top: 8px !important; }
 
 .headerBox {
   background-color: #F4F4F4;
@@ -1221,6 +1228,38 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
 
 .favorite-update-quantity {
   margin-right: 1em; }
+
+.bookmark-list-content .item.opened .bookmark-content button {
+  display: block; }
+
+.bookmark-list-content .item .bookmark-content button {
+  display: none; }
+
+.bookmark-list-content .item .button-link {
+  margin-left: 1em; }
+
+.bookmark-list-content .item .bookmark-actions {
+  text-align: right; }
+
+.bookmark-list-content .item .btn-bg {
+  padding: 0 0.7em;
+  float: left; }
+
+.bookmark-list-content .item .btn-success {
+  padding: 0 0.7em;
+  font-size: 14px; }
+
+.bookmark-list-content .item textarea {
+  min-height: 7em;
+  margin-bottom: 0.5em;
+  max-width: 300px; }
+
+.button-link {
+  background-color: transparent;
+  text-decoration: underline; }
+  .button-link:hover {
+    background-color: transparent;
+    text-decoration: underline; }
 
 .jayco #headerContainer {
   background-color: #0577be; }

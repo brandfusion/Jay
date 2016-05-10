@@ -441,12 +441,23 @@ var NavigationTree =  React.createClass({
   },  
   openChild: function(e){
     e.preventDefault();    
-    var target= e.target;     
+    var target= e.target;
+    // console.log(target); 
+    console.log(this.refs.target);    
     if ($(target).parent().attr("data-expanded") == "true") {
+      $(target).parents(".hasChildren").eq(0).find(".hasChildren").hide();
+      $(target).parents(".hasChildren").eq(0).find("li").attr("data-expanded","false");
+      $(target).parent().find("li").attr("data-expanded","false");
       $(target).parent().attr("data-expanded","false"); 
       $(target).parent().children(".hasChildren").hide();
       $(target).removeClass("opened");
     } else { 
+      $(".componentWrapper").find(".opened").removeClass("opened");
+      // $(".componentWrapper").find("[data-expanded]").attr("data-expanded","false");_
+      $(target).parents(".hasChildren").eq(0).find(".hasChildren").hide();
+      $(target).parents(".hasChildren").eq(0).find("li").attr("data-expanded","false");
+      $(target).parent().find("li").attr("data-expanded","false");
+      console.log($(target).parents(".hasChildren")[0]);
       $(target).addClass("opened");
       // $(target).parents(".hasChildren").find(".branch-opened").removeClass('collapsed').removeClass('branch-opened');
       // console.log($(target).parents(".hasChildren").find("li.branch-opened"));
@@ -721,7 +732,7 @@ var NavigationTree =  React.createClass({
                   index={i}
                   className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}                  
                   data-expanded={item.Expanded}
-              ><a href={item.Id} className={item.Selected}  onClick={this.openChild}>{item.Name}</a>
+              ><a href={item.Id} className={item.Selected} ref="target" onClick={this.openChild}>{item.Name}</a>
                <ul className="hasChildren" data-expanded={item.Expanded}>
                 <NavigationTree key={i} data={item.Nodes} />
               </ul>
@@ -1057,7 +1068,7 @@ var RenderPage = React.createClass({
           <div id="catalogNavContainer">
             
             <section className="catalogNavSection topSection">
-              <h1>{this.state.catalog}</h1><a href="/Default.aspx?ID=1" className="btn btn-sm btn-warning pull-right">Select Catalog</a>
+              <h1>{this.state.catalog}</h1>
             </section>
             
             <section className="catalogNavSection searchSection">
@@ -1077,7 +1088,16 @@ var RenderPage = React.createClass({
           </div>
         </div>
 
-          <div className="col-sm-9">           
+          <div className="col-sm-9">
+            <div className="row">
+              <div classname="col-sm-12">
+                <div className="heading-page-wrapper modifier">
+                  
+                  <h1 className="heading-page">Catalog</h1>
+                </div>
+              </div>
+            </div>
+                      
             <MainContent source={this.state.contentSource} />
           </div>
         </div>  
