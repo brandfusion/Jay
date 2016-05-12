@@ -758,6 +758,15 @@
 #miniCart {
   top: 100% !important; }
 
+.pagination li[active] a {
+  border: 1px solid #000;
+  padding: 0 0.5em; }
+
+.pagination li a {
+  color: #000; }
+  .pagination li a:hover {
+    color: #0577be; }
+
 html {
   font-size: 1em; }
 
@@ -1122,6 +1131,26 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
 #product-description {
   margin-bottom: 2em; }
 
+.cartChange {
+  width: 100%;
+  max-width: 100%; }
+  .cartChange .quantityInput {
+    line-height: 40px;
+    display: inline-block;
+    width: 100%;
+    height: 40px; }
+  .cartChange .submitQuantity {
+    background-color: transparent;
+    position: absolute;
+    right: 20px;
+    top: 10px; }
+  .cartChange .bootstrap-select {
+    max-width: 100%;
+    width: 100%; }
+
+#popup-image {
+  display: none; }
+
 .product-list--list .item {
   margin-bottom: 1em; }
   .product-list--list .item div {
@@ -1205,7 +1234,12 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
   margin-bottom: 0.5em; }
 
 .product-list--box .item h2 {
-  min-height: 2.8em; }
+  height: 4em;
+  overflow: hidden; }
+
+.product-list--box .item .image {
+  height: 130px;
+  overflow: hidden; }
 
 .product-list--list .item .quantity-container {
   text-align: right; }

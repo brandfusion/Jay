@@ -122,16 +122,21 @@ var h = {
     // $(document).ajaxComplete(function(){
     // fire when any Ajax requests complete 
     $('#pageContent').on("click", ".add-to-cart-button", function (f) {
+
       f.preventDefault();
       var message = $(this).attr("data-message");
       var productId = $(this).attr("data-product-id");
       var orderContext = $(this).attr("data-order-context");
       var quantity = "1";
-      var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add&quantity=" + quantity;
+      var unit = $(this).attr("data-unit");
+      var catalog = $(this).attr("data-catalog");
+
+      var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add" + "&EcomOrderLineFieldInput_CatalogId=" + catalog + "&EcomOrderLineFieldInput_UnitOfMeasure=" + unit + "&Unit=" + unit + "&quantity=" + quantity;
       $.ajax({
         url: linkAdd,
         type: 'post'
       }).done(function (response) {
+
         alert(message);
       });
     });
@@ -141,7 +146,9 @@ var h = {
       var productId = $(this).attr("data-product-id");
       var orderContext = $(this).attr("data-order-context");
       var quantity = $(".product-page-quantity").val();
-      var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add&quantity=" + quantity;
+      var unit = $(this).attr("data-unit");
+      var catalog = $(this).attr("data-catalog");
+      var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add" + "&EcomOrderLineFieldInput_CatalogId=" + catalog + "&EcomOrderLineFieldInput_UnitOfMeasure=" + unit + "&Unit=" + unit + "&quantity=" + quantity;
       $.ajax({
         url: linkAdd,
         type: 'post'
