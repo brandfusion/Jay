@@ -50,13 +50,43 @@ window.markSelected = function (node, selected) {
 
   return null;
 };
+window.popupMessageAutoClose = function (arg) {
+  $('#popup-messages').bPopup({
+    autoClose: 2000,
+    onOpen: function () {
+      $('#popup-messages .content').html(arg);
+    },
+    onClose: function () {
+      $('#popup-messages .content').empty();
+    }
+  });
+};
+window.popupMessageManualClose = function (arg) {
+  $('#popup-messages').bPopup({
+    onOpen: function () {
+      $('#popup-messages .content').html(arg);
+    },
+    onClose: function () {
+      $('#popup-messages .content').empty();
+    }
+  });
+};
 window.addToFavorites = function (arg) {
   var addToFavorites = arg.attr("data-add-favorites");
   $.ajax({
     url: addToFavorites,
     type: 'POST'
   }).done(function (response) {
-    alert("sent");
+
+    $('#popup-messages').bPopup({
+      autoClose: 2000,
+      onOpen: function () {
+        $('#popup-messages .content').html(arg.attr("data-message-add"));
+      },
+      onClose: function () {
+        $('#popup-messages .content').empty();
+      }
+    });
     arg.find(".fa-heart").removeClass("fa-heart-o");
     arg.attr("data-favorite", "true");
   });
@@ -68,7 +98,15 @@ window.removeFromFavorites = function (arg) {
     type: 'POST'
   }).done(function (response) {
     // console.log("success");
-    alert("sent");
+    $('#popup-messages').bPopup({
+      autoClose: 2000,
+      onOpen: function () {
+        $('#popup-messages .content').html(arg.attr("data-message-remove"));
+      },
+      onClose: function () {
+        $('#popup-messages .content').empty();
+      }
+    });
     arg.find(".fa-heart").addClass("fa-heart-o");
     arg.attr("data-favorite", "false");
   });
@@ -137,7 +175,9 @@ var h = {
         type: 'post'
       }).done(function (response) {
 
-        alert(message);
+        popupMessageAutoClose(message);
+        minicart();
+        // alert(message);
       });
     });
     $('#pageContent').on("click", "#addToCartSubmit", function (f) {
@@ -153,7 +193,8 @@ var h = {
         url: linkAdd,
         type: 'post'
       }).done(function (response) {
-        alert(message);
+        popupMessageAutoClose(message);
+        minicart();
       });
     });
     $('#pageContent').find(".thumbs-slider").slick({
@@ -246,25 +287,36 @@ var h = {
         addToFavorites($(this));
       }
     });
-    $('#pageContent').on('change', '[compatible-list-option]', function () {
+    $('#pageContent').on('click', '.show-compatible-list', function () {
       var productId = $('[compatible-productId]').attr("compatible-productId");
       var url = "/Default.aspx?ID=132&productId=" + productId;
       var options = "";
+      var exit = false;
       $("[compatible-list-option]").each(function () {
+        if (!exit) {
+          if ($(this).val() == "" || $(this).val() == null) {
+            var message = $(this).attr("data-message");
+            popupMessageManualClose(message);
+            exit = true;
+          }
+        }
+
         var name = $(this).attr("name");
         var value = $(this).val();
         options += "&" + name + "=" + value;
       });
-      url = url + options;
-      $.ajax({
-        url: url,
-        type: 'GET',
-        dataType: 'html'
-      }).done(function (data) {
-        $('#compatibleList').html(data);
-      });
+      if (!exit) {
+        url = url + options;
+        $.ajax({
+          url: url,
+          type: 'GET',
+          dataType: 'html'
+        }).done(function (data) {
+          $('#compatibleList').html(data);
+        });
 
-      console.log(url);
+        console.log(url);
+      }
     });
 
     // console.log("click on product link event");

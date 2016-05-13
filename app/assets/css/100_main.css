@@ -686,6 +686,11 @@
   .jayco .btn-primary:hover, .jayco .btn-bg:hover {
     background-color: #04588c; }
 
+.jayco a, .jayco button {
+  color: inherit; }
+  .jayco a:hover, .jayco button:hover {
+    color: #0577be; }
+
 .entegra .logo {
   background-image: url(/Files/Templates/Designs/Jayco/images/logo-entegra.png); }
 
@@ -695,6 +700,11 @@
   .entegra .btn-primary:hover, .entegra .btn-bg:hover {
     background-color: #851e24; }
 
+.entegra a, .entegra button {
+  color: inherit; }
+  .entegra a:hover, .entegra button:hover {
+    color: #af272f; }
+
 .starcraft .logo {
   background-image: url(/Files/Templates/Designs/Jayco/images/logo-starcraft.png); }
 
@@ -703,6 +713,11 @@
   color: #fff !important; }
   .starcraft .btn-primary:hover, .starcraft .btn-bg:hover {
     background-color: #466213; }
+
+.starcraft a, .starcraft button {
+  color: inherit; }
+  .starcraft a:hover, .starcraft button:hover {
+    color: #658d1b; }
 
 .form-control {
   border: 1px solid #AFAFAF; }
@@ -766,6 +781,22 @@
   color: #000; }
   .pagination li a:hover {
     color: #0577be; }
+
+#searchSubmit {
+  height: 30px;
+  text-indent: 10px; }
+
+.form-filters {
+  padding-bottom: 30px; }
+  .form-filters label {
+    font-weight: 400; }
+  .form-filters .badge {
+    font-size: 0.8em;
+    color: #777; }
+  .form-filters .filter-option-value {
+    vertical-align: top;
+    display: inline-block;
+    margin-right: 0.3em; }
 
 html {
   font-size: 1em; }
@@ -1150,6 +1181,15 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
 
 #popup-image {
   display: none; }
+
+#popup-messages {
+  width: 450px;
+  display: none; }
+  #popup-messages .content {
+    background-color: #fff;
+    padding: 1em;
+    border-radius: 0.5em;
+    text-align: center; }
 
 .product-list--list .item {
   margin-bottom: 1em; }

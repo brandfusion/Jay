@@ -117,6 +117,10 @@
     color: #fff !important
     &:hover 
       background-color: darken( $jayco, 10% )  
+  a, button
+    color: inherit
+    &:hover
+      color: $jayco    
 .entegra
   .logo
     background-image: url(/Files/Templates/Designs/Jayco/images/logo-entegra.png) 
@@ -125,6 +129,10 @@
     color: #fff !important
     &:hover 
       background-color: darken( $entegra, 10% ) 
+  a, button
+    color: inherit
+    &:hover
+      color: $entegra     
 .starcraft
   .logo
     background-image: url(/Files/Templates/Designs/Jayco/images/logo-starcraft.png) 
@@ -132,7 +140,11 @@
     background-color: $starcraft 
     color: #fff !important
     &:hover 
-      background-color: darken( $starcraft, 10% )      
+      background-color: darken( $starcraft, 10% ) 
+  a, button
+    color: inherit
+    &:hover
+      color: $starcraft         
 .form-control
   border: 1px solid #AFAFAF     
 .btn-print 
@@ -198,3 +210,18 @@
       color: #000
       &:hover 
         color: $blue    
+#searchSubmit
+  height: 30px
+  text-indent: 10px
+
+.form-filters
+  padding-bottom: 30px
+  label 
+    font-weight: 400
+  .badge 
+    font-size: 0.8em
+    color: #777 
+  .filter-option-value
+    vertical-align: top
+    display: inline-block
+    margin-right: 0.3em   
