@@ -212,7 +212,7 @@ var h = {
       $("#pageContent .zoom-image").attr("src", value);
       $("#pageContent .zoomImg").attr("src", value);
     });
-    $('#pageContent').find(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
+    $('#pageContent').find(".zoom-image").wrap('<span class="zoomImg-wrapper"></span>').css('display', 'block').parent().zoom();
     $('#pageContent').on("click", '.download-pdf', function (f) {
       f.preventDefault();
       var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");

@@ -1191,6 +1191,27 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
     border-radius: 0.5em;
     text-align: center; }
 
+.zoomImg-wrapper {
+  display: block; }
+
+.cartProductsList li {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center; }
+
+.cart-image {
+  height: 90px;
+  overflow: hidden; }
+
 .product-list--list .item {
   margin-bottom: 1em; }
   .product-list--list .item div {
