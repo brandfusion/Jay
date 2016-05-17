@@ -174,6 +174,7 @@ var h = {
         var catalog = $(this).attr("data-catalog");
 
         var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add" + "&EcomOrderLineFieldInput_CatalogId=" + catalog + "&EcomOrderLineFieldInput_UnitOfMeasure=" + unit + "&Unit=" + unit + "&quantity=" + quantity;
+        console.log(linkAdd);
         $.ajax({
           url: linkAdd,
           type: 'post'
@@ -186,6 +187,15 @@ var h = {
         });
         
       });
+        $('#pageContent').on("click", '[data-popup="bPopup-link"]', function(e){
+          e.preventDefault();
+          var href = $(this).attr("href");
+          var output= '<img src="' + href + '" />';
+          $('#popup-image').html(output);
+          setTimeout(function(){
+            $('#popup-image').bPopup({positionStyle: 'fixed'});
+          },400)           
+        });
        $('#pageContent').on("click","#addToCartSubmit", function(f){
         f.preventDefault();
         var message = $(this).attr("data-message");

@@ -170,6 +170,7 @@ var h = {
       var catalog = $(this).attr("data-catalog");
 
       var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add" + "&EcomOrderLineFieldInput_CatalogId=" + catalog + "&EcomOrderLineFieldInput_UnitOfMeasure=" + unit + "&Unit=" + unit + "&quantity=" + quantity;
+      console.log(linkAdd);
       $.ajax({
         url: linkAdd,
         type: 'post'
@@ -179,6 +180,15 @@ var h = {
         minicart();
         // alert(message);
       });
+    });
+    $('#pageContent').on("click", '[data-popup="bPopup-link"]', function (e) {
+      e.preventDefault();
+      var href = $(this).attr("href");
+      var output = '<img src="' + href + '" />';
+      $('#popup-image').html(output);
+      setTimeout(function () {
+        $('#popup-image').bPopup({ positionStyle: 'fixed' });
+      }, 400);
     });
     $('#pageContent').on("click", "#addToCartSubmit", function (f) {
       f.preventDefault();
@@ -212,7 +222,7 @@ var h = {
       $("#pageContent .zoom-image").attr("src", value);
       $("#pageContent .zoomImg").attr("src", value);
     });
-    $('#pageContent').find(".zoom-image").wrap('<span class="zoomImg-wrapper"></span>').css('display', 'block').parent().zoom();
+    $('#pageContent').find(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
     $('#pageContent').on("click", '.download-pdf', function (f) {
       f.preventDefault();
       var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");
