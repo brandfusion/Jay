@@ -1,24 +1,3 @@
-.product-list--list
-  .item 
-    margin-bottom: 1em
-    div 
-      font-size: 1em
-    .media-left
-      a 
-        width: 105px
-        display: block 
-        &:hover 
-          color: $blue
-    .priceContainer 
-      text-align: right 
-    .wishlist-quantity
-      max-width: 5em
-      text-align: right    
-    .listPrice
-      display: block 
-      font-size: 2em
-      color: #EE5921
-      margin-bottom: 0.25em   
 .product-list 
   .item 
     margin-bottom: $spacing*2
@@ -37,8 +16,10 @@
     .priceContainer       
       position: relative
       font-size: 1.2em
+      line-height: 1.2em
     .price 
       display: block
+      margin-bottom: 0.5em
       strong 
         color: #EE5921 
         font-weight: 400
@@ -46,12 +27,14 @@
       margin-bottom: $spacing 
       line-height: 31px 
       margin-top: 0
+      // text-align: right
       input[name="quantity"]
-        max-width: 3em
-        height: 2em
-        line-height: 2em
-        padding: 0 0.2em
-        text-align: center
+        max-width: 5em
+        // height: 2em
+        // line-height: 2em
+        padding: 0 12px
+        text-align: right
+        margin-right: 0.5em
       label 
         line-height: 31px 
     .favorite 
@@ -72,44 +55,88 @@
 .product-list--list.product-list--wishlist
   .favorite-quantity-wrapper
       margin-bottom: 0.5em  
-  .priceContainer form[name="change"]     
-    .bootstrap-select
-      float: none !important
-      display: inline-block !important
-      vertical-align: middle !important
-      margin: 0 !important
+  .priceContainer 
+    padding-top: 2.85em
+    form[name="change"]     
+      .bootstrap-select
+        float: none !important
+        display: inline-block !important
+        vertical-align: middle !important
+        margin: 0 !important
   form[name="addToCart"]  
-    margin-bottom: 0.5em  
+    margin-bottom: 0.5em 
+  .default-quantity
+    text-align: right
+    margin-top: 3.85em
+    input 
+      max-width: 5em
+      text-align: right  
+    .special 
+      font-size: 0.8em
+      font-weight: 600 
+  .prodNumber
+    margin-bottom: 0.5em        
 .product-list--box
   .item 
     h2 
       // min-height: 2.8em
-      height: 4em
+      height: 3.6em
+      line-height: 1.2em
       overflow: hidden
     .image 
       height: 130px
       overflow: hidden    
-
-
-.product-list--list 
-  .item
-    .quantity-container
-      text-align: right
+.product-list--list
+  .item 
+    margin-bottom: 1em
+    div 
+      font-size: 1em
+    .media-left
+      a 
+        width: 105px
+        height: 105px
+        display: block 
+        overflow: hidden
+        &:hover 
+          color: $blue
+        img 
+          max-height: 105px
+          margin: 0 auto  
+    .priceContainer 
+      text-align: right 
+    .wishlist-quantity
+      max-width: 5em
+      text-align: right    
+    .listPrice
+      display: block 
+      font-size: 2em
+      color: #EE5921
+      margin-bottom: 0.25em 
+    .quantity-container     
       .pull-right 
         float: none
       input[name="quantity"]       
-        line-height: 31px
-        height: 31px 
-        vertical-align: top
-        margin-right: 0.5em
+        // line-height: 31px
+        // height: 31px 
+        vertical-align: top       
       label 
         float: none  
         vertical-align: top
     .favorite 
-      position: relative  
+      top: -4px 
     .price 
       margin-bottom: 0.5em
       font-size: 1.2em  
+      margin-right: 1.5em
+    h2 
+      min-height: 2.4em
+      line-height: 1.2em
+      a 
+        // line-height: 1.2em
+        // min-height: 2.8em      
+
+
+
 .product-list--table 
   .item 
     .quantity-container
@@ -119,18 +146,12 @@
     i 
       vertical-align: middle
       margin: 0  
+    .favorite 
+      top: 4px  
     // input[name="quantity"] 
     //   line-height: 31px
     //   height: 31px 
     //   vertical-align: top
     //   margin-right: 0.5em
 
-.default-quantity
-  text-align: right
-  margin-top: 4em 
-  input 
-    max-width: 5em
-    text-align: right  
-  .special 
-    font-size: 0.8em
-    font-weight: 600   
+

@@ -86,7 +86,9 @@
 
 #miniCartContainer
   a 
-    color: #000 
+    color: #000
+  .btn-bg 
+    color: #fff  
   footer 
     background-color: transparent  
 #miniCart
@@ -117,10 +119,12 @@
     color: #fff !important
     &:hover 
       background-color: darken( $jayco, 10% )  
-  a, button
-    color: inherit
+  a
+    // color: inherit
     &:hover
-      color: $jayco    
+      color: $jayco   
+  .footerBox, .headerBox 
+    border-color: $jayco     
 .entegra
   .logo
     background-image: url(/Files/Templates/Designs/Jayco/images/logo-entegra.png) 
@@ -129,10 +133,12 @@
     color: #fff !important
     &:hover 
       background-color: darken( $entegra, 10% ) 
-  a, button
-    color: inherit
+  a
+    // color: inherit
     &:hover
-      color: $entegra     
+      color: $entegra  
+  .footerBox, .headerBox 
+    border-color: $entegra       
 .starcraft
   .logo
     background-image: url(/Files/Templates/Designs/Jayco/images/logo-starcraft.png) 
@@ -141,10 +147,12 @@
     color: #fff !important
     &:hover 
       background-color: darken( $starcraft, 10% ) 
-  a, button
-    color: inherit
+  a
+    // color: inherit
     &:hover
-      color: $starcraft         
+      color: $starcraft   
+  .footerBox, .headerBox 
+    border-color: $starcraft          
 .form-control
   border: 1px solid #AFAFAF     
 .btn-print 
@@ -225,3 +233,16 @@
     vertical-align: top
     display: inline-block
     margin-right: 0.3em   
+
+.footerBox 
+  margin-top: 20px
+  border: none
+  border-top: 1px solid #000
+  padding: 10px 0px    
+.headerBox
+  padding: 1em 0
+  border:none
+  border-bottom: 1px solid #000
+  margin-bottom: 15px
+  background-color:#fff
+  min-height: 46px  
