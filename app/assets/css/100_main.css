@@ -1233,6 +1233,12 @@ form[name="change"] .bootstrap-select {
 .add-to-cart-button-line {
   background-color: transparent; }
 
+.pdf-name-style {
+  max-width: 80%;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle; }
+
 .product-list .item {
   margin-bottom: 2rem; }
   .product-list .item span, .product-list .item div {

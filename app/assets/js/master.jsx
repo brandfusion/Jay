@@ -187,6 +187,11 @@ var h = {
         });
         
       });
+        $('#pageContent').on("click", ".btn-print", function(e){
+          e.preventDefault();
+          window.print();
+
+        });
         $('#pageContent').on("click", '[data-popup="bPopup-link"]', function(e){
           e.preventDefault();
           var href = $(this).attr("href");
@@ -1196,7 +1201,7 @@ var RenderPage = React.createClass({
           </div>
         </div>
 
-          <div className="col-sm-9">
+          <div className="col-sm-9" id="mainContainerAjax">
             <div className="row">
               <div classname="col-sm-12">
                 <div className="heading-page-wrapper modifier">

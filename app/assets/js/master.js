@@ -181,6 +181,10 @@ var h = {
         // alert(message);
       });
     });
+    $('#pageContent').on("click", ".btn-print", function (e) {
+      e.preventDefault();
+      window.print();
+    });
     $('#pageContent').on("click", '[data-popup="bPopup-link"]', function (e) {
       e.preventDefault();
       var href = $(this).attr("href");
@@ -1185,7 +1189,7 @@ var RenderPage = React.createClass({
       ),
       React.createElement(
         'div',
-        { className: 'col-sm-9' },
+        { className: 'col-sm-9', id: 'mainContainerAjax' },
         React.createElement(
           'div',
           { className: 'row' },
