@@ -1039,9 +1039,14 @@ button.button-download-group {
 #main:after {
   clear: both; }
 
-#contentWrapper {
+@media only screen {
+  #contentWrapper {
+    min-height: 90vh;
+    padding-top: 84px;
+    padding-bottom: 56px; } }
+
+.contentWrapper {
   padding-top: 84px;
-  min-height: 90vh;
   padding-bottom: 56px; }
 
 #footer {
@@ -1205,6 +1210,18 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
     padding: 1em;
     border-radius: 0.5em;
     text-align: center; }
+
+#product-lg-image {
+  height: 315px;
+  overflow: hidden; }
+  #product-lg-image .text-center {
+    height: 100%; }
+    #product-lg-image .text-center span {
+      height: 100%;
+      display: block !important; }
+    #product-lg-image .text-center img {
+      margin: 0 auto;
+      max-height: 100%; }
 
 .zoomImg-wrapper {
   display: block; }

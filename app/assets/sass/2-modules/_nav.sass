@@ -162,10 +162,14 @@ button.button-download-group
     line-height: 1.6  
 #main 
   +clearfix       
-#contentWrapper
-  padding-top: 84px
-  min-height: 90vh
-  padding-bottom: 56px
+#contentWrapper  
+  @media only screen 
+    min-height: 90vh
+    padding-top: 84px 
+    padding-bottom: 56px
+.contentWrapper 
+  padding-top: 84px 
+  padding-bottom: 56px    
 
 #footer
   position: fixed
