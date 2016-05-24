@@ -145,10 +145,34 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
     max-width: 100%
     width: 100%  
 #popup-image
-  display: none    
+  display: none  
+  button.close-modal
+    background-color: transparent 
+    color: #000
+    z-index: 2
+    opacity: 1
+    font-weight: 300
+    position: absolute
+    right: 0.2em
+    top: 0.2em
+    font-size: 1.2em
+  .content 
+    img 
+      width: 100%
+.b-modal 
+  transition: all 0s linear
 #popup-messages
   width: 450px
   display: none
+  // button.close 
+  //   color: #000
+  //   z-index: 2
+  //   opacity: 1
+  //   font-weight: 300
+  //   position: absolute
+  //   right: 0.2em
+  //   top: 0.2em
+  //   font-size: 1.2em  
   .content 
     background-color: #fff
     padding: 1em

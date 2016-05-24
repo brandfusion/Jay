@@ -695,6 +695,21 @@
 .jayco .footerBox, .jayco .headerBox {
   border-color: #0577be; }
 
+.jaycomotorized .logo {
+  background-image: url(/Files/Templates/Designs/Jayco/images/logo-jaycomotorized.png); }
+
+.jaycomotorized .btn-primary, .jaycomotorized .btn-bg {
+  background-color: #0577be;
+  color: #fff !important; }
+  .jaycomotorized .btn-primary:hover, .jaycomotorized .btn-bg:hover {
+    background-color: #04588c; }
+
+.jaycomotorized a:hover {
+  color: #0577be; }
+
+.jaycomotorized .footerBox, .jaycomotorized .headerBox {
+  border-color: #0577be; }
+
 .entegra .logo {
   background-image: url(/Files/Templates/Designs/Jayco/images/logo-entegra.png); }
 
@@ -710,19 +725,19 @@
 .entegra .footerBox, .entegra .headerBox {
   border-color: #af272f; }
 
-.starcraft .logo {
+.starcraft-rv .logo {
   background-image: url(/Files/Templates/Designs/Jayco/images/logo-starcraft.png); }
 
-.starcraft .btn-primary, .starcraft .btn-bg {
+.starcraft-rv .btn-primary, .starcraft-rv .btn-bg {
   background-color: #658d1b;
   color: #fff !important; }
-  .starcraft .btn-primary:hover, .starcraft .btn-bg:hover {
+  .starcraft-rv .btn-primary:hover, .starcraft-rv .btn-bg:hover {
     background-color: #466213; }
 
-.starcraft a:hover {
+.starcraft-rv a:hover {
   color: #658d1b; }
 
-.starcraft .footerBox, .starcraft .headerBox {
+.starcraft-rv .footerBox, .starcraft-rv .headerBox {
   border-color: #658d1b; }
 
 .form-control {
@@ -940,6 +955,11 @@ body, p, div, span, td, th, li, a, a:link, input, textarea, .tile .listPrice, #c
     font-size: 1.4em;
     text-transform: uppercase;
     font-weight: 300; }
+    .product-header .heading--breadcrumbs {
+      font-size: 0.8em;
+      font-weight: 400;
+      color: #fff;
+      line-height: 29px; }
     .product-header .heading i {
       font-size: 1.5em;
       line-height: 1;
@@ -1067,9 +1087,22 @@ button.button-download-group {
   #homeContent .paragraphText h2 {
     margin: 0;
     line-height: 1;
-    margin-top: 0.2em; }
+    margin-top: 0.2em;
+    font-weight: 600; }
+    #homeContent .paragraphText h2 a {
+      text-decoration: none;
+      font-size: 0.8em;
+      color: #0577be; }
 
 .jayco .loading-image {
+  background-image: url(/Files/Images/Jayco.jpg);
+  background-size: contain;
+  opacity: 0.6;
+  height: 80vh;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+.jaycomotorized .loading-image {
   background-image: url(/Files/Images/Jayco.jpg);
   background-size: contain;
   opacity: 0.6;
@@ -1085,7 +1118,7 @@ button.button-download-group {
   background-position: center;
   background-repeat: no-repeat; }
 
-.starcraft .loading-image {
+.starcraft-rv .loading-image {
   background-image: url(/Files/Images/Starcraft.jpg);
   background-size: contain;
   opacity: 0.6;
@@ -1201,6 +1234,22 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
 
 #popup-image {
   display: none; }
+  #popup-image button.close-modal {
+    background-color: transparent;
+    color: #000;
+    z-index: 2;
+    opacity: 1;
+    font-weight: 300;
+    position: absolute;
+    right: 0.2em;
+    top: 0.2em;
+    font-size: 1.2em; }
+  #popup-image .content img {
+    width: 100%; }
+
+.b-modal {
+  -webkit-transition: all 0s linear;
+          transition: all 0s linear; }
 
 #popup-messages {
   width: 450px;
@@ -1437,10 +1486,13 @@ form[name="change"] .bootstrap-select {
 .jayco #headerContainer {
   background-color: #0577be; }
 
+.jaycomotorized #headerContainer {
+  background-color: #0577be; }
+
 .entegra #headerContainer {
   background-color: #af272f; }
 
-.starcraft #headerContainer {
+.starcraft-rv #headerContainer {
   background-color: #658d1b; }
 
 /*# sourceMappingURL=100_main.css.map */

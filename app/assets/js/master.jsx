@@ -196,9 +196,9 @@ var h = {
           e.preventDefault();
           var href = $(this).attr("href");
           var output= '<img src="' + href + '" />';
-          $('#popup-image').html(output);
+          $('#popup-image .content').html(output);
           setTimeout(function(){
-            $('#popup-image').bPopup({positionStyle: 'fixed'});
+            $('#popup-image').bPopup({positionStyle: 'fixed',  closeClass:'close-modal',});
           },400)           
         });
        $('#pageContent').on("click","#addToCartSubmit", function(f){
@@ -1174,14 +1174,33 @@ var RenderPage = React.createClass({
   //  onChildChanged: function(newState) {
   //       this.setState({ checked: newState });
   // },
-  render: function() {       
+  render: function() {   
+      var nameCatalog = this.state.catalog;
+      console.log(nameCatalog);
+      switch(nameCatalog) {
+          case "Jayco":
+              nameCatalog = "Jayco"; 
+              break;
+          case "JaycoMotorized":
+               nameCatalog = "Jayco Motorized";
+              break;
+          case "Entegra":
+              nameCatalog = "Entegra"; 
+              break;
+          case "Starcraft-RV":
+              nameCatalog = "Starcraft"; 
+              break;    
+          default:
+              nameCatalog = "";
+      }    
+      console.log(nameCatalog);
       return (
         <div className="wrapper">
         <div className="col-sm-3">
           <div id="catalogNavContainer">
             
             <section className="catalogNavSection topSection">
-              <h1>{this.state.catalog}</h1>
+              <h1>{nameCatalog}</h1>
             </section>
             
             <section className="catalogNavSection searchSection">

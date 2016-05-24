@@ -69,7 +69,7 @@ body, p, div, span, td, th, li, a, a:link, input, textarea, .tile .listPrice, #c
   background-color: $blue 
   color: #fff 
   padding: 0.5em 1em
-  margin-bottom: 1em
+  margin-bottom: 1em  
   button
     float: right 
     line-height: 2 
@@ -87,6 +87,11 @@ body, p, div, span, td, th, li, a, a:link, input, textarea, .tile .listPrice, #c
     font-size: 1.4em
     text-transform: uppercase
     font-weight: 300
+    &--breadcrumbs
+      font-size: 0.8em
+      font-weight: 400
+      color: #fff
+      line-height: 29px
     i 
       font-size: 1.5em
       line-height: 1
@@ -155,7 +160,7 @@ button.button-download-group
     top: 5px
     height: 100%
     overflow-y: auto
-    padding-bottom: 110px;
+    padding-bottom: 110px
   & > .catalogNavSection h1
     margin: 0
     font-size: 1.8em
@@ -190,6 +195,11 @@ button.button-download-group
       margin: 0
       line-height: 1
       margin-top: 0.2em
+      font-weight: 600
+      a 
+        text-decoration: none
+        font-size: 0.8em 
+        color: $jayco
 .jayco      
   .loading-image
     background-image: url(/Files/Images/Jayco.jpg)
@@ -198,6 +208,14 @@ button.button-download-group
     height: 80vh
     background-position: center
     background-repeat: no-repeat
+.jaycomotorized      
+  .loading-image
+    background-image: url(/Files/Images/Jayco.jpg)
+    background-size: contain
+    opacity: 0.6
+    height: 80vh
+    background-position: center
+    background-repeat: no-repeat    
 .entegra      
   .loading-image
     background-image: url(/Files/Images/Entegra.jpg)
@@ -206,7 +224,7 @@ button.button-download-group
     height: 80vh
     background-position: center
     background-repeat: no-repeat
-.starcraft      
+.starcraft-rv      
   .loading-image
     background-image: url(/Files/Images/Starcraft.jpg)
     background-size: contain

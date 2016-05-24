@@ -189,9 +189,9 @@ var h = {
       e.preventDefault();
       var href = $(this).attr("href");
       var output = '<img src="' + href + '" />';
-      $('#popup-image').html(output);
+      $('#popup-image .content').html(output);
       setTimeout(function () {
-        $('#popup-image').bPopup({ positionStyle: 'fixed' });
+        $('#popup-image').bPopup({ positionStyle: 'fixed', closeClass: 'close-modal' });
       }, 400);
     });
     $('#pageContent').on("click", "#addToCartSubmit", function (f) {
@@ -1147,6 +1147,25 @@ var RenderPage = React.createClass({
   //       this.setState({ checked: newState });
   // },
   render: function () {
+    var nameCatalog = this.state.catalog;
+    console.log(nameCatalog);
+    switch (nameCatalog) {
+      case "Jayco":
+        nameCatalog = "Jayco";
+        break;
+      case "JaycoMotorized":
+        nameCatalog = "Jayco Motorized";
+        break;
+      case "Entegra":
+        nameCatalog = "Entegra";
+        break;
+      case "Starcraft-RV":
+        nameCatalog = "Starcraft";
+        break;
+      default:
+        nameCatalog = "";
+    }
+
     return React.createElement(
       'div',
       { className: 'wrapper' },
@@ -1162,7 +1181,7 @@ var RenderPage = React.createClass({
             React.createElement(
               'h1',
               null,
-              this.state.catalog
+              nameCatalog
             )
           ),
           React.createElement(
