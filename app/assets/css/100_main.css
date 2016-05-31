@@ -1305,6 +1305,21 @@ form[name="change"] .bootstrap-select {
   display: inline-block;
   vertical-align: middle; }
 
+.sort-block {
+  margin-left: 0.5em;
+  width: 2em;
+  position: relative; }
+  .sort-block .fa {
+    cursor: pointer; }
+  .sort-block .fa-caret-down {
+    position: absolute;
+    top: 0.3em;
+    left: 0; }
+  .sort-block .fa-caret-up {
+    position: absolute;
+    top: -0.2em;
+    left: 0; }
+
 .product-list .item {
   margin-bottom: 2rem; }
   .product-list .item span, .product-list .item div {

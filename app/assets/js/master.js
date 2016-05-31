@@ -226,7 +226,13 @@ var h = {
       $("#pageContent .zoom-image").attr("src", value);
       $("#pageContent .zoomImg").attr("src", value);
     });
-    $('#pageContent').find(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
+    $;
+
+    console.log("loadedZoom");
+    $('#pageContent').on("load", ".zoom-image", function () {
+
+      '#pageContent'.find(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
+    });
     $('#pageContent').on("click", '.download-pdf', function (f) {
       f.preventDefault();
       var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");
@@ -255,6 +261,33 @@ var h = {
       var section = $('[data-section]').val();
       var newUrl = replaceUrlParam(url, "PageSize", pageSize);
       newUrl = replaceUrlParam(newUrl, "Section", section);
+      // newUrl = replaceUrlParam(newUrl,"PageNum", pageNumber);
+      // console.log(newUrl);
+      $.ajax({
+        url: newUrl,
+        type: 'get'
+      }).done(function (newResult) {
+        $('#pageContent').html(newResult);
+      });
+    });
+    $('#pageContent').on('click', '[data-sort-by]', function () {
+      var sortBy = $(this).attr("data-sort-by");
+      var sortOrder = $(this).attr("data-sort-order");
+      console.log(sortOrder);
+      if (sortOrder == "" || sortOrder == "DESC") {
+        sortOrder = "ASC";
+      } else {
+        sortOrder = "DESC";
+      }
+      console.log(sortOrder);
+      var pageSize = $('[data-page-size]').val();
+      var url = $('[data-url]').attr("data-url");
+      // var pageNumber = $('[data-current-page]').attr("data-current-page")
+      var section = $('[data-section]').val();
+      var newUrl = replaceUrlParam(url, "PageSize", pageSize);
+      newUrl = replaceUrlParam(newUrl, "Section", section);
+      newUrl = replaceUrlParam(newUrl, "sortBy", sortBy);
+      newUrl = replaceUrlParam(newUrl, "SortOrder", sortOrder);
       // newUrl = replaceUrlParam(newUrl,"PageNum", pageNumber);
       // console.log(newUrl);
       $.ajax({
@@ -1151,10 +1184,10 @@ var RenderPage = React.createClass({
     console.log(nameCatalog);
     switch (nameCatalog) {
       case "Jayco":
-        nameCatalog = "Jayco";
+        nameCatalog = "Jayco Towables";
         break;
-      case "JaycoMotorized":
-        nameCatalog = "Jayco Motorized";
+      case "JAYCOMOTORIZED":
+        nameCatalog = "Jayco Motorhome";
         break;
       case "Entegra":
         nameCatalog = "Entegra";
@@ -1165,7 +1198,7 @@ var RenderPage = React.createClass({
       default:
         nameCatalog = "";
     }
-
+    console.log(nameCatalog);
     return React.createElement(
       'div',
       { className: 'wrapper' },
