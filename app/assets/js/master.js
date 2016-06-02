@@ -229,10 +229,9 @@ var h = {
     $;
 
     console.log("loadedZoom");
-    $('#pageContent').on("load", ".zoom-image", function () {
 
-      '#pageContent'.find(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
-    });
+    $('#pageContent').find(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
+
     $('#pageContent').on("click", '.download-pdf', function (f) {
       f.preventDefault();
       var value = $(this).parents(".form-group").find('[data-selected-value]').attr("data-selected-value");
@@ -620,6 +619,9 @@ var NavigationTree = React.createClass({
     }).done(function (response) {
       console.log("loading");
       $('#pageContent').html(response);
+
+      $('#pageContent').find(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
+
       console.log("loadedevents");
     });
   },
