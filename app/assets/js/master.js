@@ -1225,7 +1225,8 @@ var RenderPage = React.createClass({
             React.createElement(
               'form',
               { action: '/Default.aspx', id: 'searchForm' },
-              React.createElement('input', { type: 'hidden', name: 'ID', value: '127' }),
+              React.createElement('input', { type: 'hidden', name: 'ID', value: '142' }),
+              React.createElement('input', { type: 'hidden', name: 'catalog', value: this.state.catalog }),
               React.createElement('input', { placeholder: 'Search', id: 'searchSubmit', 'data-error': 'Search for something', type: 'text', name: 'q', value: this.props.children }),
               React.createElement(
                 'button',

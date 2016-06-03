@@ -1250,7 +1250,8 @@ var RenderPage = React.createClass({
             
             <section className="catalogNavSection searchSection">
               <form action="/Default.aspx" id="searchForm">
-                <input type="hidden" name="ID" value="127" />
+                <input type="hidden" name="ID" value="142" />
+                 <input type="hidden" name="catalog" value={this.state.catalog} />
                   <input placeholder='Search' id="searchSubmit" data-error='Search for something' type="text" name="q" value={this.props.children} />
                   <button className="btn btn-sm btn-warning" type="submit">
                   <i className="fa fa-search"></i>
