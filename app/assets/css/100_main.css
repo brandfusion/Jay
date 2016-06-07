@@ -1460,6 +1460,18 @@ form[name="change"] .bootstrap-select {
 .product-list--table .item .favorite {
   top: 4px; }
 
+.ico-sort {
+  margin-left: 0.5em; }
+
+.fa-sort-desc.ico-sort {
+  vertical-align: top; }
+
+.fa-sort-asc.ico-sort {
+  vertical-align: bottom; }
+
+th[data-sort-by] {
+  cursor: pointer; }
+
 .favorite-quantity-wrapper {
   text-align: right; }
 

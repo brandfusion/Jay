@@ -290,12 +290,6 @@ var h = {
         var sortBy = $(this).attr("data-sort-by");
         var sortOrder = $(this).attr("data-sort-order");
         console.log(sortOrder);
-        if (sortOrder == "" || sortOrder == "DESC") {
-          sortOrder = "ASC";
-        } else {
-          sortOrder = "DESC";
-        }       
-        console.log(sortOrder);
         var pageSize = $('[data-page-size]').val();
         var url= $('[data-url]').attr("data-url");      
         // var pageNumber = $('[data-current-page]').attr("data-current-page")
