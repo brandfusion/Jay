@@ -883,8 +883,6 @@ main {
 .navigation {
   overflow-y: auto;
   padding-right: 15px !important; }
-  .navigation .hasChildren {
-    display: none; }
   .navigation .active {
     display: block; }
   .navigation a {
