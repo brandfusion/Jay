@@ -1,3 +1,11 @@
+
+// var childGroups = ...
+// var groupResult = findGroup("gr32");
+
+// if (groupResult) {
+// groupResult.Nodes = childGroups;
+// }
+
 window.replaceUrlParam = function (url, paramName, paramValue) {
   var pattern = new RegExp('\\b(' + paramName + '=).*?(&|$)');
   if (url.search(pattern) >= 0) {
@@ -211,7 +219,6 @@ var h = {
       $("#pageContent .zoom-image").attr("src", value);
       $("#pageContent .zoomImg").attr("src", value);
     });
-    $;
 
     $('#pageContent').find(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
 
@@ -349,9 +356,33 @@ var h = {
         h.getCompatibleList();
       });
     });
+  },
 
-    // });   
+  // findGroup: function(groupId) {
+  //   return _findGroupNode(data, groupId);
+  // },
+  _findGroupNode: function (nodes, groupId) {
+    if (nodes && nodes.length) {
+      for (var i = 0; i < nodes.length; ++i) {
+        var node = nodes[i];
+
+        if ((node.Id || "").toLowerCase() == (groupId || "").toLowerCase()) {
+          return node;
+        }
+
+        if (node.Nodes && node.Nodes.length) {
+          var resultNode = h._findGroupNode(node.Nodes, groupId);
+
+          if (resultNode) {
+            return resultNode;
+          }
+        }
+      }
+    }
+
+    return null;
   }
+
 };
 
 var Navigation = React.createClass({
@@ -369,6 +400,7 @@ var Navigation = React.createClass({
     var bookmark = _this.props.bookmark === "" ? "" : _this.props.bookmark;
     if (bookmark.length > 0) {
       link = "/Files/WebServices/LazyNavigation.ashx?bookmark=" + _this.props.bookmark + "&action=bookmarkTree";
+      console.log(link);
     } else {
       link = "/Files/WebServices/LazyNavigation.ashx?group=" + _this.props.source;
     }
@@ -380,40 +412,55 @@ var Navigation = React.createClass({
 
     _this.setState({ selected: _this.props.bookmark });
   },
-  componentDidMount: function () {
-    var _this = this;
-
-    setTimeout(function () {
-      $.each(_this.state.data, function (key, val) {
-
-        var node = markSelected(val, _this.state.selected);
-
-        if (node) {
-          node.Expanded = true;
-        }
-      });
-      _this.setState({ data: _this.state.data });
-    }, 500);
-  },
   componentWillUnmount: function () {
     var _this = this;
     _this.serverRequest.abort();
   },
   openChild: function (e) {
     e.preventDefault();
-    var target = e.target;
-    if ($(target).parent().attr("data-expanded") == "true") {
-      $(target).parent().attr("data-expanded", "false");
-      $(target).parent().children(".hasChildren").hide();
-      $(target).removeClass("opened");
+    var $target = $(e.target);
+    var data = this.state.data;
+    var id = $target.attr("href");
+    var link = "http://floydpepper.dw-demo.com/Files/WebServices/LazyNavigation.ashx?group=" + id;
+    var hasChildren = $($target.parent().children()[1]).children().length;
+    var data = this.state.data;
+    var _this = this;
+    if (hasChildren > 0) {
+      // show ul
     } else {
-      $(target).parent().attr("data-expanded", "true");
-      $(target).parent().children(".hasChildren").show();
-      $(target).addClass("opened");
-    }
+        $.getJSON(link, function (response) {
+          if (response) {
+
+            var groupResult = h._findGroupNode(data, id);
+
+            if (groupResult) {
+              groupResult.Nodes = response.Nodes;
+            }
+            _this.setState({ data: data });
+
+            // var result = response.Nodes;
+            // _this.setState({data: result});
+          }
+        });
+      }
+    // console.log(hasChildren);
+    // $.getJSON(link, function (response) {         
+    //     var result = response.Nodes;
+    //     _this.setState({data: result});  
+
+    // });
+    // var target= e.target;    
+    // if ($(target).parent().attr("data-expanded") == "true") {
+    //   $(target).parent().attr("data-expanded","false");
+    //   $(target).parent().children(".hasChildren").hide();
+    //   $(target).removeClass("opened");
+    // } else {
+    //   $(target).parent().attr("data-expanded","true");
+    //   $(target).parent().children(".hasChildren").show();
+    //   $(target).addClass("opened");
+    // }
   },
   eachItem: function (item, i) {
-
     if (item.HasNodes === true) {
       var that = this;
       if (item.Nodes === null) {
@@ -425,7 +472,7 @@ var Navigation = React.createClass({
           },
           React.createElement(
             'a',
-            { href: item.Id, className: item.Selected, onClick: this.openChild },
+            { href: item.Id, onClick: this.openChild },
             item.Name
           ),
           React.createElement('ul', { className: 'hasChildren', 'data-expanded': item.Expanded })
@@ -434,17 +481,16 @@ var Navigation = React.createClass({
         return React.createElement(
           'li',
           { key: i,
-            index: i,
-            'data-expanded': item.Expanded
+            index: i
           },
           React.createElement(
             'a',
-            { href: item.Id, className: item.Selected, onClick: this.openChild },
+            { href: item.Id, onClick: this.openChild },
             item.Name
           ),
           React.createElement(
             'ul',
-            { className: 'hasChildren', 'data-expanded': item.Expanded },
+            { className: 'hasChildren' },
             React.createElement(NavigationTree, { data: item.Nodes })
           )
         );
@@ -470,6 +516,7 @@ var Navigation = React.createClass({
     }
   },
   render: function () {
+    console.log(this.state.data);
     return React.createElement(
       'ul',
       { className: 'componentWrapper' },
@@ -490,34 +537,35 @@ var NavigationTree = React.createClass({
   componentWillMount: function () {
     this.setState({ data: this.props.data });
   },
-  componentDidMount: function () {
-    setTimeout(function () {
-      console.log(this.state.data);
-    }, 300);
-  },
   openChild: function (e) {
     e.preventDefault();
-    var target = e.target;
-    if ($(target).parent().attr("data-expanded") == "true") {
-      $(target).parents(".hasChildren").eq(0).find(".hasChildren").hide();
-      $(target).parents(".hasChildren").eq(0).find("li").attr("data-expanded", "false");
-      $(target).parent().find("li").attr("data-expanded", "false");
-      $(target).parent().attr("data-expanded", "false");
-      $(target).parent().children(".hasChildren").hide();
-      $(target).removeClass("opened");
+    var $target = $(e.target);
+    var data = this.state.data;
+    var id = $target.attr("href");
+    var link = "http://floydpepper.dw-demo.com/Files/WebServices/LazyNavigation.ashx?group=" + id;
+    var hasChildren = $($target.parent().children()[1]).children().length;
+    console.log(link);
+    var data = this.state.data;
+    var _this = this;
+    if (hasChildren > 0) {
+      // show ul
     } else {
-      $(".componentWrapper").find(".opened").removeClass("opened");
+        $.getJSON(link, function (response) {
+          if (response) {
+            console.log(response);
 
-      $(target).parents(".hasChildren").eq(0).find(".hasChildren").hide();
-      $(target).parents(".hasChildren").eq(0).find("li").attr("data-expanded", "false");
-      $(target).parent().find("li").attr("data-expanded", "false");
+            var groupResult = h._findGroupNode(data, id);
 
-      $(target).addClass("opened");
-
-      $(target).parent().attr("data-expanded", "true");
-
-      $(target).parent().children(".hasChildren").show();
-    }
+            if (groupResult) {
+              groupResult.Nodes = response.Nodes;
+            }
+            _this.setState({ data: data });
+            console.log(data);
+            // var result = response.Nodes;
+            // _this.setState({data: result});
+          }
+        });
+      }
   },
   update: function (e) {
     e.preventDefault();
@@ -587,6 +635,7 @@ var NavigationTree = React.createClass({
     }
   },
   eachItem: function (item, i) {
+    console.log(item);
     if (item.HasNodes === true) {
       if (item.Nodes === null) {
         return React.createElement(

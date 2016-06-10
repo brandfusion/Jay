@@ -18,6 +18,7 @@ gulp.task('scripts', function() {
   return gulp.src(['app/assets/**/*.js'])
   	.pipe(sourcemaps.init())    
     .pipe(concat('100_main.min.js'))
+    .pipe(concat('main.min.js'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('_build/assets/js/'));
 });
