@@ -428,7 +428,7 @@ var Navigation = React.createClass({
     var bookmark = _this.props.bookmark === "" ? "" : _this.props.bookmark;
     if (bookmark.length > 0){
       link = "/Files/WebServices/LazyNavigation.ashx?bookmark=" + _this.props.bookmark + "&action=bookmarkTree"; 
-      console.log(link);
+    
     } else {
       link = "/Files/WebServices/LazyNavigation.ashx?group=" + _this.props.source;
     }
@@ -476,31 +476,28 @@ var Navigation = React.createClass({
           
       });
     }
-    // console.log(hasChildren);
-    // $.getJSON(link, function (response) {          
-    //     var result = response.Nodes;
-    //     _this.setState({data: result});   
-        
-    // });
-    // var target= e.target;     
-    // if ($(target).parent().attr("data-expanded") == "true") {
-    //   $(target).parent().attr("data-expanded","false"); 
-    //   $(target).parent().children(".hasChildren").hide();
-    //   $(target).removeClass("opened");
-    // } else { 
-    //   $(target).parent().attr("data-expanded","true"); 
-    //   $(target).parent().children(".hasChildren").show();
-    //   $(target).addClass("opened");
-    // }
-  }, 
-  eachItem: function(item, i) {   
+    if ($target.parent("li").hasClass("closed")) {
+      $target.parent("li").siblings().addClass("closed");
+      $target.parent("li").removeClass("closed");
+    } else {
+      $target.parent("li").addClass("closed");
+      $target.parent("li").siblings().addClass("closed");
+    }
+    
+    
+  },
+  eachItem: function(item, i) {
+    var hasBookmark = ""; 
+    if ( getQueryVariable("bookmark") === false) {
+      hasBookmark = "closed";
+    }    
     if (item.HasNodes === true) {   
-      var that = this;      
+      // var that = this;      
       if (item.Nodes === null) {
         return (       
           <li key={i}
-                  index={i} 
-                  data-expanded={item.Expanded}
+                  index={i}
+                  className="closed"
               ><a href={item.Id} onClick={this.openChild}>{item.Name}</a>
                <ul className="hasChildren" data-expanded={item.Expanded}>
                   
@@ -512,6 +509,7 @@ var Navigation = React.createClass({
         return (       
           <li key={i}
                   index={i}
+                  className={hasBookmark}
               ><a href={item.Id} onClick={this.openChild}>{item.Name}</a>
                <ul className="hasChildren">
                    <NavigationTree data={item.Nodes} />
@@ -524,16 +522,14 @@ var Navigation = React.createClass({
     } else {             
        return (
             <li key={i}
-                index={i}               
-                data-expanded={item.Expanded}
+                index={i}                 
             ><a href={item.Id} className={item.Selected}>{item.Name}</a><a href="" data-bookmark={item.Bookmarked} onClick={this.registerBookmark}><i className="fa fa-bookmark-o"></i></a>
 
             </li>
         );
     }
   },  
-  render: function() { 
-    console.log(this.state.data);  
+  render: function() {       
     return (
   		<ul className="componentWrapper">
   			{this.state.data.map(this.eachItem)}
@@ -559,7 +555,7 @@ var NavigationTree =  React.createClass({
     var id = $target.attr("href");
     var link = "http://floydpepper.dw-demo.com/Files/WebServices/LazyNavigation.ashx?group=" + id;
     var hasChildren = $($target.parent().children()[1]).children().length;
-    console.log(link);    
+   
     var data= this.state.data;
     var _this = this;
     if (hasChildren > 0 ) {
@@ -567,7 +563,7 @@ var NavigationTree =  React.createClass({
     } else {
       $.getJSON(link, function (response) { 
         if (response) {
-          console.log(response);
+         
         
           var groupResult = h._findGroupNode(data, id);
 
@@ -575,7 +571,7 @@ var NavigationTree =  React.createClass({
             groupResult.Nodes = response.Nodes;
           }
           _this.setState({data: data});
-          console.log(data);
+         
           // var result = response.Nodes;
           // _this.setState({data: result}); 
           }
@@ -583,6 +579,31 @@ var NavigationTree =  React.createClass({
           
       });
     }
+
+     if ($target.parent("li").hasClass("closed")) {
+      $target.parent("li").siblings().addClass("closed");
+      $target.parent("li").removeClass("closed");
+    } else {
+      $target.parent("li").addClass("closed");
+      $target.parent("li").siblings().addClass("closed");
+    }
+
+    var getGroupImageLink = "/Default.aspx?ID=146&assemblyID=" + id;
+    $.ajax({
+      url: getGroupImageLink,
+      type: 'GET',
+      dataType: 'html'
+    })
+    .done(function(response) {
+     
+        $('#pageContent').html(response);
+      
+      
+    })
+    .fail(function() {
+      console.log("error");
+    });
+    
   }, 
   update: function(e) {
     e.preventDefault();  
@@ -668,14 +689,20 @@ var NavigationTree =  React.createClass({
     }
   },
   eachItem: function(item, i) { 
-    console.log(item);   
+    var hasBookmark = ""; 
+    var dataExpand = "";
+    if ( getQueryVariable("bookmark") === false) {
+      hasBookmark = "closed";
+    }      
+    if (getQueryVariable("bookmark") === item.Id) {
+      dataExpand = "selected";
+    }
     if (item.HasNodes === true) {
       if(item.Nodes === null) {
         return (
           <li key={i}
                   index={i}
-                  className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}                  
-                  data-expanded={item.Expanded}
+                  className="closed" 
               ><a href={item.Id} className={item.Selected} ref="target" onClick={this.openChild}>{item.Name}</a>
                <ul className="hasChildren" data-expanded={item.Expanded}>                
               </ul>
@@ -686,8 +713,7 @@ var NavigationTree =  React.createClass({
         return (
           <li key={i}
                   index={i}
-                  className={(i === this.props.active - 1) ? 'dropdown active' : 'dropdown'}                  
-                  data-expanded={item.Expanded}
+                  className={hasBookmark}                   
               ><a href={item.Id} className={item.Selected} ref="target" onClick={this.openChild}>{item.Name}</a>
                <ul className="hasChildren" data-expanded={item.Expanded}>
                 <NavigationTree key={i} data={item.Nodes} />
@@ -701,9 +727,8 @@ var NavigationTree =  React.createClass({
          return (
               <li key={i}
                   index={i}
-                  className="noIcon" 
-                  data-expanded={item.Expanded}
-              ><a href={item.Id} onClick={this.update} index={i} data-overflow className={item.Selected} data-toggle="tooltip" data-placement="right" title={item.Name}>{item.Name}</a><a href={item.Id} data-index={i} data-group={item.Name} data-bookmark={item.Bookmarked} onClick={this.registerBookmark} ref="link"><i className="fa fa-bookmark-o"></i></a>
+                  className="noIcon"                  
+              ><a href={item.Id} onClick={this.update} index={i} data-overflow className={dataExpand} data-toggle="tooltip" data-placement="right" title={item.Name}>{item.Name}</a><a href={item.Id} data-index={i} data-group={item.Name} data-bookmark={item.Bookmarked} onClick={this.registerBookmark} ref="link"><i className="fa fa-bookmark-o"></i></a>
               </li>
               // <NavigationLink key={i} index={i} expanded={item.Expanded} itemId={item.Id} name={item.Name} bookmark={item.Bookmarked} />
           );

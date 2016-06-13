@@ -8,8 +8,9 @@ $blue: #0f4a72
   // height: 80vh
   overflow-y: auto
   padding-right: 15px !important
-  // .hasChildren
-  //   display: none
+  .closed 
+    .hasChildren
+      display: none
   .active 
     display: block
   a 
@@ -21,13 +22,11 @@ $blue: #0f4a72
       color: #000
       &:before
         color: $yellow
-        font-family: "FontAwesome"
-        content: "\f196"
+        font-family: "FontAwesome"   
+        content: "\f147"
         margin-right: 0.3em
       &[data-overflow]:before, &[data-bookmark]:before 
-        content: ""
-      &.opened:before           
-        content: "\f147"
+        content: ""     
       &[data-overflow].selected 
         color: $yellow  
     &.noIcon
@@ -53,13 +52,17 @@ $blue: #0f4a72
     // &[data-expanded="true"]
     //   color: $yellow
     //   &:before
-    //     content: "\f147"      
+    //     content: "\f147"   
+    &.closed 
+      a:before 
+        content: "\f196"  
   .hasChildren[data-expanded="true"]    
     display: block      
     .true
       color: $yellow      
   .componentWrapper
     padding: 0px
+
 //fix
 body, p, div, span, td, th, li, a, a:link, input, textarea, .tile .listPrice, #cartRightContent li > div h3, table td .fa-heart
   font-size: 0.8rem

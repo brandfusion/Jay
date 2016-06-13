@@ -400,7 +400,6 @@ var Navigation = React.createClass({
     var bookmark = _this.props.bookmark === "" ? "" : _this.props.bookmark;
     if (bookmark.length > 0) {
       link = "/Files/WebServices/LazyNavigation.ashx?bookmark=" + _this.props.bookmark + "&action=bookmarkTree";
-      console.log(link);
     } else {
       link = "/Files/WebServices/LazyNavigation.ashx?group=" + _this.props.source;
     }
@@ -443,32 +442,27 @@ var Navigation = React.createClass({
           }
         });
       }
-    // console.log(hasChildren);
-    // $.getJSON(link, function (response) {         
-    //     var result = response.Nodes;
-    //     _this.setState({data: result});  
-
-    // });
-    // var target= e.target;    
-    // if ($(target).parent().attr("data-expanded") == "true") {
-    //   $(target).parent().attr("data-expanded","false");
-    //   $(target).parent().children(".hasChildren").hide();
-    //   $(target).removeClass("opened");
-    // } else {
-    //   $(target).parent().attr("data-expanded","true");
-    //   $(target).parent().children(".hasChildren").show();
-    //   $(target).addClass("opened");
-    // }
+    if ($target.parent("li").hasClass("closed")) {
+      $target.parent("li").siblings().addClass("closed");
+      $target.parent("li").removeClass("closed");
+    } else {
+      $target.parent("li").addClass("closed");
+      $target.parent("li").siblings().addClass("closed");
+    }
   },
   eachItem: function (item, i) {
+    var hasBookmark = "";
+    if (getQueryVariable("bookmark") === false) {
+      hasBookmark = "closed";
+    }
     if (item.HasNodes === true) {
-      var that = this;
+      // var that = this;     
       if (item.Nodes === null) {
         return React.createElement(
           'li',
           { key: i,
             index: i,
-            'data-expanded': item.Expanded
+            className: 'closed'
           },
           React.createElement(
             'a',
@@ -481,7 +475,8 @@ var Navigation = React.createClass({
         return React.createElement(
           'li',
           { key: i,
-            index: i
+            index: i,
+            className: hasBookmark
           },
           React.createElement(
             'a',
@@ -499,8 +494,7 @@ var Navigation = React.createClass({
       return React.createElement(
         'li',
         { key: i,
-          index: i,
-          'data-expanded': item.Expanded
+          index: i
         },
         React.createElement(
           'a',
@@ -516,7 +510,6 @@ var Navigation = React.createClass({
     }
   },
   render: function () {
-    console.log(this.state.data);
     return React.createElement(
       'ul',
       { className: 'componentWrapper' },
@@ -544,7 +537,7 @@ var NavigationTree = React.createClass({
     var id = $target.attr("href");
     var link = "http://floydpepper.dw-demo.com/Files/WebServices/LazyNavigation.ashx?group=" + id;
     var hasChildren = $($target.parent().children()[1]).children().length;
-    console.log(link);
+
     var data = this.state.data;
     var _this = this;
     if (hasChildren > 0) {
@@ -552,7 +545,6 @@ var NavigationTree = React.createClass({
     } else {
         $.getJSON(link, function (response) {
           if (response) {
-            console.log(response);
 
             var groupResult = h._findGroupNode(data, id);
 
@@ -560,12 +552,32 @@ var NavigationTree = React.createClass({
               groupResult.Nodes = response.Nodes;
             }
             _this.setState({ data: data });
-            console.log(data);
+
             // var result = response.Nodes;
             // _this.setState({data: result});
           }
         });
       }
+
+    if ($target.parent("li").hasClass("closed")) {
+      $target.parent("li").siblings().addClass("closed");
+      $target.parent("li").removeClass("closed");
+    } else {
+      $target.parent("li").addClass("closed");
+      $target.parent("li").siblings().addClass("closed");
+    }
+
+    var getGroupImageLink = "/Default.aspx?ID=146&assemblyID=" + id;
+    $.ajax({
+      url: getGroupImageLink,
+      type: 'GET',
+      dataType: 'html'
+    }).done(function (response) {
+
+      $('#pageContent').html(response);
+    }).fail(function () {
+      console.log("error");
+    });
   },
   update: function (e) {
     e.preventDefault();
@@ -635,15 +647,21 @@ var NavigationTree = React.createClass({
     }
   },
   eachItem: function (item, i) {
-    console.log(item);
+    var hasBookmark = "";
+    var dataExpand = "";
+    if (getQueryVariable("bookmark") === false) {
+      hasBookmark = "closed";
+    }
+    if (getQueryVariable("bookmark") === item.Id) {
+      dataExpand = "selected";
+    }
     if (item.HasNodes === true) {
       if (item.Nodes === null) {
         return React.createElement(
           'li',
           { key: i,
             index: i,
-            className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
-            'data-expanded': item.Expanded
+            className: 'closed'
           },
           React.createElement(
             'a',
@@ -657,8 +675,7 @@ var NavigationTree = React.createClass({
           'li',
           { key: i,
             index: i,
-            className: i === this.props.active - 1 ? 'dropdown active' : 'dropdown',
-            'data-expanded': item.Expanded
+            className: hasBookmark
           },
           React.createElement(
             'a',
@@ -677,12 +694,11 @@ var NavigationTree = React.createClass({
         'li',
         { key: i,
           index: i,
-          className: 'noIcon',
-          'data-expanded': item.Expanded
+          className: 'noIcon'
         },
         React.createElement(
           'a',
-          { href: item.Id, onClick: this.update, index: i, 'data-overflow': true, className: item.Selected, 'data-toggle': 'tooltip', 'data-placement': 'right', title: item.Name },
+          { href: item.Id, onClick: this.update, index: i, 'data-overflow': true, className: dataExpand, 'data-toggle': 'tooltip', 'data-placement': 'right', title: item.Name },
           item.Name
         ),
         React.createElement(

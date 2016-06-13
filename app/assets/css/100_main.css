@@ -883,6 +883,8 @@ main {
 .navigation {
   overflow-y: auto;
   padding-right: 15px !important; }
+  .navigation .closed .hasChildren {
+    display: none; }
   .navigation .active {
     display: block; }
   .navigation a {
@@ -894,12 +896,10 @@ main {
     .navigation li a:before {
       color: #be7004;
       font-family: "FontAwesome";
-      content: "\f196";
+      content: "\f147";
       margin-right: 0.3em; }
     .navigation li a[data-overflow]:before, .navigation li a[data-bookmark]:before {
       content: ""; }
-    .navigation li a.opened:before {
-      content: "\f147"; }
     .navigation li a[data-overflow].selected {
       color: #be7004; }
   .navigation li.noIcon:before {
@@ -918,6 +918,8 @@ main {
     display: block; }
     .navigation li .branch-opened .hasChildren .hasChildren {
       display: none; }
+  .navigation li.closed a:before {
+    content: "\f196"; }
   .navigation .hasChildren[data-expanded="true"] {
     display: block; }
     .navigation .hasChildren[data-expanded="true"] .true {
