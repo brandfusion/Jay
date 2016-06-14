@@ -145,7 +145,8 @@ var h = {
   getCompatibleList: function(){
    
     var productId= $('[data-productId]').attr('data-productId');
-    var link = "/Default.aspx?ID=132&productid=" + productId + "#body";  
+    var link = "/Default.aspx?ID=132&productid=" + productId + "#body"; 
+    var linkHistory = window.location.href;
 
     $.ajax({
       url: link,
@@ -154,6 +155,9 @@ var h = {
     })
     .done(function(data) { 
       $('#compatibleList').html(data);
+      // History.pushState("Page","Previous Page",linkHistory)
+      // console.log("history:" +  linkHistory); 
+
     });    
   },
   registerPageEvents: function(){
@@ -358,6 +362,7 @@ var h = {
           })
           .done(function(data) {
             $('#compatibleList').html(data);
+
           });
           
          
@@ -371,7 +376,8 @@ var h = {
         var groupId = encodeURIComponent($(this).attr("data-group-id"));
         var productId =$(this).attr("href");
         var link = "/Default.aspx?ID=126&groupId=" +  groupId + '&productId=' + productId;
-       
+        var currentLink = window.location.href;
+        var linkHistory = currentLink.split("&bookmark")[0] + "&bookmark=" +  groupId + '&favorite=' + productId;
         $.ajax({
           url: link,
           type: 'get'
@@ -381,6 +387,14 @@ var h = {
           // h.registerPageEvents();
           // $.noty.closeAll();   
            h.getCompatibleList();
+           console.log(linkHistory);
+           History.pushState({state: 2},"Product Page",linkHistory);
+            $(window).bind('statechange',function(){    
+              var link = window.location.href;
+              console.log(link);
+              window.location.href = link; 
+            });
+
         });  
       });
   },  
@@ -610,6 +624,8 @@ var NavigationTree =  React.createClass({
     var id = $(e.currentTarget)[0].attributes.href.value;
     var encodedId = encodeURIComponent(id); 
     var link = "/Default.aspx?ID=126&groupId=" +  encodedId;
+    var linkCurrent = window.location.href;
+    var linkHistory = linkCurrent.split("&bookmark")[0] + "&bookmark=" + id;
     $('.navigation').find('a').removeClass("selected");
     $('.navigation').find('li').removeAttr('data-expanded');
     $(e.currentTarget).parents("li").attr("data-expanded","true");
@@ -622,14 +638,21 @@ var NavigationTree =  React.createClass({
     .done(function(response) {
      
       $('#pageContent').html(response);
+
      
 
           $('#pageContent').find(".zoom-image")
           .wrap('<span style="display:inline-block"></span>')
           .css('display', 'block')
           .parent()
-          .zoom();
-
+          .zoom();         
+          console.log("history:" +  linkHistory); 
+          History.pushState({state: 1},"Group Page",linkHistory);
+          // if ($(e.currentTarget).prop("data-link-load")) {
+          //   console.log("history:" +  linkHistory); 
+          // }
+          // History.pushState("Group Page","Group Page",link)
+          
      
       
     });
@@ -728,7 +751,7 @@ var NavigationTree =  React.createClass({
               <li key={i}
                   index={i}
                   className="noIcon"                  
-              ><a href={item.Id} onClick={this.update} index={i} data-overflow className={dataExpand} data-toggle="tooltip" data-placement="right" title={item.Name}>{item.Name}</a><a href={item.Id} data-index={i} data-group={item.Name} data-bookmark={item.Bookmarked} onClick={this.registerBookmark} ref="link"><i className="fa fa-bookmark-o"></i></a>
+              ><a href={item.Id} onClick={this.update} index={i} data-overflow className={dataExpand} data-link-load data-toggle="tooltip" data-placement="right" title={item.Name}>{item.Name}</a><a href={item.Id} data-index={i} data-group={item.Name} data-bookmark={item.Bookmarked} onClick={this.registerBookmark} ref="link"><i className="fa fa-bookmark-o"></i></a>
               </li>
               // <NavigationLink key={i} index={i} expanded={item.Expanded} itemId={item.Id} name={item.Name} bookmark={item.Bookmarked} />
           );

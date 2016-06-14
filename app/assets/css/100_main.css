@@ -785,9 +785,6 @@
   .bootstrap-select.btn-group .btn .caret:before {
     font-size: inherit !important; }
 
-.listMode > li {
-  padding: 0 5px !important; }
-
 .btn-bg {
   font-size: 1em; }
 
@@ -859,7 +856,6 @@ a {
     color: #E492D4; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 300;
   margin: 0; }
 
 img {
@@ -954,9 +950,9 @@ body, p, div, span, td, th, li, a, a:link, input, textarea, .tile .listPrice, #c
     color: inherit;
     font-size: 1.4em;
     text-transform: uppercase;
-    font-weight: 300; }
+    font-weight: 400; }
     .product-header .heading--breadcrumbs {
-      font-size: 0.8em;
+      font-size: 1rem;
       font-weight: 400;
       color: #fff;
       line-height: 29px; }
@@ -1160,7 +1156,7 @@ button.button-download-group {
 .catalogNavSection.topSection {
   margin-top: 8px !important; }
 
-h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title, #stepsList > li i, #shareContainer i, #playPause i {
+h1, .h1, #socialMedia a:before, .product-price, .product-title, #stepsList > li i, #shareContainer i, #playPause i {
   font-size: 1em; }
 
 @media (min-width: 768px) {
@@ -1170,12 +1166,9 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
 .listMode > li {
   background-color: transparent;
   border: none;
-  padding: 0;
   margin-left: 0.5em;
   color: #000;
-  vertical-align: middle;
-  line-height: 2em;
-  height: 2em; }
+  vertical-align: middle; }
   .listMode > li.active {
     background-color: transparent;
     color: #000; }
@@ -1223,14 +1216,15 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
     display: inline-block;
     width: 100%;
     height: 40px; }
-  .cartChange .submitQuantity {
-    background-color: transparent;
-    position: absolute;
-    right: 20px;
-    top: 10px; }
   .cartChange .bootstrap-select {
     max-width: 100%;
     width: 100%; }
+
+.submitQuantity {
+  background-color: transparent;
+  position: absolute;
+  right: 20px;
+  top: 10px; }
 
 #popup-image {
   display: none; }
@@ -1290,7 +1284,6 @@ h1, .h1, #socialMedia a:before, .listMode > li i, .product-price, .product-title
           justify-content: center; }
 
 .cart-image {
-  height: 90px;
   overflow: hidden; }
 
 form[name="change"] .bootstrap-select {

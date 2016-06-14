@@ -145,6 +145,7 @@ var h = {
 
     var productId = $('[data-productId]').attr('data-productId');
     var link = "/Default.aspx?ID=132&productid=" + productId + "#body";
+    var linkHistory = window.location.href;
 
     $.ajax({
       url: link,
@@ -152,6 +153,8 @@ var h = {
       dataType: 'html'
     }).done(function (data) {
       $('#compatibleList').html(data);
+      // History.pushState("Page","Previous Page",linkHistory)
+      // console.log("history:" +  linkHistory);
     });
   },
   registerPageEvents: function () {
@@ -345,7 +348,8 @@ var h = {
       var groupId = encodeURIComponent($(this).attr("data-group-id"));
       var productId = $(this).attr("href");
       var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId;
-
+      var currentLink = window.location.href;
+      var linkHistory = currentLink.split("&bookmark")[0] + "&bookmark=" + groupId + '&favorite=' + productId;
       $.ajax({
         url: link,
         type: 'get'
@@ -354,6 +358,13 @@ var h = {
         // h.registerPageEvents();
         // $.noty.closeAll();  
         h.getCompatibleList();
+        console.log(linkHistory);
+        History.pushState({ state: 2 }, "Product Page", linkHistory);
+        $(window).bind('statechange', function () {
+          var link = window.location.href;
+          console.log(link);
+          window.location.href = link;
+        });
       });
     });
   },
@@ -584,6 +595,8 @@ var NavigationTree = React.createClass({
     var id = $(e.currentTarget)[0].attributes.href.value;
     var encodedId = encodeURIComponent(id);
     var link = "/Default.aspx?ID=126&groupId=" + encodedId;
+    var linkCurrent = window.location.href;
+    var linkHistory = linkCurrent.split("&bookmark")[0] + "&bookmark=" + id;
     $('.navigation').find('a').removeClass("selected");
     $('.navigation').find('li').removeAttr('data-expanded');
     $(e.currentTarget).parents("li").attr("data-expanded", "true");
@@ -597,6 +610,12 @@ var NavigationTree = React.createClass({
       $('#pageContent').html(response);
 
       $('#pageContent').find(".zoom-image").wrap('<span style="display:inline-block"></span>').css('display', 'block').parent().zoom();
+      console.log("history:" + linkHistory);
+      History.pushState({ state: 1 }, "Group Page", linkHistory);
+      // if ($(e.currentTarget).prop("data-link-load")) {
+      //   console.log("history:" +  linkHistory);
+      // }
+      // History.pushState("Group Page","Group Page",link)
     });
   },
   registerBookmark: function (e) {
@@ -698,7 +717,7 @@ var NavigationTree = React.createClass({
         },
         React.createElement(
           'a',
-          { href: item.Id, onClick: this.update, index: i, 'data-overflow': true, className: dataExpand, 'data-toggle': 'tooltip', 'data-placement': 'right', title: item.Name },
+          { href: item.Id, onClick: this.update, index: i, 'data-overflow': true, className: dataExpand, 'data-link-load': true, 'data-toggle': 'tooltip', 'data-placement': 'right', title: item.Name },
           item.Name
         ),
         React.createElement(
