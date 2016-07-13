@@ -667,13 +667,13 @@
   color: #fff; }
 
 .logo {
-  width: 148px;
+  width: 240px;
   height: 80px;
   display: inline-block;
   background-color: transparent;
   background-repeat: no-repeat;
   background-size: contain;
-  background-position: center; }
+  background-position: left center; }
   .logo img {
     display: none; }
 
@@ -1041,8 +1041,7 @@ button.button-download-group {
     bottom: 76px;
     top: 5px;
     height: 100%;
-    overflow-y: auto;
-    padding-bottom: 110px; }
+    overflow-y: auto; }
   #catalogNavContainer > .catalogNavSection h1 {
     margin: 0;
     font-size: 1.8em;
@@ -1502,6 +1501,31 @@ th[data-sort-by] {
   .button-link:hover {
     background-color: transparent;
     text-decoration: underline; }
+
+.favorite-list-header {
+  background-color: #e8e8e8;
+  padding: 0.5em;
+  margin-bottom: 2em;
+  margin-top: 1em;
+  font-weight: 700; }
+  .favorite-list-header .stored-qty {
+    text-align: right;
+    border-left: 1px solid #a3a3a3; }
+  .favorite-list-header .quick-add {
+    text-align: right;
+    border-left: 1px solid #a3a3a3; }
+
+.cart-quantity {
+  max-width: 50px;
+  width: 100%; }
+
+.clear-cart {
+  background-color: #b7b7b7;
+  margin-right: 0.5em;
+  color: #fff; }
+  .clear-cart:hover {
+    background-color: #000;
+    color: #fff; }
 
 .jayco #headerContainer {
   background-color: #0577be; }

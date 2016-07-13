@@ -235,7 +235,7 @@ var h = {
       .wrap('<span style="display:inline-block"></span>')
       .css('display', 'block')
       .parent()
-      .zoom();
+      .zoom({url: $('.zoom-image').attr("data-big-image")});
 
      
       $('#pageContent').on("click", '.download-pdf', function(f){
@@ -269,7 +269,8 @@ var h = {
           type: 'get'
         })
         .done(function(newResult) {         
-          $('#pageContent').html(newResult);        
+          $('#pageContent').html(newResult); 
+          $('[data-tooltip]').tooltip();       
          
         });
       });
@@ -290,7 +291,8 @@ var h = {
           type: 'get'
         })
         .done(function(newResult) {         
-          $('#pageContent').html(newResult);        
+          $('#pageContent').html(newResult);  
+          $('[data-tooltip]').tooltip();      
          
         });
       });
@@ -310,6 +312,7 @@ var h = {
         })
         .done(function(newResult) {         
           $('#pageContent').html(newResult); 
+          $('[data-tooltip]').tooltip();
         });
       });
       $('#pageContent').on("click", '[data-select-downloadable] a', function(e){
@@ -322,6 +325,7 @@ var h = {
         $(this).parents(".btn-group").find("[data-selected-link]").attr("data-selected-link", href);
       });
       $('[data-tooltip]').tooltip();
+
       $('#pageContent').on("click", '[data-favorite]', function(f){
         f.preventDefault();       
         var dataFavorite = $(this).attr("data-favorite");
@@ -387,6 +391,7 @@ var h = {
           // h.registerPageEvents();
           // $.noty.closeAll();   
            h.getCompatibleList();
+           $('[data-tooltip]').tooltip();
            console.log(linkHistory);
            History.pushState({state: 2},"Product Page",linkHistory);
             $(window).bind('statechange',function(){    
@@ -611,7 +616,7 @@ var NavigationTree =  React.createClass({
     .done(function(response) {
      
         $('#pageContent').html(response);
-      
+        $('[data-tooltip]').tooltip();
       
     })
     .fail(function() {
@@ -640,12 +645,12 @@ var NavigationTree =  React.createClass({
       $('#pageContent').html(response);
 
      
-
+        $('[data-tooltip]').tooltip();
           $('#pageContent').find(".zoom-image")
           .wrap('<span style="display:inline-block"></span>')
           .css('display', 'block')
           .parent()
-          .zoom();         
+          .zoom({url: $('.zoom-image').attr("data-big-image")});         
           console.log("history:" +  linkHistory); 
           History.pushState({state: 1},"Group Page",linkHistory);
           // if ($(e.currentTarget).prop("data-link-load")) {
