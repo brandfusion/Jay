@@ -6,6 +6,7 @@
 // groupResult.Nodes = childGroups;
 // }
 
+
 window.replaceUrlParam = function (url, paramName, paramValue) {
   var pattern = new RegExp('\\b(' + paramName + '=).*?(&|$)');
   if (url.search(pattern) >= 0) {
@@ -78,7 +79,8 @@ window.addToFavorites = function (arg) {
   var addToFavorites = arg.attr("data-add-favorites");
   $.ajax({
     url: addToFavorites,
-    type: 'POST'
+    type: 'POST',
+    cache: false
   }).done(function (response) {
 
     $('#popup-messages').bPopup({
@@ -98,7 +100,8 @@ window.removeFromFavorites = function (arg) {
   var removeFromFavorites = arg.attr("data-remove-favorites");
   $.ajax({
     url: removeFromFavorites,
-    type: 'POST'
+    type: 'POST',
+    cache: false
   }).done(function (response) {
 
     $('#popup-messages').bPopup({
@@ -150,11 +153,12 @@ var h = {
     $.ajax({
       url: link,
       type: 'GET',
-      dataType: 'html'
+      dataType: 'html',
+      cache: false
     }).done(function (data) {
       $('#compatibleList').html(data);
       // History.pushState("Page","Previous Page",linkHistory)
-      // console.log("history:" +  linkHistory);
+      // console.log("history:" +  linkHistory); 
     });
   },
   registerPageEvents: function () {
@@ -171,7 +175,8 @@ var h = {
       var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add" + "&EcomOrderLineFieldInput_CatalogId=" + catalog + "&EcomOrderLineFieldInput_UnitOfMeasure=" + unit + "&Unit=" + unit + "&quantity=" + quantity;
       $.ajax({
         url: linkAdd,
-        type: 'post'
+        type: 'post',
+        cache: false
       }).done(function (response) {
         popupMessageAutoClose(message);
         minicart();
@@ -201,7 +206,8 @@ var h = {
       var linkAdd = "/Default.aspx?productid=" + productId + "&variantID&OrderContext=" + orderContext + "&cartcmd=add" + "&EcomOrderLineFieldInput_CatalogId=" + catalog + "&EcomOrderLineFieldInput_UnitOfMeasure=" + unit + "&Unit=" + unit + "&quantity=" + quantity;
       $.ajax({
         url: linkAdd,
-        type: 'post'
+        type: 'post',
+        cache: false
       }).done(function (response) {
         popupMessageAutoClose(message);
         minicart();
@@ -238,22 +244,39 @@ var h = {
     $('#pageContent').on("click", '.view-pdf', function (d) {
       d.preventDefault();
       var value = $(this).parents(".form-group").find('[data-selected-link]').attr("data-selected-link");
-      $(this).parents(".form-group").find("a").each(function () {
-        var currentValue = $(this).attr("href");
-        if (currentValue == value) {
-          window.open(value, '_blank');
-        }
-      });
+      console.log(value);
+      if (_.includes(value, "jpg")) {
+        var output = "";
+        output += '<img src="' + value + '" class="zoom-image" />';
+        output += '<img src="' + value + '" class="zoomImg" />';
+        $('#imageSelectModal').find(".modal-body").empty();
+        $('#imageSelectModal').find(".modal-body").html(output);
+        $('#imageSelectModal').modal("show");
+        console.log("jpg");
+      } else {
+        $(this).parents(".form-group").find("a").each(function () {
+          var currentValue = $(this).attr("href");
+          if (currentValue == value) {
+            window.open(value, '_blank');
+          }
+        });
+      }
     });
     $('#pageContent').on('change', '[data-page-size], [data-section]', function () {
       var pageSize = $('[data-page-size]').val();
       var url = $('[data-url]').attr("data-url");
       var section = $('[data-section]').val();
+
+      //set cookie for page size persistence 
+      var cookieAbsolutePath = window.location.pathname + window.location.search;
+      $.cookie("lastPageSize", pageSize);
+
       var newUrl = replaceUrlParam(url, "PageSize", pageSize);
       newUrl = replaceUrlParam(newUrl, "Section", section);
       $.ajax({
         url: newUrl,
-        type: 'get'
+        type: 'get',
+        cache: false
       }).done(function (newResult) {
         $('#pageContent').html(newResult);
         $('[data-tooltip]').tooltip();
@@ -273,7 +296,8 @@ var h = {
 
       $.ajax({
         url: newUrl,
-        type: 'get'
+        type: 'get',
+        cache: false
       }).done(function (newResult) {
         $('#pageContent').html(newResult);
         $('[data-tooltip]').tooltip();
@@ -291,7 +315,8 @@ var h = {
 
       $.ajax({
         url: newUrl,
-        type: 'get'
+        type: 'get',
+        cache: false
       }).done(function (newResult) {
         $('#pageContent').html(newResult);
         $('[data-tooltip]').tooltip();
@@ -319,7 +344,7 @@ var h = {
     });
     $('#pageContent').on('click', '.show-compatible-list', function () {
       var productId = $('[compatible-productId]').attr("compatible-productId");
-      var url = "/Default.aspx?ID=132&productId=" + productId;
+      var url = "/Default.aspx?ID=132&productId=" + productId + "PathID=";
       var options = "";
       var exit = false;
       $("[compatible-list-option]").each(function () {
@@ -340,7 +365,8 @@ var h = {
         $.ajax({
           url: url,
           type: 'GET',
-          dataType: 'html'
+          dataType: 'html',
+          cache: false
         }).done(function (data) {
           $('#compatibleList').html(data);
         });
@@ -351,16 +377,18 @@ var h = {
       e.preventDefault();
       var groupId = encodeURIComponent($(this).attr("data-group-id"));
       var productId = $(this).attr("href");
-      var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId;
+      var link = "/Default.aspx?ID=126&groupId=" + groupId + '&productId=' + productId + '&PathID=' + groupId;
       var currentLink = window.location.href;
+
       var linkHistory = currentLink.split("&bookmark")[0] + "&bookmark=" + groupId + '&favorite=' + productId;
       $.ajax({
         url: link,
-        type: 'get'
+        type: 'get',
+        cache: false
       }).done(function (newResult) {
         $('#pageContent').html(newResult);
         // h.registerPageEvents();
-        // $.noty.closeAll();  
+        // $.noty.closeAll();   
         h.getCompatibleList();
         $('[data-tooltip]').tooltip();
         console.log(linkHistory);
@@ -436,28 +464,28 @@ var Navigation = React.createClass({
     var $target = $(e.target);
     var data = this.state.data;
     var id = $target.attr("href");
-    var link = "http://floydpepper.dw-demo.com/Files/WebServices/LazyNavigation.ashx?group=" + id;
+    var link = "/Files/WebServices/LazyNavigation.ashx?group=" + id;
     var hasChildren = $($target.parent().children()[1]).children().length;
     var data = this.state.data;
     var _this = this;
     if (hasChildren > 0) {
       // show ul
     } else {
-        $.getJSON(link, function (response) {
-          if (response) {
+      $.getJSON(link, function (response) {
+        if (response) {
 
-            var groupResult = h._findGroupNode(data, id);
+          var groupResult = h._findGroupNode(data, id);
 
-            if (groupResult) {
-              groupResult.Nodes = response.Nodes;
-            }
-            _this.setState({ data: data });
-
-            // var result = response.Nodes;
-            // _this.setState({data: result});
+          if (groupResult) {
+            groupResult.Nodes = response.Nodes;
           }
-        });
-      }
+          _this.setState({ data: data });
+
+          // var result = response.Nodes;
+          // _this.setState({data: result}); 
+        }
+      });
+    }
     if ($target.parent("li").hasClass("closed")) {
       $target.parent("li").siblings().addClass("closed");
       $target.parent("li").removeClass("closed");
@@ -472,7 +500,7 @@ var Navigation = React.createClass({
       hasBookmark = "closed";
     }
     if (item.HasNodes === true) {
-      // var that = this;     
+      // var that = this;      
       if (item.Nodes === null) {
         return React.createElement(
           'li',
@@ -551,7 +579,7 @@ var NavigationTree = React.createClass({
     var $target = $(e.target);
     var data = this.state.data;
     var id = $target.attr("href");
-    var link = "http://floydpepper.dw-demo.com/Files/WebServices/LazyNavigation.ashx?group=" + id;
+    var link = "/Files/WebServices/LazyNavigation.ashx?group=" + id;
     var hasChildren = $($target.parent().children()[1]).children().length;
 
     var data = this.state.data;
@@ -559,21 +587,21 @@ var NavigationTree = React.createClass({
     if (hasChildren > 0) {
       // show ul
     } else {
-        $.getJSON(link, function (response) {
-          if (response) {
+      $.getJSON(link, function (response) {
+        if (response) {
 
-            var groupResult = h._findGroupNode(data, id);
+          var groupResult = h._findGroupNode(data, id);
 
-            if (groupResult) {
-              groupResult.Nodes = response.Nodes;
-            }
-            _this.setState({ data: data });
-
-            // var result = response.Nodes;
-            // _this.setState({data: result});
+          if (groupResult) {
+            groupResult.Nodes = response.Nodes;
           }
-        });
-      }
+          _this.setState({ data: data });
+
+          // var result = response.Nodes;
+          // _this.setState({data: result}); 
+        }
+      });
+    }
 
     if ($target.parent("li").hasClass("closed")) {
       $target.parent("li").siblings().addClass("closed");
@@ -587,7 +615,8 @@ var NavigationTree = React.createClass({
     $.ajax({
       url: getGroupImageLink,
       type: 'GET',
-      dataType: 'html'
+      dataType: 'html',
+      cache: false
     }).done(function (response) {
 
       $('#pageContent').html(response);
@@ -602,15 +631,18 @@ var NavigationTree = React.createClass({
     var encodedId = encodeURIComponent(id);
     var link = "/Default.aspx?ID=126&groupId=" + encodedId;
     var linkCurrent = window.location.href;
+    var pageSize = $.cookie('lastPageSize');
     var linkHistory = linkCurrent.split("&bookmark")[0] + "&bookmark=" + id;
     $('.navigation').find('a').removeClass("selected");
     $('.navigation').find('li').removeAttr('data-expanded');
     $(e.currentTarget).parents("li").attr("data-expanded", "true");
     $(e.currentTarget).addClass("selected");
+    console.log(linkHistory);
     $.ajax({
       url: link,
       type: 'GET',
-      dataType: 'html'
+      dataType: 'html',
+      cache: false
     }).done(function (response) {
 
       $('#pageContent').html(response);
@@ -620,9 +652,10 @@ var NavigationTree = React.createClass({
       console.log("history:" + linkHistory);
       History.pushState({ state: 1 }, "Group Page", linkHistory);
       // if ($(e.currentTarget).prop("data-link-load")) {
-      //   console.log("history:" +  linkHistory);
+      //   console.log("history:" +  linkHistory); 
       // }
       // History.pushState("Group Page","Group Page",link)
+
     });
   },
   registerBookmark: function (e) {
@@ -658,7 +691,8 @@ var NavigationTree = React.createClass({
         method: "POST",
         url: "/Files/WebServices/Bookmarks.ashx",
         data: JSON.stringify({ Group: id, Name: groupName }),
-        contentType: "application/json"
+        contentType: "application/json",
+        cache: false
       }).done(function (msg) {
         for (var i = 0; i < that.state.data.length; i++) {
           var item = that.state.data[i];
@@ -762,7 +796,8 @@ var MainContent = React.createClass({
     $.ajax({
       url: url,
       type: 'GET',
-      dataType: 'html'
+      dataType: 'html',
+      cache: false
     }).done(function (response) {
       var data = response;
       _this.setState({ data: data });
@@ -802,7 +837,7 @@ var RenderPage = React.createClass({
     };
   },
   componentWillMount: function () {
-
+    var pageSize = $.cookie("lastPageSize");
     var catalog = getQueryVariable("catalog");
     var groupId = getQueryVariable("bookmark") == false ? "" : getQueryVariable("bookmark");
     var productId = getQueryVariable("favorite") == false ? "" : getQueryVariable("favorite");
@@ -811,7 +846,7 @@ var RenderPage = React.createClass({
       contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&productId=' + productId;
     } else {
       if (groupId) {
-        contentSource = '/Default.aspx?ID=126&groupid=' + groupId;
+        contentSource = '/Default.aspx?ID=126&groupid=' + groupId + '&PageSize=' + pageSize + "&Section=All";
       }
     }
     this.setState({ catalog: catalog, groupId: groupId, productId: productId, contentSource: contentSource });
