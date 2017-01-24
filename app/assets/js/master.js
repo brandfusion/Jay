@@ -373,7 +373,7 @@ var h = {
       }
     });
 
-    $('#pageContent').on("click", '.product-list-link', function (e) {
+    $('#pageContent').on("click", ".product-list-link", function (e) {
       e.preventDefault();
       var groupId = encodeURIComponent($(this).attr("data-group-id"));
       var productId = $(this).attr("href");
@@ -400,6 +400,61 @@ var h = {
         });
       });
     });
+
+    // Add to print list
+    console.log("enter");
+    $.removeCookie("ImagesToPrint");
+
+    $('#pageContent').on("click", '.addToPrint', function () {
+      var index = $(this).parents(".item").index();
+      var image = $(this).attr("data-image");
+      var cookie = $.cookie('ImagesToPrint');
+
+      var cookieString = "";
+
+      var cookieObject = {};
+      cookieObject.index = index;
+      cookieObject.image = image;
+
+      var cookiesArray = [];
+
+      if (cookie != null) {
+        cookiesArray = $.parseJSON(cookie);
+      }
+
+      var indexFound = _.filter(cookiesArray, function (o) {
+        return o.index == index;
+      });
+      if (_.size(indexFound) == 0) {
+        var text = "Remove from print";
+        text = '<i class="fa fa-minus"></i>';
+        // var text = $(this).attr("data-remove-print");
+        $(this).html(text);
+        cookiesArray.push(cookieObject);
+      } else {
+        var text = "Add to print";
+        text = '<i class="fa fa-plus"></i>';
+        // var text = $(this).attr("data-add-print");
+        $(this).html(text);
+        cookiesArray = _.filter(cookiesArray, function (o) {
+          return o.index != index;
+        });
+      }
+
+      console.log(cookiesArray);
+      if (_.size(cookiesArray) != 0) {
+        $('#print-images').fadeIn();
+      } else {
+        $('#print-images').fadeOut();
+      }
+      cookieString = JSON.stringify(cookiesArray);
+      $.cookie('ImagesToPrint', cookieString, {
+        expires: 30
+      });
+    });
+
+    // Add to print list
+
   },
 
   // findGroup: function(groupId) {
